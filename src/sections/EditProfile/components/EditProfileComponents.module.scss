@@ -1,0 +1,420 @@
+.edit-profile {
+  width: 100%;
+  margin-top: 23px;
+  & > .edit-profile-main {
+    width: 92%;
+    margin: 0 auto;
+    & > .profile-main-header {
+      & > h3 {
+        font-size: 24px;
+        color: #00000099;
+        line-height: 29px;
+        font-weight: 700;
+        padding: 10px;
+        border-bottom: 2px solid #00000080;
+      }
+    }
+    & > .profile-main-body {
+      margin-top: 20px;
+      & > .main-body-top {
+        width: 90%;
+        display: flex;
+        justify-content: space-between;
+        & > .main-body-avatar {
+          display: flex;
+          flex-direction: column;
+          width: 24%;
+          background: #fff;
+          justify-content: center;
+          align-items: center;
+          padding: 26px 20px;
+          border: 2px solid #00000080;
+          border-radius: 20px;
+          & > h3 {
+            font-size: 20px;
+            line-height: 24px;
+            color: #00000099;
+            font-weight: 700;
+          }
+          & > img {
+            width: 150px;
+            height: 150px;
+            margin: 10px 0;
+            object-fit: cover;
+
+          }
+          & > .file-input {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            & > input[type="file"] {
+              &::-webkit-file-upload-button {
+                margin-right: 0;
+              }
+
+              &::file-selector-button {
+                margin-right: 0;
+              }
+
+              width: 133px;
+              color: transparent;
+
+              &::-webkit-file-upload-button {
+                color: initial;
+              }
+
+              &::file-selector-button {
+                color: initial;
+              }
+              &::file-selector-button {
+                width: 130px;
+                padding: 8px;
+                border: 1px solid #00000080;
+                border-radius: 5px;
+                background: #bcbcbc80;
+                color: black;
+                cursor: pointer;
+              }
+            }
+            width: 170px;
+            & > button {
+              padding: 10px 17px;
+              width: 100px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background: #00ba06;
+              color: #fff;
+              border-radius: 5px;
+              border: 1px solid #00000080;
+              margin-top: 14px;
+              cursor: pointer;
+            }
+          }
+        }
+        & > .main-body-individual {
+          width: 70%;
+          padding: 26px 20px;
+          border: 2px solid #00000080;
+          border-radius: 20px;
+          & > .body-individual-title {
+            & > h4 {
+              font-size: 20px;
+              line-height: 24px;
+              font-weight: 700;
+              color: #00000099;
+            }
+          }
+          & > .body-individual-input {
+            & > .individual-input-name {
+              display: flex;
+              justify-content: space-between;
+              & > .input-name-lastmame {
+                display: flex;
+                flex-direction: column;
+                & > label {
+                  font-weight: 500;
+                  font-size: 16px;
+                  line-height: 20px;
+                  color: #00000099;
+                }
+                & > input {
+                  padding: 10px 7px;
+                  border-radius: 10px;
+                  border: 1px solid #00000080;
+                  font-size: 15px;
+                }
+              }
+              & > .input-name-firstmame {
+                display: flex;
+                flex-direction: column;
+                & > label {
+                  font-weight: 500;
+                  font-size: 16px;
+                  line-height: 20px;
+                  color: #00000099;
+                }
+                & > input {
+                  padding: 10px 10px;
+                  border: 1px solid #00000080;
+                  border-radius: 10px;
+                  font-size: 15px;
+                }
+              }
+              & > .input-infor-sex {
+                display: flex;
+                flex-direction: column;
+                & > label {
+                  font-weight: 500;
+                  font-size: 16px;
+                  line-height: 20px;
+                  color: #00000099;
+                }
+                & > select {
+                  padding: 8px 7px;
+                  border: 1px solid #00000080;
+                  border-radius: 10px;
+                  font-size: 15px;
+                  width: 102px;
+                }
+              }
+            }
+            & > .individual-input-infor {
+              display: flex;
+              justify-content: space-between;
+              margin: 12px 0;
+              & > .input-infor-date {
+                display: flex;
+                flex-direction: column;
+                width: 36%;
+                & > label {
+                  font-weight: 500;
+                  font-size: 16px;
+                  line-height: 20px;
+                  color: #00000099;
+                }
+                & > input {
+                  padding: 10px 15px;
+                  border-radius: 10px;
+                  border: 1px solid #00000080;
+                  font-size: 16px;
+                }
+              }
+              & > .input-infor-country {
+                display: flex;
+
+                flex-direction: column;
+                width: 60%;
+                & > label {
+                  font-weight: 500;
+                  font-size: 16px;
+                  line-height: 20px;
+                  color: #00000099;
+                }
+                & > input {
+                  padding: 10px 17px;
+                  border-radius: 10px;
+                  border: 1px solid #00000080;
+                  font-size: 15px;
+                }
+              }
+            }
+            & > .individual-input-contact {
+              display: flex;
+              justify-content: space-between;
+              & > .input-contact-email {
+                display: flex;
+                flex-direction: column;
+                width: 59%;
+                & > label {
+                  font-weight: 500;
+                  font-size: 16px;
+                  line-height: 20px;
+                  color: #00000099;
+                }
+                & > input {
+                  padding: 10px 15px;
+                  border-radius: 10px;
+                  border: 1px solid #00000080;
+                  font-size: 16px;
+                }
+              }
+              & > .input-contact-phone {
+                display: flex;
+                flex-direction: column;
+                & > label {
+                  font-weight: 500;
+                  font-size: 16px;
+                  line-height: 20px;
+                  color: #00000099;
+                }
+                & > input {
+                  padding: 10px 17px;
+                  border-radius: 10px;
+                  border: 1px solid #00000080;
+                  font-size: 15px;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      & > .main-body-student {
+        padding: 26px 45px;
+        width: 90%;
+        margin: 30px 0;
+        border: 2px solid #00000080;
+        border-radius: 20px;
+        & > .body-student-title {
+          color: #00000099;
+          font-size: 20px;
+          line-height: 24px;
+          font-weight: 700;
+        }
+        & > .body-student-input {
+          padding: 15px 0;
+          & > div {
+            display: flex;
+            justify-content: space-between;
+            margin: 22px 0;
+            & > div {
+              display: flex;
+              flex-direction: column;
+              & > label {
+                font-size: 16px;
+                color: #00000099;
+                font-weight: 500;
+                line-height: 19px;
+                margin-bottom: 5px;
+              }
+              & > select {
+                border-radius: 10px;
+                padding: 10px 17px;
+                border: 1px solid #00000080;
+                gap: 10px;
+                color: #000;
+                font-size: 16px;
+                font-weight: 500;
+                line-height: 19px;
+                outline: none;
+              }
+              & > input {
+                border-radius: 10px;
+                padding: 10px 17px;
+                border: 1px solid #00000080;
+                gap: 10px;
+                color: #000;
+                font-size: 16px;
+                font-weight: 500;
+                line-height: 19px;
+                outline: none;
+              }
+            }
+            & > .input-school-department {
+              display: flex;
+              flex-direction: column;
+              width: 45%;
+
+              // & > select {
+              //   border-radius: 10px;
+              //   padding: 10px 17px;
+              //   border: 1px solid #00000080;
+              //   gap: 10px;
+              //   color: #000;
+              //   font-size: 16px;
+              //   font-weight: 500;
+              //   line-height: 19px;
+              //   outline: none;
+              // }
+
+              & > .list-item-search {
+                & > input {
+                  width: 100%;
+                  padding: 15px 32px;
+                  border-radius: 20px;
+                  border: 1.5px solid #00000099;
+                  font-size: 16px;
+                  line-height: 19.5px;
+                  color: #00000099;
+                  font-weight: 500;
+                  position: relative;
+                }
+                & > div {
+                  width: 100%;
+                  & > div {
+                    border-radius: 20px;
+                    border: 1.5px solid #00000099;
+                    font-size: 16px;
+                    line-height: 19.5px;
+                    color: #00000099;
+                    font-weight: 500;
+                    position: relative;
+
+                    & > fieldset {
+                      border-color: #fff;
+                      border-width: 0px;
+                    }
+                  }
+                }
+                & > .search-results {
+                  background: #fff;
+                  position: absolute;
+                  z-index: 100;
+                  width: 28%;
+                  height: 121px;
+                  overflow: auto;
+                  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+                  & > ul {
+                    & > li {
+                      padding: 10px 0;
+                      margin: 6px 0;
+                      list-style-type: none;
+                      cursor: pointer;
+                    }
+                  }
+                }
+              }
+            }
+            & > .input-school-specialized {
+              display: flex;
+              flex-direction: column;
+              width: 45%;
+            }
+          }
+          & > .student-input-information {
+            // width: 90%;
+            & > .input-information-position {
+              width: 50%;
+              & > input {
+                cursor: not-allowed;
+              }
+            }
+            & > .input-information-year {
+              width: 25%;
+              & > select {
+                height: max-content;
+                width: 95%;
+                outline: none;
+              }
+            }
+            & > .input-infor-lock {
+              width: 18%;
+            }
+          }
+        }
+      }
+      & > .body-individual-submit {
+        width: 90%;
+        background-color: #0a75e6;
+        padding: 13px 0;
+        border-radius: 10px;
+        color: #ffffff;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 24px;
+        margin-bottom: 30px;
+        border: none;
+        cursor: pointer;
+      }
+      & > .body-individual-delete {
+        width: 25%;
+        margin: 90px 0 29px 0;
+        background-color: #dc4342;
+        border-radius: 20px;
+        padding: 11px 0;
+        color: #ffffff;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 24px;
+        border: none;
+        cursor: pointer;
+      }
+    }
+    & > .profile-main-footer {
+      margin: 40px 0;
+    }
+  }
+}
