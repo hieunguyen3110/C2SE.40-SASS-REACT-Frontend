@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
     CreateFolder,
@@ -6,7 +7,7 @@ import {
     GetFolderById,
     GetPopularFolders,
     UpdateFolder,
-} from "../../services/FolderAPI/FolderAPI";
+} from "../../services/FolderAPI/FolderAPI.tsx";
 
 export const getAllFolders = createAsyncThunk<any>(
     "folder/getAllFolders",

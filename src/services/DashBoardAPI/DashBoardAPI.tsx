@@ -22,7 +22,7 @@ export interface GetProfileRequest {
 export const GetProfileDashBoardAPI = async (id: number) => {
   try {
     const response = await axiosInstance.get(`/admin/dashboard/users/${id}`);
-    return response;
+    return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.response?.data.message || error.message);
@@ -32,7 +32,7 @@ export const GetProfileDashBoardAPI = async (id: number) => {
 export const DelectProfilePictureAPI = async (useId:number) => {
   try {
     const response = await axiosInstance.delete(`/admin/dashboard/delete-profile-picture?accountId=${useId}`);
-    return response;
+    return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.response?.data.message || error.message);

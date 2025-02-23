@@ -16,7 +16,7 @@ export const sendMessageService = async (message: string) => {
       ],
     };
     const res = await axiosInstance.post(`/chat-bot/send-message`, data);
-    return res;
+    return res.data;
   } catch (err: any) {
     throw new Error(err.message);
   }
@@ -26,7 +26,7 @@ export const trainChatbotService = async (data: TrainChatbotRequest[]) => {
   try {
     
     const res = await axiosInstance.post(`/admin/dashboard/train-document`, data);
-    return res;
+    return res.data;
   } catch (err: any) {
     throw new Error(err.message);
   }

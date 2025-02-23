@@ -45,8 +45,8 @@ export const LoginApi = async (data: LoginData): Promise<ILoginS> => {
   try {
     const res = await axiosInstance.post("/auth/login", data);
 
-    return res as unknown as ILoginS;
-    // return res;
+    return res.data as unknown as ILoginS;
+    // return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
 
@@ -60,7 +60,7 @@ export const LoginApi = async (data: LoginData): Promise<ILoginS> => {
 export const RegisterApi = async (data: IRegister) => {
   try {
     const res = await axiosInstance.post("/auth/register", data);
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
 
@@ -70,7 +70,7 @@ export const RegisterApi = async (data: IRegister) => {
 export const LogoutApi = async () => {
   try {
     const res = await axiosInstance.get("/auth/logout");
-    if (res) {
+    if (res.data) {
       return;
     }
   } catch (err: unknown) {
@@ -82,7 +82,7 @@ export const LogoutApi = async () => {
 export const ChangePasswordAPI = async (data: IChangePassWord) => {
   try {
     const res = await axiosInstance.put(`/auth/change-password`, data);
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.response?.data.message);
@@ -92,7 +92,7 @@ export const ChangePasswordAPI = async (data: IChangePassWord) => {
 export const AutoLoginApi = async () => {
   try {
     const res = await axiosInstance.get("/auth/autoLogin");
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.message);
@@ -102,7 +102,7 @@ export const AutoLoginApi = async () => {
 export const SendAuthOtp = async (data: SendOtpRequest) => {
   try {
     const res = await axiosInstance.post("/auth/validate/reset-password", data);
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.message);
@@ -112,7 +112,7 @@ export const SendAuthOtp = async (data: SendOtpRequest) => {
 export const UpdatePasswordApi = async (data: NewPasswordRequest) => {
   try {
     const res = await axiosInstance.post("/auth/update/new-password", data);
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.message);
@@ -122,7 +122,7 @@ export const UpdatePasswordApi = async (data: NewPasswordRequest) => {
 export const ClearTokenApi = async (data: ClearTokenRequest) => {
   try {
     const res = await axiosInstance.post("/auth/delete/clear-token", data);
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.message);

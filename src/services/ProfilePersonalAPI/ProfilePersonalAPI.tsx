@@ -48,7 +48,7 @@ export const SearchDocProfilePersonalAPI = async (name: string) => {
     const response = await axiosInstance.get<listSearch[]>(
       `document/search/${name}`
     );
-    return response;
+    return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.response?.data.message || error.message);
@@ -57,7 +57,7 @@ export const SearchDocProfilePersonalAPI = async (name: string) => {
 export const GetProfileAPI = async () => {
   try {
     const response = await axiosInstance.get("/user/profile");
-    return response;
+    return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.response?.data.message || error.message);
@@ -69,7 +69,7 @@ export const ViewProfilePersonalByEmailApi = async (email: string) => {
     const response = await axiosInstance.get(
       `/user/profile/email?email=${email}`
     );
-    return response;
+    return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.response?.data.message || error.message);
