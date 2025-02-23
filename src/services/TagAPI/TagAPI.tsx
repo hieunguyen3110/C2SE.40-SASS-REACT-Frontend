@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { axiosInstance } from "../../utils/AxiosInterceptor";
 
 export const CreateTag = async (tagName: string) => {
     try {
         const res = await axiosInstance.post(`/tags/create`, tagName);
-        return res;
+        return res.data;
     } catch (error: any) {
         throw new Error(error.message);
     }
@@ -18,7 +19,7 @@ export const UpdateTag = async (tagData: {
             `/tags/update/${tagData.tagId}`,
             tagData
         );
-        return res;
+        return res.data;
     } catch (error: any) {
         throw new Error(error.message);
     }
@@ -29,8 +30,8 @@ export const DeleteTag = async (tagId: number) => {
         const res = await axiosInstance.delete(
             `/tags/delete/${tagId}`
         );
-        return res;
-    } catch (error: unknown) {
+        return res.data;
+    } catch (error: any) {
         throw new Error(error.message);
     }
 };

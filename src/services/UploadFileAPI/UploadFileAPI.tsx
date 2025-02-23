@@ -38,7 +38,7 @@ export const postFile = async (data: ApiPostFile) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     const errorMessage = error.response?.data?.message;
@@ -51,7 +51,7 @@ export const searchFacultyAPI = async (data: string) => {
     const res = await axiosInstance.get<SearchFaculty[]>(
       `/search/faculty?facultyName=${data}`
     );
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     const errorMessage =
@@ -65,7 +65,7 @@ export const searchFacultyAPI = async (data: string) => {
 export const searchFolderAPI = async () => {
   try {
     const res = await axiosInstance.get(`/folder/all`);
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     const errorMessage =
@@ -82,7 +82,7 @@ export const searchSubject = async (data: string) => {
       `/search/subject?subject=${encodeURIComponent(data)}`
     );
 
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     const errorMessage =

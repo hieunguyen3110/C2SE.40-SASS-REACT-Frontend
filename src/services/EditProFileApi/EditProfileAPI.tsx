@@ -34,7 +34,7 @@ export const EditProfileAPI = async (data: UpdateProfileRequest) => {
       headers: { "Content-Type": "multipart/form-data" },
     });
     console.log("API response:", response);
-    return response;
+    return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.response?.data.message || error.message);

@@ -27,7 +27,7 @@ export const SearchUserAPI = async (name: string,pageSize:number =5,pageNum:numb
     const response = await axiosInstance.get<SearchInterface>(
       `user-search/search-by-name?name=${name}&pageSize=${pageSize}&pageNum=${pageNum}`
     );
-    return response;
+    return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.message);
@@ -39,7 +39,7 @@ export const SearchUserInformationAPI = async(email:string)=>{
     const response = await axiosInstance.post<SearchViewUserInterface>(
       `user-search/search-by-name?email=${email}`
     );
-    return response
+    return response.data
   } catch (err:unknown) {
     const error = err as AxiosError<{message?:string}>
     throw new Error(error.message)

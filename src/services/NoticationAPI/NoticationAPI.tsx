@@ -18,7 +18,7 @@ export const NoticationDelect = async (
 ): Promise<AxiosResponse<number>> => {
   try {
     const res = await axiosInstance.post(`/read/${notificationId}`);
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.message || error.message);
@@ -33,7 +33,7 @@ export const ListAllNotificationAPI = async (
     const res = await axiosInstance.get(
       `/notification?pageNum=${pageNum}&pageSize=${pageSize}`
     );
-    return res as unknown as NotificationResponse[];
+    return res.data as unknown as NotificationResponse[];
   } catch (error: any) {
     throw new Error(error.message || error.message);
   }
@@ -46,7 +46,7 @@ export const ListAllNotificationSavedAPI = async (
     const res = await axiosInstance.get(
       `/notification/saved?pageNum=${pageNum}&pageSize=${pageSize}`
     );
-    return res as unknown as NotificationResponse[];
+    return res.data as unknown as NotificationResponse[];
   } catch (error: any) {
     throw new Error(error.message || error.message);
   }
@@ -59,7 +59,7 @@ export const ListAllNotificationDeletedAPI = async (
     const res = await axiosInstance.get(
       `/notification/deleted?pageNum=${pageNum}&pageSize=${pageSize}`
     );
-    return res as unknown as NotificationResponse[];
+    return res.data as unknown as NotificationResponse[];
   } catch (error: any) {
     throw new Error(error.message || error.message);
   }
@@ -68,7 +68,7 @@ export const ListAllNotificationDeletedAPI = async (
 export const CountNotificationAPI = async () => {
   try {
     const res = await axiosInstance.get(`/notification/count`);
-    return res;
+    return res.data;
   } catch (error: any) {
     throw new Error(error.message || error.message);
   }
@@ -83,7 +83,7 @@ export const MoveNotifyToSavedAPI = async (notificationIds: number[]) => {
       `/notification/move-to-saved`,
       JSON.stringify(data)
     );
-    return res as unknown as string;
+    return res.data as unknown as string;
   } catch (error: any) {
     throw new Error(error.message || error.message);
   }
@@ -98,7 +98,7 @@ export const MoveNotifyToTrashAPI = async (notificationIds: number[]) => {
       `/notification/move-to-trash`,
       JSON.stringify(data)
     );
-    return res as unknown as string;
+    return res.data as unknown as string;
   } catch (error: any) {
     throw new Error(error.message || error.message);
   }
@@ -112,7 +112,7 @@ export const DeleteNotifyAPI = async (notificationIds: number[]) => {
     const res = await axiosInstance.delete<string>(`/notification/delete`, {
       data,
     });
-    return res as unknown as string;
+    return res.data as unknown as string;
   } catch (error: any) {
     throw new Error(error.message || error.message);
   }
@@ -124,7 +124,7 @@ export const UpdateStatusNotiftyAPI = async (notificationIds: number[]) => {
       notificationIds,
     };
     const res = await axiosInstance.put(`/notification/read`,JSON.stringify(data));
-    return res as unknown as string;
+    return res.data as unknown as string;
   } catch (error: any) {
     throw new Error(error.message || error.message);
   }

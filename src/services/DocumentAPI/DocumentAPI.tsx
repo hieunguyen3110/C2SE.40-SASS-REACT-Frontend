@@ -39,7 +39,7 @@ export interface GetDocumentStorage {
 export const GetDocumentByID = async (id: number) => {
   try {
     const res = await axiosInstance.get(`/document/${id}`);
-    return res;
+    return res.data;
   } catch (error: any) {
     if (error) {
       throw new Error(error.message);
@@ -47,7 +47,7 @@ export const GetDocumentByID = async (id: number) => {
   }
   // try {
   //   const res = await axiosInstance.get(`/document/${id}`);
-  //   return res;
+  //   return res.data;
   // } catch (error: any) {
   //   if (error) {
   //     throw new Error(error.message);
@@ -58,14 +58,14 @@ export const GetDocumentByID = async (id: number) => {
 // export const GetAllDocuments = async () => {
 //   try {
 //     const res = await axiosInstance.get("/document/all");
-//     return res;
+//     return res.data;
 //   } catch (error: any) {
 //     throw new Error(error.message);
 //   }
 export const GetAllDocuments = async (size: number) => {
   try {
     const res: any = await axiosInstance.get("/document/all" + "?size=" + size);
-    return res.content;
+    return res.data.content;
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -74,7 +74,7 @@ export const GetAllDocuments = async (size: number) => {
 export const GetDocumentByTitle = async (title: string) => {
   try {
     const res = await axiosInstance.get(`/search/title?title=${title}`);
-    return res;
+    return res.data;
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -83,7 +83,7 @@ export const GetDocumentByTitle = async (title: string) => {
 export const GetDocumentBySubject = async (subject: string) => {
   try {
     const res = await axiosInstance.get(`/search/${subject}`);
-    return res;
+    return res.data;
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -92,7 +92,7 @@ export const GetDocumentBySubject = async (subject: string) => {
 export const GetDocumentByFolder = async (folder: string) => {
   try {
     const res = await axiosInstance.get(`/search/${folder}`);
-    return res;
+    return res.data;
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -105,7 +105,7 @@ export const FindAllDocumentByEmailAPI = async (
     const res = await axiosInstance.get(
       `/document/account?email=${data.email}&pageNum=${data.pageNum}&pageSize=${data.pageSize}`
     );
-    return res as unknown as DocumentDtos[];
+    return res.data as unknown as DocumentDtos[];
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -118,7 +118,7 @@ export const AllDocumentPersonalByEmailAPI = async (
     const res = await axiosInstance.get(
       `/document/account?email=${data.email}&pageNum=${data.pageNum}&pageSize=${data.pageSize}`
     );
-    return res as unknown as GetProfileRequest;
+    return res.data as unknown as GetProfileRequest;
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -127,7 +127,7 @@ export const AllDocumentPersonalByEmailAPI = async (
 // export const GetDocumentByFalcuty = async (falcuty: string) => {
 //     try {
 //         const res = await axiosInstance.get(baseUrl + `/search/${falcuty}`);
-//         return res;
+//         return res.data;
 //     } catch (error: any) {
 //         throw new Error(error.message);
 //     }
@@ -136,7 +136,7 @@ export const AllDocumentPersonalByEmailAPI = async (
 export const GetDocumentByFalcuty = async (falcuty: string) => {
   try {
     const res = await axiosInstance.get(`/search/${falcuty}`);
-    return res;
+    return res.data;
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -150,7 +150,7 @@ export const GetDocumentByFalcuty = async (falcuty: string) => {
 //     const response = await axiosInstance.get<any>(`document/all`, {
 //       params: { page, size },
 //     });
-//     return response;
+//     return res.dataponse;
 //   } catch (err: unknown) {
 //     const error = err as AxiosError<{ message?: string }>;
 //     throw new Error(error.response?.data.message || error.message);
@@ -162,7 +162,7 @@ export const GetDocumentSizeAPI = async (data: DocumentByAccountRequest) => {
     const res = await axiosInstance.get(
       `/document/account?email=${data.email}&pageNum=${data.pageNum}&pageSize=${data.pageSize}`
     );
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.response?.data.message || error.message);
@@ -176,7 +176,7 @@ export const DownloadDocumentAuthorApi = async (documentId: number) => {
     });
 
     console.log("Direct Response from API:", response); // Log toàn bộ response
-    return response; // Trả về toàn bộ response
+    return response.data; // Trả về toàn bộ response
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.response?.data?.message || error.message);
@@ -187,7 +187,7 @@ export const DownloadDocumentAuthorApi = async (documentId: number) => {
 //     const response = await axiosInstance.get<{ filePath: string }>(
 //       `/download/${docId}`
 //     );
-//     return response;
+//     return res.dataponse;
 //   } catch (err: unknown) {
 //     const error = err as AxiosError<{ message?: string }>;
 //     throw new Error(error.response?.data.message || error.message);
@@ -209,7 +209,7 @@ export const SaveDownLoadHistoryApi = async (
         },
       }
     );
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.response?.data.message || error.message);
@@ -224,7 +224,7 @@ export const SaveDownLoadHistoryApi = async (
 //             fullname,
 //             docId,
 //         });
-//         return res;
+//         return res.data;
 //     } catch (err: unknown) {
 //         const error = err as AxiosError<{ message?: string }>;
 //         throw new Error(error.response?.data.message || error.message);
@@ -237,7 +237,7 @@ export const SaveDocummentStogeAPI = async (docId: number) => {
       params: { docId },
     });
 
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     if (
@@ -259,7 +259,7 @@ export const GetDocumentStogeAPI = async (
     const response = await axiosInstance.get(`/saved-documents/list`, {
       params: { page, size },
     });
-    return response;
+    return response.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.response?.data.message || error.message);
@@ -270,7 +270,7 @@ export const DelectDocumentStoge = async (docId: number) => {
     const res = await axiosInstance.delete(`/saved-documents/delete`, {
       params: { docId },
     });
-    return res;
+    return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
     throw new Error(error.response?.data.message || error.message);
@@ -280,7 +280,7 @@ export const DelectDocumentStoge = async (docId: number) => {
 export const GetPopularDocuments = async (size:number) => {
     try {
         const res = await axiosInstance.get(`/document/popular?size=${size}`);
-        return res;
+        return res.data;
     } catch (err: unknown) {
         const error = err as AxiosError<{ message?: string }>;
         throw new Error(error.response?.data.message || error.message);

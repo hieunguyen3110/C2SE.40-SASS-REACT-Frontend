@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { axiosInstance, baseUrl } from "../../utils/AxiosInterceptor";
 
 export const SearchDocumentByTitle = async (title: string) => {
@@ -5,7 +6,7 @@ export const SearchDocumentByTitle = async (title: string) => {
         const res = await axiosInstance.get(
             baseUrl + `/search/title?title=${title}`
         );
-        return res;
+        return res.data;
     } catch (error: any) {
         if (error) {
             throw new Error(error.message);
@@ -18,7 +19,7 @@ export const SearchDocumentBySubject = async (subject: string) => {
         const res = await axiosInstance.get(
             baseUrl + `/search/subject?subject=${subject}`
         );
-        return res;
+        return res.data;
     } catch (error: any) {
         if (error) {
             throw new Error(error.message);
@@ -31,7 +32,7 @@ export const SearchDocumentByFolder = async (folderName: string) => {
         const res = await axiosInstance.get(
             baseUrl + `/search/folder?folderName=${folderName}`
         );
-        return res;
+        return res.data;
     } catch (error: any) {
         if (error) {
             throw new Error(error.message);
@@ -44,7 +45,7 @@ export const SearchDocumentByFaculty = async (faculty: string) => {
         const res = await axiosInstance.get(
             baseUrl + `/search/faculty?facultyName=${faculty}`
         );
-        return res;
+        return res.data;
     } catch (error: any) {
         if (error) {
             throw new Error(error.message);
