@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { axiosInstance } from "../../utils/AxiosInterceptor";
 
-export const GetDocumentsForAdmin = async (size: number) => {
+export const GetDocumentsForAdmin = async (page: number, size: number) => {
     try {
         const res = await axiosInstance.get(
-            "/admin/dashboard/documents?size=" + size
+            `/document/admin/dashboard/documents?page=${page}&size=${size}`
         );
         return res.data;
     } catch (err: any) {
@@ -12,10 +12,10 @@ export const GetDocumentsForAdmin = async (size: number) => {
     }
 };
 
-export const GetUsersForAdmin = async (size: number) => {
+export const GetUsersForAdmin = async (page: number, size: number) => {
     try {
         const res = await axiosInstance.get(
-            "/admin/dashboard/users?size=" + size
+            `/identity/admin/account/users?page=${page}&size=${size}`
         );
         return res.data;
     } catch (err: any) {
@@ -25,7 +25,7 @@ export const GetUsersForAdmin = async (size: number) => {
 
 export const GetStatsForAdmin = async () => {
     try {
-        const res = await axiosInstance.get("/admin/dashboard/stats");
+        const res = await axiosInstance.get("/document/admin/dashboard/stats");
         return res.data;
     } catch (err: any) {
         throw new Error(err.message);
@@ -35,7 +35,7 @@ export const GetStatsForAdmin = async () => {
 export const DeleteUsers = async (accountIds: any) => {
     try {
         const res = await axiosInstance.delete(
-            "/admin/dashboard/delete-users",
+            "identity/admin/account/delete-users",
             {
                 data: accountIds,
             }
@@ -48,9 +48,12 @@ export const DeleteUsers = async (accountIds: any) => {
 
 export const DeleteDocuments = async (accountIds: any) => {
     try {
-        const res = await axiosInstance.delete("/admin/dashboard/documents", {
-            data: accountIds,
-        });
+        const res = await axiosInstance.delete(
+            "/document/admin/dashboard/documents",
+            {
+                data: accountIds,
+            }
+        );
         return res.data;
     } catch (err: any) {
         throw new Error(err.message);
@@ -60,7 +63,7 @@ export const DeleteDocuments = async (accountIds: any) => {
 export const ApproveUsers = async (accountIds: any) => {
     try {
         const res = await axiosInstance.post(
-            "/admin/dashboard/users/approve",
+            "/identity/admin/account/users/approve",
             accountIds
         );
         return res.data;
@@ -72,7 +75,7 @@ export const ApproveUsers = async (accountIds: any) => {
 export const ApproveDocuments = async (documentIds: any) => {
     try {
         const res = await axiosInstance.post(
-            "/admin/dashboard/documents/approve",
+            "/document/admin/dashboard/documents/approve",
             documentIds
         );
         return res.data;
@@ -84,7 +87,7 @@ export const ApproveDocuments = async (documentIds: any) => {
 export const CheckDocument = async (documentId: number) => {
     try {
         const res = await axiosInstance.post(
-            "/admin/dashboard/check-document?docId=" + documentId
+            "/document/admin/dashboard/check-document?docId=" + documentId
         );
         return res.data;
     } catch (error: any) {

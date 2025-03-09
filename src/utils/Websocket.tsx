@@ -33,7 +33,7 @@ export const WebsocketConnection: React.FC = () => {
     }
 
     stompClient = new Client({
-      webSocketFactory: () => new SockJS(`http://localhost:8088/api/v1/ws`),
+      webSocketFactory: () => new SockJS(` http://localhost:8081/api/v1/identity/ws`),
       connectHeaders: {
         token: token,
       },
@@ -44,12 +44,10 @@ export const WebsocketConnection: React.FC = () => {
     });
 
     stompClient.onConnect = () => {
-      console.log("Connected to WebSocket!");
 
       stompClient?.subscribe(
         `/user/${accountId}/queue/notifications-with-follow`,
         (message) => {
-          console.log("Received file upload notification:", message.body);
           const data: NotificationResponse = JSON.parse(message.body);
           dispatch(updateNotification(data));
           dispatch(
@@ -61,7 +59,6 @@ export const WebsocketConnection: React.FC = () => {
       stompClient?.subscribe(
         `/user/${accountId}/queue/notifications-with-upload`,
         (message) => {
-          console.log("Received file upload notification:", message.body);
           const data: NotificationResponse = JSON.parse(message.body);
           dispatch(updateNotification(data));
           dispatch(
@@ -81,7 +78,6 @@ export const WebsocketConnection: React.FC = () => {
 
     return () => {
       stompClient?.deactivate();
-      console.log("WebSocket connection closed");
     };
   }, [
     dispatch,

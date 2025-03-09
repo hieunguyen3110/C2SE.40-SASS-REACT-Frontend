@@ -99,7 +99,6 @@ export const SearchSubjectAction = createAsyncThunk<SearchSubject[], string>(
   async (subject: string) => {
     try {
       const response = await searchSubject(subject);
-      console.log("response", response);
 
       return response as unknown as SearchSubject[];
     } catch (err: unknown) {

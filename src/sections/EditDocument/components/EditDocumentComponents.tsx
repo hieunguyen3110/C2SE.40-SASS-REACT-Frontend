@@ -90,7 +90,6 @@ const EditDocumentComponents = () => {
     facultyName: fileData?.facultyName || "",
   });
 
-  console.log("fileData", fileData);
 
   const handleSearchFaculty = async (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

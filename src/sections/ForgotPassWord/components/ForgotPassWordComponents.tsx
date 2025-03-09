@@ -123,7 +123,6 @@ const LoginComponents = () => {
               .then(()=>{
                 setIsCountdown(true);
                 setLoading(false);
-                console.log("Email sent successfully!");
               },
             (error)=>{
               console.error("Failed to send email", error);

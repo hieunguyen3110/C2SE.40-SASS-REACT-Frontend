@@ -21,8 +21,6 @@ import { truncateTextWithLength } from "../../../../utils/truncateText";
 export default function FolderDirectory({ data }: any) {
     const navigate = useNavigate();
 
-    console.log(data);
-
     return (
         <div className={cx("folder-directory")}>
             <div className={cx("directory-title")}>

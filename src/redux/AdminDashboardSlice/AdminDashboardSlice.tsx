@@ -11,11 +11,16 @@ import {
     GetUsersForAdmin,
 } from "../../services/AdminDashboardAPI/AdminDashboardAPI";
 
-export const getDocumentsForAdmin = createAsyncThunk<any, number>(
+interface Params {
+    page: number;
+    size: number;
+}
+
+export const getDocumentsForAdmin = createAsyncThunk<any, Params>(
     "adminDashboard/getDocuments",
-    async (size: number) => {
+    async ({ page, size }) => {
         try {
-            const res = await GetDocumentsForAdmin(size);
+            const res = await GetDocumentsForAdmin(page, size);
             return res;
         } catch (error: any) {
             throw new Error(error.message);
@@ -23,11 +28,11 @@ export const getDocumentsForAdmin = createAsyncThunk<any, number>(
     }
 );
 
-export const getUsersForAdmin = createAsyncThunk<any, number>(
+export const getUsersForAdmin = createAsyncThunk<any, Params>(
     "adminDashboard/getUsers",
-    async (size: number) => {
+    async ({ page, size }) => {
         try {
-            const res = await GetUsersForAdmin(size);
+            const res = await GetUsersForAdmin(page, size);
             return res;
         } catch (error: any) {
             throw new Error(error.message);
@@ -112,7 +117,7 @@ interface InitialStateStyles {
     error: string;
     users: any[];
     documents: any[];
-    data: any[];
+    data: any;
     successMessage: string;
 }
 
@@ -236,10 +241,9 @@ export const AdminDashboardSlice = createSlice({
             })
             .addCase(checkDocument.rejected, (state, action) => {
                 state.loading = false;
-                console.log(action.payload);
-                
                 state.error =
-                    action.error.message || "Tài liệu chứa từ nhạy cảm hoặc đã được check!";
+                    action.error.message ||
+                    "Tài liệu chứa từ nhạy cảm hoặc đã được check!";
             });
     },
 });

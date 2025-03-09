@@ -117,7 +117,6 @@ const DocumentStorageComponents = () => {
   // );
 
   const { documentStoge } = useSelector((state: RootState) => state.document);
-  console.log("documentStoge", documentStoge);
 
   const [dataList, setDataList] = useState<GetDocument[]>(
     documentStoge?.content || []
@@ -136,10 +135,8 @@ const DocumentStorageComponents = () => {
       setDataList(newDocumentList);
     }
   };
-  console.log("dataList", dataList);
 
   const handleDelectDocument = async (docId: number) => {
-    console.log("docId", docId);
 
     const res = await dispatch(DelectDocumentStogeAction(docId));
     if (res.meta.requestStatus === "fulfilled") {
@@ -164,7 +161,7 @@ const DocumentStorageComponents = () => {
   },[documentStoge?.content])
 
   useEffect(() => {
-    console.log(1);
+  
     
     dispatch(GetDocumentStogeAction({ page: 0 }));
     

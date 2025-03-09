@@ -50,7 +50,6 @@ export default function DocumentHeader() {
     setSearchTerm("");
     setIsModalOpen(false);
     dispatch(clearDocumentSearch());
-    console.log(item);
     
   }
 

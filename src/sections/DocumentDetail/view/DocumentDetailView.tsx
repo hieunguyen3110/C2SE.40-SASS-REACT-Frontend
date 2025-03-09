@@ -27,7 +27,6 @@ export default function DocumentDetailView() {
         return <Loader height={100} />;
     }
 
-    console.log(document)
 
     return (
         <div className={cx("document-detail-view")}>

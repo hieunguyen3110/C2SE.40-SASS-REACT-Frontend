@@ -21,7 +21,7 @@ const callRefreshToken = async (): Promise<void> => {
   if (!isRefreshingToken) {
     store.dispatch(updateStateLoading(true))
     isRefreshingToken = true;
-    await axiosInstance.get<void, response>("/auth/refresh-token");
+    await axiosInstance.get<void, response>("/identity/auth/refresh-token");
     isRefreshingToken = false;
     // store.dispatch(updateStateLoading(false));
   }

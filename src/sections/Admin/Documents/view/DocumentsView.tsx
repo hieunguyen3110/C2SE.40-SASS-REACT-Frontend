@@ -15,6 +15,7 @@ import {
     clearMessage,
     deleteDocuments,
     getDocumentsForAdmin,
+    getStatsForAdmin,
 } from "../../../../redux/AdminDashboardSlice/AdminDashboardSlice";
 import AlertDialog from "../../Users/components/AlertDialog";
 import ApproveDialog from "../../Users/components/ApproveDialog";
@@ -68,7 +69,7 @@ const censorValues: any = [
 export default function DocumentsView() {
     const [censor, setCensor] = useState<string>("");
     const [searchValue, setSearchValue] = useState<string>("");
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [data, setData] = useState<any>([]);
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const dispatch = useAppDispatch();
@@ -77,9 +78,14 @@ export default function DocumentsView() {
         (state: any) => state.adminDashboard.documents?.content
     );
 
-    const { loading, successMessage,error } = useAppSelector(
+    const { loading, successMessage, error } = useAppSelector(
         (state) => state.adminDashboard
     );
+
+    const {
+        data: statsData,
+        loading: statsLoading,
+    } = useAppSelector((state) => state.adminDashboard);
 
     useEffect(() => {
         if (documents && documents.length !== 0) {
@@ -88,35 +94,14 @@ export default function DocumentsView() {
     }, [documents]);
 
     useEffect(() => {
-        dispatch(getDocumentsForAdmin(200));
-    }, [dispatch]);
+        // get total of Documents (documentCount)
+        dispatch(getStatsForAdmin());
+
+        dispatch(getDocumentsForAdmin({ page, size: 10 }));
+    }, [dispatch, page]);
 
     const handleClassifyChange = (value: string) => {
         setCensor(value);
-    };
-
-    const filterByClassify: any = (
-        rows: any[],
-        censor: string,
-        searchValue: string
-    ) => {
-        if (censor !== "") {
-            return rows.filter((item) => {
-                if (typeof item[censor] === "string")
-                    return item[censor]?.startsWith(searchValue);
-                else if (typeof item[censor] === "boolean") {
-                    console.log(item);
-                    if (searchValue === "checked") {
-                        return item[censor] === true;
-                    } else {
-                        return item[censor] === false;
-                    }
-                } else if (typeof item[censor] === "number") {
-                    return item[censor] === parseInt(searchValue);
-                }
-            });
-        }
-        return rows;
     };
 
     const [openAlertDialog, setOpenAlertDialog] = useState(false);
@@ -142,7 +127,7 @@ export default function DocumentsView() {
     const handleDeleteUsers = () => {
         try {
             dispatch(deleteDocuments(selectedIds));
-        } catch (error:any) {
+        } catch (error: any) {
             toast.error("Xảy ra lỗi, vui lòng thử lại sau");
         }
     };
@@ -150,14 +135,14 @@ export default function DocumentsView() {
     const handleApproveDocuments = () => {
         try {
             dispatch(approveDocuments(selectedIds));
-        } catch (error:any) {
+        } catch (error: any) {
             toast.error("Xảy ra lỗi, vui lòng thử lại sau");
         }
     };
 
     const handleReloadTable = () => {
         try {
-            dispatch(getDocumentsForAdmin(200));
+            dispatch(getDocumentsForAdmin({ page, size: 10 }));
         } catch (error) {
             console.log(error);
             toast.error("Xảy ra lỗi, vui lòng thử lại sau");
@@ -218,7 +203,6 @@ export default function DocumentsView() {
         </div>
     );
 
-
     return (
         <div className={cx("admin-documents-view")}>
             <span>DTUDASHBOARD / Tài liệu</span>
@@ -272,17 +256,18 @@ export default function DocumentsView() {
                 </div>
             </div>
 
-            {loading ? (
+            {loading || statsLoading ? (
                 <Loader height={1} />
             ) : (
                 <DataTable
                     page={page}
                     setPage={setPage}
                     columns={columns}
-                    rows={filterByClassify(data, censor, searchValue)}
+                    rows={data}
                     topic="document"
                     selectedDocuments={selectedIds}
                     setSelectedDocuments={setSelectedIds}
+                    count={Math.ceil(statsData?.totalDocuments / 10)}
                 />
             )}
             <AlertDialog
