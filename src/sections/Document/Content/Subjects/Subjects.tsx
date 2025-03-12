@@ -52,7 +52,6 @@ export default function Subjects({ folders }: IFolders) {
         return [];
     };
 
-    console.log(folders);
 
     return (
         <div className={cx("subjects")}>

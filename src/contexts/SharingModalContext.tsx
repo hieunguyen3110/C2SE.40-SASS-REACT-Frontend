@@ -19,7 +19,6 @@ export const SharingModalProvider: React.FC<{ children: React.ReactNode }> = ({
     const [url, setUrl] = useState("");
 
     const openSharingModal = () => {
-        console.log("open modal");
         setOpen(true);
     };
     const closeSharingModal = () => setOpen(false);

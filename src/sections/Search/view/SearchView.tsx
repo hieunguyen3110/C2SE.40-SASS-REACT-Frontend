@@ -26,7 +26,6 @@ export default function SearchView() {
     const [searchBy, setSearchBy] = useState<string>("title");
     const searchData: any = useAppSelector((state) => state.search.data);
 
-    console.log(searchData);
     useEffect(() => {
         switch (searchBy) {
             case "title":

@@ -47,8 +47,6 @@ export default function Main(props: PropsType) {
     }
   }, [isLogined,location.pathname]);
 
-  console.log(loading);
-  console.log(loadingElement);
   
 
     return (

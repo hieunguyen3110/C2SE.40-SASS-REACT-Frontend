@@ -55,7 +55,6 @@ export default function Docs({ title, docs, onLoadMore }: any) {
     if (option === "Chia sẻ") {
       handleOpenModal(docId);
     }
-    console.log(option);
     setAnchorEls((prev) => ({ ...prev, [docId]: null }));
   };
   const handleClickClose = (docId: number) => {
@@ -69,7 +68,6 @@ export default function Docs({ title, docs, onLoadMore }: any) {
   const handleDownloadDocuments = (documentId: number) => {
     dispatch(DownloadDocumentAction({ documentId, username }));
   };
-  console.log(docs)
   return (
     <div className={cx("docs")}>
       <div className={cx("titles")}>

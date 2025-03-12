@@ -10,6 +10,7 @@ import {
     approveUsers,
     clearError,
     deleteUsers,
+    getStatsForAdmin,
     getUsersForAdmin,
 } from "../../../../redux/AdminDashboardSlice/AdminDashboardSlice";
 import AlertDialog from "../components/AlertDialog";
@@ -76,7 +77,7 @@ const censorValues: any = [
 export default function UsersView() {
     const [censor, setCensor] = useState<string>("");
     const [searchValue, setSearchValue] = useState<string>("");
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [data, setData] = useState<any>([]);
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const dispatch = useAppDispatch();
@@ -98,33 +99,14 @@ export default function UsersView() {
         setCensor(value);
     };
 
-    const filterByClassify: any = (
-        rows: any[],
-        censor: string,
-        searchValue: string
-    ) => {
-        if (censor !== "") {
-            return rows.filter((item) => {
-                if (typeof item[censor] === "string")
-                    return item[censor]?.startsWith(searchValue);
-                else if (typeof item[censor] === "boolean") {
-                    console.log(item);
-                    if (searchValue === "checked") {
-                        return item[censor] === true;
-                    } else {
-                        return item[censor] === false;
-                    }
-                } else if (typeof item[censor] === "number") {
-                    return item[censor] === parseInt(searchValue);
-                }
-            });
-        }
-        return rows;
-    };
+    const statsData = useAppSelector((state) => {
+        return state.adminDashboard.data;
+    });
 
     useEffect(() => {
-        dispatch(getUsersForAdmin(100));
-    }, [dispatch]);
+        dispatch(getUsersForAdmin({ page, size: 10 }));
+        dispatch(getStatsForAdmin());
+    }, [dispatch, page]);
 
     const activeFilter = (
         <div className={cx("search-container")}>
@@ -169,7 +151,7 @@ export default function UsersView() {
 
     const handleReloadTable = () => {
         try {
-            dispatch(getUsersForAdmin(100));
+            dispatch(getUsersForAdmin({ page, size: 10 }));
         } catch (error) {
             console.log(error);
             toast.error("Xảy ra lỗi, vui lòng thử lại sau");
@@ -203,7 +185,6 @@ export default function UsersView() {
             handleReloadTable();
         }
     }, [error]);
-
 
     return (
         <div className={cx("admin-users-view")}>
@@ -264,10 +245,15 @@ export default function UsersView() {
                     page={page}
                     setPage={setPage}
                     columns={columns}
-                    rows={filterByClassify(data, censor, searchValue)}
+                    rows={data}
                     topic="user"
                     selectedDocuments={selectedIds}
                     setSelectedDocuments={setSelectedIds}
+                    count={Math.ceil(
+                        ((statsData?.totalStudents || 0) +
+                            (statsData?.totalLecturers || 0)) /
+                            10
+                    )}
                 />
             )}
             <AlertDialog

@@ -79,14 +79,11 @@ export default function SharingModal() {
             )
             .then(
                 () => {
-                    console.log("SUCCESS!");
                     toast.success("Chia sẻ thành công!");
                     setEmail("")
                     closeSharingModal();
                 },
                 (error) => {
-                    console.log(error);
-                    console.log("FAILED...", error.text);
                     setEmail("")
                     toast.error("Xảy ra lỗi khi chia sẻ tài liệu!");
                 }
