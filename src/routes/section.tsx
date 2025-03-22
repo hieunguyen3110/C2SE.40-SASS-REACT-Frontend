@@ -31,6 +31,9 @@ import CommingSoonPage from "../pages/CommingSoon";
 import EditDocument from "../pages/EditDocument";
 import FAQDetailPage from "../pages/FAQDetail";
 import SupportPage from "../pages/Support";
+import GroupStudy from "../pages/GroupStudyPages/GroupStudy";
+import CreateGroup from "../pages/GroupStudyPages/GroupCreation";
+import GroupStudyLayout from "../components/GroupStudyLayout/GroupStudyLayout";
 export default function Router() {
   const routes = useRoutes([
     {
@@ -51,27 +54,6 @@ export default function Router() {
         { path: "new-password", element: <NewPassword />, index: true },
       ],
     },
-    // {
-    //   path: "/document",
-    //   element: (
-    //     <DocumentLayout>
-    //       <Outlet />
-    //     </DocumentLayout>
-    //   ),
-    //   children: [
-    //     { path: "support", element: <SupportPage /> },
-    //     { path: "support/:id", element: <FAQDetailPage /> },
-    //     {
-    //       path: "*",
-    //       element: <Navigate to="/document/coming-soon" replace />,
-    //     },
-    //     {
-    //       path: "coming-soon",
-    //       element: <CommingSoonPage />,
-    //       index: true,
-    //     },
-    //   ],
-    // },
     {
       path: "/document",
       element: (
@@ -84,7 +66,6 @@ export default function Router() {
       children: [
         { index: true, element: <DocumentPage /> },
         { path: "directory", element: <Directory /> },
-        // { path: "support", element: <SupportPage /> },
         { path: "ai-support", element: <AISupportPage /> },
         {
           path: "upload-file",
@@ -98,16 +79,11 @@ export default function Router() {
           path: "edit-profile",
           element: <EditProfile />,
         },
-        // {
-        //   path: "edit-profile/:id",
-        //   element: <EditProfile />,
-        // },
         {
           path: "notification",
           element: <Notification />,
         },
         {
-          //   path: ":majorSlug/:folderSlug/id",
           path: ":id",
           element: <DocumentDetailPage />,
         },
@@ -119,7 +95,6 @@ export default function Router() {
           path: "folder/:id",
           element: <FolderDetailPage />,
         },
-        // { path: "/directory", element: <DocumentPage /> },
         { path: "support", element: <SupportPage /> },
         { path: "support/:id", element: <FAQDetailPage /> },
         { path: "profile-author", element: <ProfileAuthor /> },
@@ -129,10 +104,6 @@ export default function Router() {
           path: "profile-personal-teacher",
           element: <PersonalTeacher />,
         },
-        // {
-        //   path: "profile-personal-teacher:id",
-        //   element: <PersonalTeacher />,
-        // },
         {
           path: "search-user",
           element: <SearchUser />,
@@ -146,6 +117,24 @@ export default function Router() {
           path: "edit-document-file",
           element: <EditDocument />,
           index: true,
+        },
+        {
+          path: "group-study",
+          element: (
+            <GroupStudyLayout> 
+                <Outlet />
+            </GroupStudyLayout>
+          ),
+          children: [
+            {
+                index: true,
+                element: <GroupStudy />,
+            },
+          ],
+        },
+        {
+          path: "group-study/create",
+          element: <CreateGroup />,
         },
       ],
     },

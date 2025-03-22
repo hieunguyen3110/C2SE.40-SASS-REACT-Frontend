@@ -17,6 +17,7 @@ import profileAuthorReducer from "./ProfileAuthorSlice/ProfileAuthorSlice";
 import profilePersonalReducer from "./ProfilePersonalSlice/ProfilePersonalSlice";
 import dashBoardReducer from "./DashBoardSlice/DashBoardSlice";
 import EditDocumentReducer from "./EditDocumentSlice/EditDocumentSlice";
+import GroupStudyReducer from "./GroupStudySlice/GroupStudySlice";
 
 import statsReducer from "./StatsSlice/statsSlice";
 
@@ -39,6 +40,7 @@ const store = configureStore({
     folder: FolderReducer,
     adminDashboard: AdminDashboardReducer,
         stats: statsReducer,
+    groupStudy: GroupStudyReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -1,0 +1,15 @@
+.group-creation-view {
+    display: flex;
+    flex-direction: column;
+    & > .back-link {
+        margin: 16px 40px;
+        font-weight: 500;
+        font-size: 15px;
+        line-height: 24px;
+        letter-spacing: 0%;
+        text-align: center;
+        color: #eb2930;
+        text-decoration: underline;
+        margin-right: auto;
+    }
+}

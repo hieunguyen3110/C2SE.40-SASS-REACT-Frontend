@@ -1,0 +1,113 @@
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 0px 40px;
+    border-radius: 8px;
+}
+
+.formPaper {
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+}
+
+.formTitle {
+    background-color: #e62e2d;
+    color: white;
+    padding: 16px;
+    margin: 0;
+    font-weight: 500;
+}
+
+.form {
+    padding: 16px;
+}
+
+.section {
+    margin-bottom: 24px;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 8px;
+}
+
+.formField {
+    margin-bottom: 16px;
+}
+
+.fieldLabel {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #e62e2d;
+}
+
+.required {
+    color: #e62e2d;
+}
+
+.input {
+    background-color: #f5f5f5;
+}
+
+.categoryChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.categoryChip {
+    margin-right: 4px;
+    margin-bottom: 4px;
+
+    &:hover {
+        background-color: rgba(230, 46, 45, 0.1);
+    }
+}
+
+.switchControl {
+    width: 100%;
+    margin: 0;
+    padding: 8px 16px;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+}
+
+.switchLabel {
+    display: flex;
+    flex-direction: column;
+}
+
+.charCount {
+    display: block;
+    text-align: right;
+    margin-top: 4px;
+}
+
+.memberLimitContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.memberLimitInput {
+    width: 100px;
+}
+
+.memberLimitLabel {
+    color: #666;
+}
+
+.submitButton {
+    margin-top: 16px;
+    padding: 12px;
+    font-weight: bold;
+    background-color: #e62e2d;
+
+    &:hover {
+        background-color: #c62828;
+    }
+}

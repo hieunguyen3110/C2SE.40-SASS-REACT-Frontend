@@ -1,0 +1,119 @@
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+
+        .groupText {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .studyText {
+            font-weight: bold;
+        }
+    }
+
+    .userProfile {
+        display: flex;
+        align-items: center;
+        padding: 16px;
+        gap: 12px;
+        margin-left: 16px;
+
+        .avatar {
+            background-color: #f5f5f5;
+            color: #757575;
+            font-size: 14px;
+            width: 32px;
+            height: 32px;
+        }
+    }
+
+    .section {
+        padding: 16px;
+
+        .sectionHeader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .sectionTitle {
+            margin-bottom: 8px;
+        }
+
+        .chatList,
+        .navList {
+            padding: 0;
+        }
+
+        .chatItem,
+        .navItem {
+            border-radius: 4px;
+            margin-bottom: 2px;
+            padding: 2px 8px;
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.04);
+            }
+        }
+
+        .selected {
+            background-color: rgba(244, 67, 54, 0.08);
+
+            &:hover {
+                background-color: rgba(244, 67, 54, 0.12);
+            }
+        }
+
+        .chatIcon,
+        .navIcon {
+            min-width: 36px;
+        }
+
+        .groupIndicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:before {
+                content: '';
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background-color: rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        .selectedIndicator {
+            border-color: #f44336;
+
+            &:before {
+                background-color: #f44336;
+            }
+        }
+
+        .selectedText {
+            color: #f44336;
+        }
+
+        .badge {
+            margin-left: 8px;
+        }
+    }
+}
