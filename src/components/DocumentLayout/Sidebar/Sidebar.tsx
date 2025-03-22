@@ -10,7 +10,8 @@ import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutl
 import StickyNote2OutlinedIcon from "@mui/icons-material/StickyNote2Outlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 
-import BookOutlinedIcon from "@mui/icons-material/BookOutlined";
+
+import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 
 import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
@@ -33,9 +34,9 @@ import { appear } from "../../../utils/animations";
 import { useSelector } from "react-redux";
 
 const menuItems = [
-  { title: "Trang chủ", icon: HomeOutlinedIcon, pathAcitve: "/document" },
-  { title: "Thư viện", icon: BookOutlinedIcon, pathAcitve: "/404" },
-  { title: "Sách", icon: AutoStoriesOutlinedIcon, pathAcitve: "/404" },
+  { title: "Trang chủ", icon: HomeOutlinedIcon, pathActive: "/document" },
+  { title: "Nhóm học tập", icon: PeopleOutlineIcon, pathActive: "/document/group-study" },
+  { title: "Sách", icon: AutoStoriesOutlinedIcon, pathActive: "/404" },
 ];
 const docItems = [
   {
@@ -139,6 +140,19 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
     (state: RootState) => state.authentication.ilogins
   );
   
+  const isMenuItemActive = (pathActive: string) => {
+    if (pathActive === "/document" && (pathName === "/document" || pathName === "/document/")) {
+      return true;
+    }
+    
+    if (pathActive !== "/document" && pathName.startsWith(pathActive)) {
+      const nextChar = pathName.charAt(pathActive.length);
+      return nextChar === "" || nextChar === "/";
+    }
+    
+    return false;
+  };
+
   return (
     <div
       style={isOpenAndModal ? { position: "fixed" } : {}}
@@ -203,8 +217,8 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
         {menuItems.map((item, index) => (
           <Link
             key={index}
-            className={cx(pathName === item.pathAcitve && "active")}
-            to={item.pathAcitve}
+            className={cx(isMenuItemActive(item.pathActive) && "active")}
+            to={item.pathActive}
           >
             <item.icon sx={{ width: "22px", height: "22px" }} />
             {isOpen && <h3>{item.title}</h3>}
@@ -222,7 +236,7 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
           <Link
             key={index}
             className={cx(
-              pathName === item.linkTo && "active",
+              (item.regex ? item.regex.test(pathName) : pathName === item.linkTo) && "active",
               `${
                 item.linkTo === "/document/notification" &&
                 numberOfNotificationsUnRead > 0
@@ -261,7 +275,7 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
         {searchItems.map((item, index) => (
           <Link
             key={index}
-            className={cx(pathName === item.pathAcitve && "active")}
+            className={cx(isMenuItemActive(item.pathAcitve) && "active")}
             to={item.pathAcitve}
           >
             <item.icon sx={{ width: "22px", height: "22px" }} />
