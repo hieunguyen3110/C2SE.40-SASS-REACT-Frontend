@@ -72,11 +72,11 @@ export const deleteFolder = createAsyncThunk<any, number>(
     }
 );
 
-export const getPopularFolders = createAsyncThunk<any, number>(
+export const getPopularFolders = createAsyncThunk<any, {page: number, size: number}>(
     "folder/getPopularFolders",
-    async (size: number) => {
-        try {
-            const response = await GetPopularFolders(size);
+    async ({page, size}: {page: number, size: number}) => {
+        try {   
+            const response = await GetPopularFolders(page, size);
             return response;
         } catch (err: any) {
             throw Error(err.message);

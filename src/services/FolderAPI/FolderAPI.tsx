@@ -61,10 +61,10 @@ export const DeleteFolder = async (folderId: number) => {
     }
 };
 
-export const GetPopularFolders = async (size: number) => {
+export const GetPopularFolders = async (page: number, size: number) => {
     try {
         const res = await axiosInstance.get(
-            `/document/folder/top-folders?size=${size}`
+            `/document/folder/top-folders?page=${page}&size=${size}`
         );
         return res.data;
     } catch (err: any) {

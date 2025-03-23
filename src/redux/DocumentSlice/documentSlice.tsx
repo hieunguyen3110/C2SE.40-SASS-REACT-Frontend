@@ -245,11 +245,11 @@ export const getDocumentByFalcuty = createAsyncThunk<DocumentResponse, string>(
   }
 );
 
-export const getPopularDocuments = createAsyncThunk<any, number>(
+export const getPopularDocuments = createAsyncThunk<any, {page: number, size: number}>(
     "documents/getPopularDocuments",
-    async (size:number) => {
+    async ({page, size}: {page: number, size: number}) => {
         try {
-            const response = await GetPopularDocuments(size);
+            const response = await GetPopularDocuments(page, size);
             return response;
         } catch (err: any) {
             throw Error(err.message);
