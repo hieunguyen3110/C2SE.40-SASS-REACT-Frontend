@@ -17,7 +17,7 @@ export default function Main(props: PropsType) {
         (state) => state.authentication
     );
     const [loadingElement, setLoadingElement] = useState(false);
-    const regex = /^\/document\/(\d+|group-study)$/;
+    const regex = /^\/document\/(\d+|group-study(?:\/search)?)$/;
     const [isOpen, setIsOpen] = useState<boolean>(
         !regex.test(location.pathname)
     );
