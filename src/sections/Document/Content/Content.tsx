@@ -25,8 +25,8 @@ export default function Content() {
     const [statsData, setStatsData] = useState<any>({});
 
     useEffect(() => {
-        dispatch(getPopularDocuments(3));
-        dispatch(getPopularFolders(8));
+        dispatch(getPopularDocuments({page: 1, size: 3}));
+        dispatch(getPopularFolders({page: 1, size: 8}));
         dispatch(getStatsForUser());
     }, [dispatch]);
 
@@ -41,9 +41,9 @@ export default function Content() {
 
     const handleLoadMore = (status: string) => {
         if (status === "loadmore") {
-            dispatch(getPopularDocuments(9));
+            dispatch(getPopularDocuments({page: 2, size: 3}));
         } else {
-            dispatch(getPopularDocuments(3));
+            dispatch(getPopularDocuments({page: 1, size: 3}));
         }
     };
 

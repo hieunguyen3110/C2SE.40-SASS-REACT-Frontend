@@ -23,8 +23,10 @@ import {
     Description as DescriptionIcon,
     Help as HelpIcon,
     ExitToApp as ExitToAppIcon,
+    PeopleOutline as GroupIcon,
 } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '../../../redux/store';
 
 const GroupSidebar = () => {
     const chatGroups = [
@@ -42,6 +44,8 @@ const GroupSidebar = () => {
         { icon: <ExitToAppIcon />, label: 'cvc' },
     ];
 
+    const { username, profilePicture, listRoles } = useAppSelector((state) => state.authentication);
+
     return (
         <Box className={cx('sidebar')}>
             {/* Header */}
@@ -57,11 +61,11 @@ const GroupSidebar = () => {
 
             {/* User Profile */}
             <Box className={cx('userProfile')}>
-                <Avatar className={cx('avatar')}>NH</Avatar>
+                <Avatar className={cx('avatar')} src={profilePicture || ''}></Avatar>
                 <Box>
-                    <Typography variant="subtitle2">Nguyễn Huy</Typography>
+                    <Typography variant="subtitle2">{username}</Typography>
                     <Typography variant="caption" color="textSecondary">
-                        Student
+                        {listRoles.map((role) => role).join(', ')}
                     </Typography>
                 </Box>
             </Box>
@@ -85,7 +89,11 @@ const GroupSidebar = () => {
                     {chatGroups.map((group, index) => (
                         <ListItem key={index} className={cx('chatItem', { selected: group.selected })}>
                             <ListItemIcon className={cx('chatIcon')}>
-                                <Box className={cx('groupIndicator', { selectedIndicator: group.selected })} />
+                                <GroupIcon 
+                                    sx={{ 
+                                        color: group.selected ? 'red' : 'inherit'
+                                    }} 
+                                />
                             </ListItemIcon>
                             <ListItemText primary={group.name} className={cx({ selectedText: group.selected })} />
                             {group.unread > 0 && (
