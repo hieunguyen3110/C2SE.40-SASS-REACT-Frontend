@@ -49,7 +49,7 @@ export const postFile = async (data: ApiPostFile) => {
 export const searchFacultyAPI = async (data: string) => {
   try {
     const res = await axiosInstance.get<SearchFaculty[]>(
-      `/search/faculty?facultyName=${data}`
+      `/document/search/faculty?facultyName=${data}`
     );
     return res.data;
   } catch (err: unknown) {
@@ -64,7 +64,7 @@ export const searchFacultyAPI = async (data: string) => {
 
 export const searchFolderAPI = async () => {
   try {
-    const res = await axiosInstance.get(`/folder/all`);
+    const res = await axiosInstance.get(`/document/folder/all`);
     return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
@@ -79,7 +79,7 @@ export const searchFolderAPI = async () => {
 export const searchSubject = async (data: string) => {
   try {
     const res = await axiosInstance.get<SearchSubject[]>(
-      `/search/subject?subject=${encodeURIComponent(data)}`
+      `/document/search/subject?subject=${encodeURIComponent(data)}`
     );
 
     return res.data;

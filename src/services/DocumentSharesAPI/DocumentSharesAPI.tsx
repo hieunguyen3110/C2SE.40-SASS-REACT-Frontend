@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { axiosInstance, baseUrl } from "../../utils/AxiosInterceptor";
+import { axiosInstance } from "../../utils/AxiosInterceptor";
 
 export interface IShareDocument {
     documentId: number;
@@ -10,7 +10,7 @@ export interface IShareDocument {
 
 export const ShareDocument = async (data: IShareDocument) => {
     try {
-        const res = await axiosInstance.post(baseUrl + "/shares/email", data);
+        const res = await axiosInstance.post( "/document/shares/email", data);
         return res.data;
     } catch (error: any) {
         throw Error(error.message);

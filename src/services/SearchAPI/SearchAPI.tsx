@@ -4,7 +4,7 @@ import { axiosInstance, baseUrl } from "../../utils/AxiosInterceptor";
 export const SearchDocumentByTitle = async (title: string) => {
     try {
         const res = await axiosInstance.get(
-            baseUrl + `/search/title?title=${title}`
+            `/document/search/title?title=${title}`
         );
         return res.data;
     } catch (error: any) {
@@ -17,7 +17,7 @@ export const SearchDocumentByTitle = async (title: string) => {
 export const SearchDocumentBySubject = async (subject: string) => {
     try {
         const res = await axiosInstance.get(
-            baseUrl + `/search/subject?subject=${subject}`
+            `/document/search/subject?subject=${subject}`
         );
         return res.data;
     } catch (error: any) {
@@ -43,7 +43,7 @@ export const SearchDocumentByFolder = async (folderName: string) => {
 export const SearchDocumentByFaculty = async (faculty: string) => {
     try {
         const res = await axiosInstance.get(
-            baseUrl + `/search/faculty?facultyName=${faculty}`
+            `/document/search/faculty?facultyName=${faculty}`
         );
         return res.data;
     } catch (error: any) {

@@ -30,7 +30,7 @@ export const EditProfileAPI = async (data: UpdateProfileRequest) => {
     formData.append("profilePicture", data.profilePicture);
   }
   try {
-    const response = await axiosInstance.put(`/user/update-profile`, formData, {
+    const response = await axiosInstance.put(`/identity/account/update-profile`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     console.log("API response:", response);

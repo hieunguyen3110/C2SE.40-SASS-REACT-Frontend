@@ -3,7 +3,7 @@ import { axiosInstance, baseUrl } from "../../utils/AxiosInterceptor";
 
 export const GetAllFolders = async () => {
     try {
-        const res = await axiosInstance.get(`${baseUrl}/document/folder/all`);
+        const res = await axiosInstance.get(`/document/folder/all`);
         return res.data;
     } catch (error: any) {
         throw Error(error.message);
@@ -12,7 +12,7 @@ export const GetAllFolders = async () => {
 
 export const CreateFolder = async (folderName: string, description: string) => {
     try {
-        const res = await axiosInstance.post(`${baseUrl}/document/folder/create`, {
+        const res = await axiosInstance.post(`/document/folder/create`, {
             folderName,
             description,
         });
@@ -24,7 +24,7 @@ export const CreateFolder = async (folderName: string, description: string) => {
 
 export const GetFolderById = async (id: number) => {
     try {
-        const res = await axiosInstance.get(`${baseUrl}/document/folder/${id}?`);
+        const res = await axiosInstance.get(`/document/folder/${id}?`);
         return res.data;
     } catch (error: any) {
         throw Error(error.message);
@@ -53,7 +53,7 @@ export const UpdateFolder = async (
 export const DeleteFolder = async (folderId: number) => {
     try {
         const res = await axiosInstance.delete(
-            `${baseUrl}/document/folder/delete/${folderId}`
+            `/document/folder/delete/${folderId}`
         );
         return res.data;
     } catch (error: any) {
