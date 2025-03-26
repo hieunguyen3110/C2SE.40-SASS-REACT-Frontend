@@ -6,6 +6,7 @@ import { DocumentByAccountRequest } from "../../redux/DocumentSlice/InterfaceRes
 import { DocumentDtos } from "../../redux/ProfileAuthorSlice/ProfileAuthorSlice";
 import { toast } from "react-toastify";
 import { GetProfileRequest } from "../ProfilePersonalAPI/ProfilePersonalAPI";
+import { ApiResponse } from "../../types/response.type";
 
 // export interface DocumentStorage {
 //   saveId: number;
@@ -172,28 +173,14 @@ export const GetDocumentSizeAPI = async (data: DocumentByAccountRequest) => {
 
 export const DownloadDocumentAuthorApi = async (documentId: number) => {
     try {
-        const response = await axiosInstance.get(`/download/${documentId}`, {
-            responseType: "text", // Chỉ định kiểu phản hồi là plain text
-        });
-
-        console.log("Direct Response from API:", response); // Log toàn bộ response
-        return response.data; // Trả về toàn bộ response
+        const response = await axiosInstance.get(`/document/download/${documentId}`);
+        return response as unknown as ApiResponse<string>; // Trả về toàn bộ response
     } catch (err: unknown) {
         const error = err as AxiosError<{ message?: string }>;
         throw new Error(error.response?.data?.message || error.message);
     }
 };
-// export const DownloadDocumentAuthorApi = async (docId: number) => {
-//   try {
-//     const response = await axiosInstance.get<{ filePath: string }>(
-//       `/download/${docId}`
-//     );
-//     return res.dataponse;
-//   } catch (err: unknown) {
-//     const error = err as AxiosError<{ message?: string }>;
-//     throw new Error(error.response?.data.message || error.message);
-//   }
-// };
+
 
 export const SaveDownLoadHistoryApi = async (
     username: string,
@@ -201,7 +188,7 @@ export const SaveDownLoadHistoryApi = async (
 ) => {
     try {
         const res = await axiosInstance.post(
-            `/history/track`,
+            `/document/history/track`,
             null, // Body là `null` vì dữ liệu được truyền qua query string
             {
                 params: {
@@ -216,21 +203,6 @@ export const SaveDownLoadHistoryApi = async (
         throw new Error(error.response?.data.message || error.message);
     }
 };
-// export const SaveDownLoadHistoryApi = async (
-//     fullname: string,
-//     docId: number
-// ) => {
-//     try {
-//         const res = await axiosInstance.post(`/history/track`, {
-//             fullname,
-//             docId,
-//         });
-//         return res.data;
-//     } catch (err: unknown) {
-//         const error = err as AxiosError<{ message?: string }>;
-//         throw new Error(error.response?.data.message || error.message);
-//     }
-// };
 
 export const SaveDocummentStogeAPI = async (docId: number) => {
     try {

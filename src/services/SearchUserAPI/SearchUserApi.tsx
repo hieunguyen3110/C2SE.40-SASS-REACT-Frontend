@@ -25,7 +25,7 @@ export interface SearchViewUserInterface {
 export const SearchUserAPI = async (name: string,pageSize:number =5,pageNum:number=0) => {
   try {
     const response = await axiosInstance.get<SearchInterface>(
-      `user-search/search-by-name?name=${name}&pageSize=${pageSize}&pageNum=${pageNum}`
+      `/identity/account/search-by-name?name=${name}&pageSize=${pageSize}&pageNum=${pageNum}`
     );
     return response.data;
   } catch (err: unknown) {
@@ -37,7 +37,7 @@ export const SearchUserAPI = async (name: string,pageSize:number =5,pageNum:numb
 export const SearchUserInformationAPI = async(email:string)=>{
   try {
     const response = await axiosInstance.post<SearchViewUserInterface>(
-      `user-search/search-by-name?email=${email}`
+      `/account/search-by-email?email=${email}`
     );
     return response.data
   } catch (err:unknown) {

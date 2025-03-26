@@ -17,7 +17,7 @@ export const NoticationDelect = async (
   notificationId: DelectId
 ): Promise<AxiosResponse<number>> => {
   try {
-    const res = await axiosInstance.post(`/read/${notificationId}`);
+    const res = await axiosInstance.post(`/notification/read/${notificationId}`);
     return res.data;
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>;
@@ -31,7 +31,7 @@ export const ListAllNotificationAPI = async (
 ) => {
   try {
     const res = await axiosInstance.get(
-      `/notification?pageNum=${pageNum}&pageSize=${pageSize}`
+      `/notification/all?pageNum=${pageNum}&pageSize=${pageSize}`
     );
     return res.data as unknown as NotificationResponse[];
   } catch (error: any) {
