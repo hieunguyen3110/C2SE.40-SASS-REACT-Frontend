@@ -75,7 +75,7 @@ export const GetAllDocuments = async (size: number) => {
 
 export const GetDocumentByTitle = async (title: string) => {
     try {
-        const res = await axiosInstance.get(`/search/title?title=${title}`);
+        const res = await axiosInstance.get(`/document/search/title?title=${title}`);
         return res.data;
     } catch (error: any) {
         throw new Error(error.message);
@@ -84,7 +84,7 @@ export const GetDocumentByTitle = async (title: string) => {
 
 export const GetDocumentBySubject = async (subject: string) => {
     try {
-        const res = await axiosInstance.get(`/search/${subject}`);
+        const res = await axiosInstance.get(`/document/search/${subject}`);
         return res.data;
     } catch (error: any) {
         throw new Error(error.message);
@@ -93,7 +93,7 @@ export const GetDocumentBySubject = async (subject: string) => {
 
 export const GetDocumentByFolder = async (folder: string) => {
     try {
-        const res = await axiosInstance.get(`/search/${folder}`);
+        const res = await axiosInstance.get(`/document/search/${folder}`);
         return res.data;
     } catch (error: any) {
         throw new Error(error.message);

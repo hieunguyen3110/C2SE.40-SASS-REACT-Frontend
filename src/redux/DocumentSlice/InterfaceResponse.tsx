@@ -12,6 +12,16 @@ export interface DocumentResponse {
     folder_id: number;
 }
 
+export interface DocumentSearchResponse {
+    docId: number;
+    title: string;
+    description: string;
+    content: string;
+    type: string;
+    subjectName: string;
+    facultyName: string;
+}
+
 export interface DocumentByAccountRequest{
     email: string;
     pageSize: number;
