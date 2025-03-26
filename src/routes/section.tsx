@@ -34,6 +34,7 @@ import SupportPage from "../pages/Support";
 import GroupStudy from "../pages/GroupStudyPages/GroupStudy";
 import CreateGroup from "../pages/GroupStudyPages/GroupCreation";
 import GroupStudyLayout from "../components/GroupStudyLayout/GroupStudyLayout";
+import GroupSearch from "../pages/GroupStudyPages/GroupSearch";
 export default function Router() {
   const routes = useRoutes([
     {
@@ -130,12 +131,16 @@ export default function Router() {
                 index: true,
                 element: <GroupStudy />,
             },
+            {
+                path: "search",
+                element: <GroupSearch />,
+            },
+            {
+                path: "create",
+                element: <CreateGroup />,
+            },
           ],
-        },
-        {
-          path: "group-study/create",
-          element: <CreateGroup />,
-        },
+        }
       ],
     },
     {

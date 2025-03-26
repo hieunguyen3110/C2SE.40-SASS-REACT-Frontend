@@ -1,0 +1,70 @@
+.groupCard {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .cardContent {
+    display: flex;
+    align-items: stretch;
+
+    .cardImage {
+      width: 180px;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .content {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+
+      .header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        gap: 8px;
+      }
+
+      .categoryChip {
+        font-size: 0.75rem;
+      }
+
+      .title {
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .description {
+        margin-bottom: 16px;
+        flex-grow: 1;
+      }
+
+      .joinButton {
+        align-self: flex-start;
+        min-width: 120px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .groupCard {
+    .cardContent {
+      flex-direction: column;
+
+      .cardImage {
+        width: 100%;
+        height: 180px;
+      }
+    }
+  }
+} 

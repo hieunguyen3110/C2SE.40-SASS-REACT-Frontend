@@ -17,18 +17,16 @@ import {
 import {
     Search as SearchIcon,
     Add as AddIcon,
-    Home as HomeIcon,
-    Book as BookIcon,
-    Notifications as NotificationsIcon,
-    Description as DescriptionIcon,
     Help as HelpIcon,
-    ExitToApp as ExitToAppIcon,
     PeopleOutline as GroupIcon,
 } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAppSelector } from '../../../redux/store';
+import React from 'react';
 
 const GroupSidebar = () => {
+    const location = useLocation();
+
     const chatGroups = [
         { name: 'Web Development', unread: 3, selected: false },
         { name: 'Data Structures', unread: 0, selected: false },
@@ -36,12 +34,26 @@ const GroupSidebar = () => {
     ];
 
     const navigationItems = [
-        { icon: <HomeIcon />, label: 'abc' },
-        { icon: <BookIcon />, label: 'dcd' },
-        { icon: <NotificationsIcon />, label: 'ede' },
-        { icon: <DescriptionIcon />, label: 'fdf' },
-        { icon: <HelpIcon />, label: 'gdg' },
-        { icon: <ExitToAppIcon />, label: 'cvc' },
+        { 
+            icon: <AddIcon />, 
+            label: 'Tạo nhóm học tập',
+            path: '/document/group-study/create'
+        },
+        { 
+            icon: <GroupIcon />, 
+            label: 'Quản lý nhóm học tập',
+            path: '/document/group-study/manage'
+        },
+        { 
+            icon: <SearchIcon />, 
+            label: 'Tìm kiếm nhóm học tập',
+            path: '/document/group-study/search'
+        },
+        { 
+            icon: <HelpIcon />, 
+            label: 'Hỗ trợ',
+            path: '/document/group-study/support'
+        },
     ];
 
     const { username, profilePicture, listRoles } = useAppSelector((state) => state.authentication);
@@ -54,9 +66,11 @@ const GroupSidebar = () => {
                     <span className={cx('groupText')}>GROUP</span>
                     <span className={cx('studyText')}>STUDY</span>
                 </Typography>
-                <IconButton size="small">
-                    <SearchIcon fontSize="small" />
-                </IconButton>
+                <Link to={'/document/group-study/search'}>
+                    <IconButton size="small">
+                        <SearchIcon fontSize="small" />
+                    </IconButton>
+                </Link>
             </Box>
 
             {/* User Profile */}
@@ -112,12 +126,21 @@ const GroupSidebar = () => {
                     NAVIGATION
                 </Typography>
 
-                <List dense className={cx('navList')}>
+                <List dense className={cx('chatList')}>
                     {navigationItems.map((item, index) => (
-                        <ListItem key={index} className={cx('navItem')}>
-                            <ListItemIcon className={cx('navIcon')}>{item.icon}</ListItemIcon>
-                            <ListItemText primary={item.label} />
-                        </ListItem>
+                        <Link to={item.path} key={index} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <ListItem className={cx('chatItem', { selected: location.pathname === item.path })}>
+                                <ListItemIcon className={cx('chatIcon')}>
+                                    {React.cloneElement(item.icon, { 
+                                        sx: { color: location.pathname === item.path ? 'red' : 'inherit' }
+                                    })}
+                                </ListItemIcon>
+                                <ListItemText 
+                                    primary={item.label} 
+                                    className={cx({ selectedText: location.pathname === item.path })}
+                                />
+                            </ListItem>
+                        </Link>
                     ))}
                 </List>
             </Box>
