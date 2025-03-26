@@ -4,10 +4,8 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 import {
   DelectDocumentStoge,
-  // documentState,
   DownloadDocumentAuthorApi,
   GetDocumentStogeAPI,
-  // SaveDownLoadHistoryApi,
   GetAllDocuments,
   GetDocumentByFalcuty,
   GetDocumentByFolder,
@@ -68,19 +66,6 @@ export const GetDocumentSizeAction = createAsyncThunk<
   }
 });
 
-// export const DownloadDocumentAuthorAction = createAsyncThunk<string, number>(
-//   "DocumentSlice/DownloadDocumentAuthorAction",
-//   async (documentId: number) => {
-//     try {
-//       const res = await DownloadDocumentAuthorApi(documentId);
-//       return res.data.filePath;
-//     } catch (error) {
-//       const res = error as AxiosError<{ message?: string }>;
-//       throw new Error(res.response?.data.message || res.message);
-//     }
-//   }
-// );
-
 export const DownloadDocumentAction = createAsyncThunk<
   void,
   { username: string; documentId: number }
@@ -89,7 +74,8 @@ export const DownloadDocumentAction = createAsyncThunk<
   async ({ documentId, username }) => {
     try {
       const response = await DownloadDocumentAuthorApi(documentId); // Gọi API
-      const fileUrl = response.data || response; // Lấy URL từ phản hồi
+      
+      const fileUrl = response.data; // Lấy URL từ phản hồi
       if (fileUrl) {
         const fileResponse = await fetch(fileUrl);
         if (!fileResponse.ok) {
@@ -116,24 +102,6 @@ export const DownloadDocumentAction = createAsyncThunk<
     }
   }
 );
-
-// export const SaveDownLoadHistoryAction = createAsyncThunk<
-//   string,
-//   { fullname: string; documentId: number }
-// >(
-//   "DocumentSlice/SaveDownLoadHistoryAction",
-//   async ({ fullname, documentId }) => {
-//     try {
-//       const downloadRes = await DownloadDocumentAuthorApi(documentId);
-//       //post lên thông tin để máy chủ lưu lịch sử tải xuống
-//       await SaveDownLoadHistoryApi(fullname, documentId);
-//       return downloadRes.data.filePath;
-//     } catch (error) {
-//       const res = error as AxiosError<{ message?: string }>;
-//       throw new Error(res.response?.data.message || res.message);
-//     }
-//   }
-// );
 
 export const SaveDocumentStogeAction = createAsyncThunk<string, number>(
   "SaveDocumentStogeAction",

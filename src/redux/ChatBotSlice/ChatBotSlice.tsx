@@ -23,7 +23,7 @@ type DocumentAnalysis={
     docId: number | undefined;
 }
 
-type ChatbotResponse= {
+export type ChatbotResponse= {
     parts: {
         file_source: string[];
         text: string;
@@ -49,7 +49,7 @@ export const sendMessageAction= createAsyncThunk<ChatbotResponse,MessagesUser>(
     async (data: MessagesUser)=>{
         try {
             const res = await sendMessageService(data.message);
-            return res as unknown as ChatbotResponse;
+            return res.data as unknown as ChatbotResponse;
         } catch (error:any) {
             throw new Error(error.message);
         }
@@ -61,7 +61,7 @@ export const trainChatbotAction= createAsyncThunk<any, TrainChatbotRequest[]>(
     async (data: TrainChatbotRequest[])=>{
         try {
             const res = await trainChatbotService(data);
-            return res as any;
+            return res.data as any;
         } catch (error:any) {
             throw new Error(error.message);
         }
