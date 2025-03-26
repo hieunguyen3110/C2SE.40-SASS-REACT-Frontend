@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import classNames from "classnames/bind";
@@ -11,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { debounce } from "lodash";
 import { clearDocumentSearch, getDocumentByTitle } from "../../../redux/DocumentSlice/documentSlice";
-import { DocumentResponse } from "../../../redux/DocumentSlice/InterfaceResponse";
+import { DocumentSearchResponse } from "../../../redux/DocumentSlice/InterfaceResponse";
 
 export default function DocumentHeader() {
   const dispatch = useAppDispatch();
@@ -46,11 +47,12 @@ export default function DocumentHeader() {
     setIsModalOpen(true);
   };
   
-  const handleClickSearchItem= (item: DocumentResponse)=>{
+  const handleClickSearchItem= (item: DocumentSearchResponse)=>{
     setSearchTerm("");
     setIsModalOpen(false);
     dispatch(clearDocumentSearch());
-    
+    console.log(item);
+    navigate(`/document/${item.docId}`)
   }
 
   useEffect(()=>{

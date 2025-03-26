@@ -22,6 +22,7 @@ import {
 import {
   DocumentByAccountRequest,
   DocumentResponse,
+  DocumentSearchResponse,
 } from "./InterfaceResponse";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
@@ -29,7 +30,7 @@ import { toast } from "react-toastify";
 interface InitialStateStyles {
   Error: string;
   Documents: DocumentResponse[] | undefined;
-  DocumentsSearch: DocumentResponse[];
+  DocumentsSearch: DocumentSearchResponse[];
   DocumentDetail: DocumentResponse | undefined;
   loading: boolean;
   isSearching: boolean;
@@ -168,12 +169,12 @@ export const getAllDocumentsAction = createAsyncThunk<any, number>(
 );
 
 // Document Searches
-export const getDocumentByTitle = createAsyncThunk<DocumentResponse[], string>(
+export const getDocumentByTitle = createAsyncThunk<DocumentSearchResponse[], string>(
   "DocumentSlice/getDocumentByTitle",
   async (title: string) => {
     try {
       const response = await GetDocumentByTitle(title);
-      return response as unknown as DocumentResponse[];
+      return response as unknown as DocumentSearchResponse[];
     } catch (err: any) {
       throw Error(err.message);
     }
