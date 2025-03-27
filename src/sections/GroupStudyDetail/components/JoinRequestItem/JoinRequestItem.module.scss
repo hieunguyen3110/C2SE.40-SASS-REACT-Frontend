@@ -1,0 +1,62 @@
+.join-request-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  margin-bottom: 8px;
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .details {
+      display: flex;
+      flex-direction: column;
+      margin-right: 16px;
+      
+      .name {
+        font-weight: 500;
+      }
+      
+      .request-type {
+        font-size: 0.85rem;
+        color: #666;
+      }
+    }
+    
+    .date {
+      font-size: 0.85rem;
+      color: #666;
+    }
+  }
+  
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    .accept-btn {
+      background-color: rgba(46, 125, 50, 0.1);
+      color: #2e7d32;
+      
+      &:hover {
+        background-color: rgba(46, 125, 50, 0.2);
+      }
+    }
+    
+    .reject-btn {
+      background-color: rgba(211, 47, 47, 0.1);
+      color: #d32f2f;
+      
+      &:hover {
+        background-color: rgba(211, 47, 47, 0.2);
+      }
+    }
+  }
+} 

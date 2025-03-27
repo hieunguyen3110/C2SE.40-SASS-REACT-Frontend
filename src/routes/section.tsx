@@ -35,6 +35,7 @@ import GroupStudy from "../pages/GroupStudyPages/GroupStudy";
 import CreateGroup from "../pages/GroupStudyPages/GroupCreation";
 import GroupStudyLayout from "../components/GroupStudyLayout/GroupStudyLayout";
 import GroupSearch from "../pages/GroupStudyPages/GroupSearch";
+import GroupStudyDetailPage from "../pages/GroupStudyPages/GroupStudyDetail";
 export default function Router() {
   const routes = useRoutes([
     {
@@ -138,6 +139,10 @@ export default function Router() {
             {
                 path: "create",
                 element: <CreateGroup />,
+            },
+            {
+                path: ":id",
+                element: <GroupStudyDetailPage />,
             },
           ],
         }
