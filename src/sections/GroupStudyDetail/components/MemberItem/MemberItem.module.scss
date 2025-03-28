@@ -1,0 +1,70 @@
+.member-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  
+  .member-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .details {
+      display: flex;
+      flex-direction: column;
+      
+      .name {
+        font-weight: 500;
+      }
+      
+      .date {
+        font-size: 0.85rem;
+        color: #666;
+      }
+    }
+  }
+  
+  .role-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    .role-badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      &.admin {
+        color: #1976d2;
+        background-color: rgba(25, 118, 210, 0.1);
+      }
+      
+      &.creator {
+        color: #ed6c02;
+        background-color: rgba(237, 108, 2, 0.1);
+      }
+      
+      &.member {
+        color: #2e7d32;
+        background-color: rgba(46, 125, 50, 0.1);
+      }
+      
+      .role-icon-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+    }
+    
+    .more-actions {
+      color: #666;
+    }
+  }
+} 
