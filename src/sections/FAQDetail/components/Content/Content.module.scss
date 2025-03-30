@@ -1,34 +1,34 @@
-.container{
+.container {
     margin: 2rem 0;
-    &>.back-button{
+    & > .back-button {
         margin-bottom: 2rem;
     }
-    &>.content{
+    & > .content {
         width: auto;
-        border: 1px solid rgba(0,0,0,0.5);
+        border: 1px solid rgba(0, 0, 0, 0.5);
         padding: 15px 20px;
         box-sizing: border-box;
         border-radius: 5px;
-        &>.title{
+        & > .title {
             display: flex;
             align-items: center;
             gap: 1rem;
-            &>hr{
+            & > hr {
                 width: 50px;
             }
         }
-        &>.wrapper{
+        & > .wrapper {
             display: grid;
             grid-template-columns: 3fr 7fr;
             gap: 1.5rem;
             margin-top: 2rem;
-            &>.image{
+            & > .image {
                 width: 300px;
-                &>img{
+                & > img {
                     width: 100%;
                 }
             }
-            &>.paragraph{
+            & > .paragraph {
                 font-size: 20px;
             }
         }

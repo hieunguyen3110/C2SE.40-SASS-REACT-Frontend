@@ -1,1 +1,1 @@
-export { default as GroupCreationForm } from "./GroupCreationForm"; 
+export { default as GroupCreationForm } from './GroupCreationForm';

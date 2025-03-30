@@ -1,1 +1,1 @@
-export { default as GroupStudyView } from "./GroupStudyView";
+export { default as GroupStudyView } from './GroupStudyView';

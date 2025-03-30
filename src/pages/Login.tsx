@@ -1,11 +1,11 @@
-import { LoginView } from "../sections/Login/view";
+import { LoginView } from '../sections/Login/view';
 
 const Login = () => {
-  return (
-    <>
-      <LoginView />
-    </>
-  );
+    return (
+        <>
+            <LoginView />
+        </>
+    );
 };
 
 export default Login;

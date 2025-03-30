@@ -1,1 +1,1 @@
-export {default as FAQDetailView} from "./FAQDetailView";
+export { default as FAQDetailView } from './FAQDetailView';

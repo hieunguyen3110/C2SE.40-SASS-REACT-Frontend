@@ -19,7 +19,7 @@ import {
     ChatMessage,
     GroupResponse,
     CreateGroupRequest,
-    ShareDocumentRequest
+    ShareDocumentRequest,
 } from '../../types/groupStudy.types';
 
 // Async Actions

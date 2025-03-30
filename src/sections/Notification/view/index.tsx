@@ -1,1 +1,1 @@
-export { default as NotificationViews } from "./NotificationViews";
+export { default as NotificationViews } from './NotificationViews';

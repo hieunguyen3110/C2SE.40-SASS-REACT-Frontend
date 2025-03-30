@@ -34,25 +34,25 @@ const GroupSidebar = () => {
     ];
 
     const navigationItems = [
-        { 
-            icon: <AddIcon />, 
+        {
+            icon: <AddIcon />,
             label: 'Tạo nhóm học tập',
-            path: '/document/group-study/create'
+            path: '/document/group-study/create',
         },
-        { 
-            icon: <GroupIcon />, 
+        {
+            icon: <GroupIcon />,
             label: 'Quản lý nhóm học tập',
-            path: '/document/group-study/manage'
+            path: '/document/group-study/manage',
         },
-        { 
-            icon: <SearchIcon />, 
+        {
+            icon: <SearchIcon />,
             label: 'Tìm kiếm nhóm học tập',
-            path: '/document/group-study/search'
+            path: '/document/group-study/search',
         },
-        { 
-            icon: <HelpIcon />, 
+        {
+            icon: <HelpIcon />,
             label: 'Hỗ trợ',
-            path: '/document/group-study/support'
+            path: '/document/group-study/support',
         },
     ];
 
@@ -103,10 +103,10 @@ const GroupSidebar = () => {
                     {chatGroups.map((group, index) => (
                         <ListItem key={index} className={cx('chatItem', { selected: group.selected })}>
                             <ListItemIcon className={cx('chatIcon')}>
-                                <GroupIcon 
-                                    sx={{ 
-                                        color: group.selected ? 'red' : 'inherit'
-                                    }} 
+                                <GroupIcon
+                                    sx={{
+                                        color: group.selected ? 'red' : 'inherit',
+                                    }}
                                 />
                             </ListItemIcon>
                             <ListItemText primary={group.name} className={cx({ selectedText: group.selected })} />
@@ -131,12 +131,12 @@ const GroupSidebar = () => {
                         <Link to={item.path} key={index} style={{ textDecoration: 'none', color: 'inherit' }}>
                             <ListItem className={cx('chatItem', { selected: location.pathname === item.path })}>
                                 <ListItemIcon className={cx('chatIcon')}>
-                                    {React.cloneElement(item.icon, { 
-                                        sx: { color: location.pathname === item.path ? 'red' : 'inherit' }
+                                    {React.cloneElement(item.icon, {
+                                        sx: { color: location.pathname === item.path ? 'red' : 'inherit' },
                                     })}
                                 </ListItemIcon>
-                                <ListItemText 
-                                    primary={item.label} 
+                                <ListItemText
+                                    primary={item.label}
                                     className={cx({ selectedText: location.pathname === item.path })}
                                 />
                             </ListItem>

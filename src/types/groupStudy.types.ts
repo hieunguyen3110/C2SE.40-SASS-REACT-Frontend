@@ -17,9 +17,12 @@ export interface ChatMessage {
     content: string;
 }
 
+ 
 export interface GroupResponse {
     // Add member properties
+    temp: string;
 }
+ 
 
 export interface CreateGroupRequest {
     groupName: string;

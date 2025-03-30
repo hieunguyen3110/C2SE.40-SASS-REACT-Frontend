@@ -1,1 +1,1 @@
-export { default as SearchUserComponents } from "./SearchUserComponents";
+export { default as SearchUserComponents } from './SearchUserComponents';

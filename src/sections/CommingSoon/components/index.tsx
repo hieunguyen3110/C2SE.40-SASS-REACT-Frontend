@@ -1,1 +1,1 @@
-export {default as CommingSoonComponent} from "./CommingSoonComponent";
+export { default as CommingSoonComponent } from './CommingSoonComponent';

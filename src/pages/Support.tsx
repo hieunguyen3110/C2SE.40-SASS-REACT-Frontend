@@ -1,5 +1,5 @@
-import { Helmet } from "react-helmet-async";
-import { SupportView } from "../sections/Support/view";
+import { Helmet } from 'react-helmet-async';
+import { SupportView } from '../sections/Support/view';
 
 export default function SupportPage() {
     return (

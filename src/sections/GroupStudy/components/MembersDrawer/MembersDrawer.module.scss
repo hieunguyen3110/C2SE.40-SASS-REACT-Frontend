@@ -9,7 +9,7 @@
     transition: all 0.3s ease-in-out;
     position: relative;
     flex-shrink: 0;
-    
+
     .sidebarHeader {
         display: flex;
         justify-content: space-between;
@@ -17,21 +17,21 @@
         padding: 16px;
         border-bottom: 1px solid #e0e0e0;
     }
-    
+
     .searchMembers {
         padding: 16px;
     }
-    
+
     .membersCategories {
         overflow-y: auto;
-        
+
         .categoryTitle {
             padding: 16px 16px 8px;
             color: #757575;
             font-weight: 600;
             font-size: 12px;
         }
-        
+
         .memberItem {
             padding: 8px 16px;
         }

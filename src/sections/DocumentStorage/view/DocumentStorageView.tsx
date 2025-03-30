@@ -1,11 +1,11 @@
-import { DocumentStorageComponents } from "../components";
+import { DocumentStorageComponents } from '../components';
 
 const DocumentStorageView = () => {
-  return (
-    <>
-      <DocumentStorageComponents />
-    </>
-  );
+    return (
+        <>
+            <DocumentStorageComponents />
+        </>
+    );
 };
 
 export default DocumentStorageView;

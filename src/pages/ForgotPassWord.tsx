@@ -1,9 +1,9 @@
-import { ForgotPassWordView } from "../sections/ForgotPassWord/view";
+import { ForgotPassWordView } from '../sections/ForgotPassWord/view';
 
 export default function ForgotPassWord() {
-  return (
-    <>
-      <ForgotPassWordView />
-    </>
-  );
+    return (
+        <>
+            <ForgotPassWordView />
+        </>
+    );
 }

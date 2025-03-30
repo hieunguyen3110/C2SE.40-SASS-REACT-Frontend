@@ -1,1 +1,1 @@
-export { default as DocumentHeader } from "./DocumentHeader";
+export { default as DocumentHeader } from './DocumentHeader';

@@ -1,8 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-    IShareDocument,
-    ShareDocument,
-} from "../../services/DocumentSharesAPI/DocumentSharesAPI";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { IShareDocument, ShareDocument } from '../../services/DocumentSharesAPI/DocumentSharesAPI';
 
 interface InitialStateStyles {
     Loading: boolean;
@@ -11,7 +8,7 @@ interface InitialStateStyles {
 }
 
 export const shareDocument = createAsyncThunk<IShareDocument, IShareDocument>(
-    "share/shareDocument",
+    'share/shareDocument',
     async (data: IShareDocument) => {
         try {
             const response = await ShareDocument(data);
@@ -19,17 +16,17 @@ export const shareDocument = createAsyncThunk<IShareDocument, IShareDocument>(
         } catch (error: any) {
             throw Error(error.message);
         }
-    }
+    },
 );
 
 const initialState: InitialStateStyles = {
     Loading: false,
-    Error: "",
+    Error: '',
     Share: undefined,
 };
 
 const documentSharesSlice = createSlice({
-    name: "documentShares",
+    name: 'documentShares',
     initialState,
     reducers: {},
     extraReducers(builder) {

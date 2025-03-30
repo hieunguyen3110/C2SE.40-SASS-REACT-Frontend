@@ -1,1 +1,1 @@
-export { default as HeaderUploadFile } from "./HeaderUploadFile";
+export { default as HeaderUploadFile } from './HeaderUploadFile';

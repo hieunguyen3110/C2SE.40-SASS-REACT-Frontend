@@ -1,22 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import * as React from "react";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Checkbox from "@mui/material/Checkbox";
-import { customFormatDate } from "../../../../utils/formatDate";
-import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../../redux/store";
-import { trainChatbotAction } from "../../../../redux/ChatBotSlice/ChatBotSlice";
-import Loader from "../../../../components/Loader/Loader";
-import { toast } from "react-toastify";
-import Pagination from "@mui/material/Pagination";
+ 
+import * as React from 'react';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Checkbox from '@mui/material/Checkbox';
+import { customFormatDate } from '../../../../utils/formatDate';
+import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../../redux/store';
+import { trainChatbotAction } from '../../../../redux/ChatBotSlice/ChatBotSlice';
+import Loader from '../../../../components/Loader/Loader';
+import { toast } from 'react-toastify';
+import Pagination from '@mui/material/Pagination';
 interface IDataTable {
     columns: any[];
     rows: any[];
@@ -40,9 +40,7 @@ export default function DataTable({
 }: IDataTable) {
     const dispatch = useAppDispatch();
     const { loading } = useAppSelector((state) => state.chatbot);
-    const { loading: countLoading } = useAppSelector(
-        (state) => state.adminDashboard
-    );
+    const { loading: countLoading } = useAppSelector((state) => state.adminDashboard);
 
     const allSelected = selectedDocuments.length === rows.length;
 
@@ -54,29 +52,19 @@ export default function DataTable({
         if (allSelected) {
             setSelectedDocuments([]);
         } else {
-            setSelectedDocuments(
-                rows.map((item) =>
-                    topic === "user" ? item.accountId : item.docId
-                )
-            );
+            setSelectedDocuments(rows.map((item) => (topic === 'user' ? item.accountId : item.docId)));
         }
     };
 
     const handleCheckboxChange = (id: number) => {
         if (selectedDocuments.includes(id)) {
-            setSelectedDocuments(
-                selectedDocuments.filter((accountId) => accountId !== id)
-            );
+            setSelectedDocuments(selectedDocuments.filter((accountId) => accountId !== id));
         } else {
             setSelectedDocuments([...selectedDocuments, id]);
         }
     };
 
-    const handleClickTrainDocument = (
-        fileName: string,
-        filePath: string,
-        isCheck: boolean
-    ) => {
+    const handleClickTrainDocument = (fileName: string, filePath: string, isCheck: boolean) => {
         if (isCheck) {
             const data = [
                 {
@@ -86,7 +74,7 @@ export default function DataTable({
             ];
             dispatch(trainChatbotAction(data));
         } else {
-            toast.info("Tài liệu chưa được kiểm tra");
+            toast.info('Tài liệu chưa được kiểm tra');
         }
     };
     return (
@@ -94,19 +82,14 @@ export default function DataTable({
             {loading ? (
                 <Loader height={20} />
             ) : (
-                <Paper sx={{ width: "100%", overflow: "hidden" }}>
+                <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                     <TableContainer sx={{ maxHeight: 440 }}>
                         <Table stickyHeader aria-label="sticky table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell
-                                        align="center"
-                                        style={{ minWidth: 30 }}>
+                                    <TableCell align="center" style={{ minWidth: 30 }}>
                                         Tất cả
-                                        <Checkbox
-                                            checked={allSelected}
-                                            onChange={handleSelectAllChange}
-                                        />
+                                        <Checkbox checked={allSelected} onChange={handleSelectAllChange} />
                                     </TableCell>
                                     {columns.map((column) => (
                                         <TableCell
@@ -114,77 +97,49 @@ export default function DataTable({
                                             align={column.align}
                                             style={{
                                                 minWidth: column.minWidth,
-                                            }}>
+                                            }}
+                                        >
                                             {column.label}
                                         </TableCell>
                                     ))}
-                                    <TableCell
-                                        align="center"
-                                        style={{ minWidth: 100 }}>
-                                        {topic === "user" ? "Xem" : "Train"}
+                                    <TableCell align="center" style={{ minWidth: 100 }}>
+                                        {topic === 'user' ? 'Xem' : 'Train'}
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {rows.map((row, index) => {
                                     return (
-                                        <TableRow
-                                            hover
-                                            role="checkbox"
-                                            tabIndex={-1}
-                                            key={index}>
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                                             <TableCell align="center">
                                                 <Checkbox
                                                     checked={selectedDocuments.includes(
-                                                        topic === "user"
-                                                            ? row.accountId
-                                                            : row.docId
+                                                        topic === 'user' ? row.accountId : row.docId,
                                                     )}
                                                     onChange={() =>
                                                         handleCheckboxChange(
-                                                            topic === "user"
-                                                                ? row.accountId
-                                                                : row.docId
+                                                            topic === 'user' ? row.accountId : row.docId,
                                                         )
                                                     }
                                                 />
                                             </TableCell>
                                             {columns.map((column, index) => {
                                                 let value = row[column.id];
-                                                if (
-                                                    typeof value === "boolean"
-                                                ) {
+                                                if (typeof value === 'boolean') {
                                                     return (
-                                                        <TableCell
-                                                            key={index}
-                                                            align={
-                                                                column.align
-                                                            }>
-                                                            <Checkbox
-                                                                checked={value}
-                                                            />
+                                                        <TableCell key={index} align={column.align}>
+                                                            <Checkbox checked={value} />
                                                         </TableCell>
                                                     );
                                                 } else {
-                                                    if (
-                                                        index === 1 &&
-                                                        topic === "document" &&
-                                                        row.isCheck
-                                                    ) {
-                                                        value = "✓ " + value;
+                                                    if (index === 1 && topic === 'document' && row.isCheck) {
+                                                        value = '✓ ' + value;
                                                     }
                                                     if (index === 4) {
-                                                        value =
-                                                            customFormatDate(
-                                                                value
-                                                            );
+                                                        value = customFormatDate(value);
                                                     }
                                                     return (
-                                                        <TableCell
-                                                            key={index}
-                                                            align={
-                                                                column.align
-                                                            }>
+                                                        <TableCell key={index} align={column.align}>
                                                             {value}
                                                         </TableCell>
                                                     );
@@ -193,35 +148,28 @@ export default function DataTable({
                                             <TableCell align="center">
                                                 <Link
                                                     style={{
-                                                        color: "#DC4342",
+                                                        color: '#DC4342',
                                                     }}
                                                     onClick={(e) => {
-                                                        if (
-                                                            window.location
-                                                                .pathname ===
-                                                            "/admin/documents"
-                                                        ) {
+                                                        if (window.location.pathname === '/admin/documents') {
                                                             e.preventDefault(); // prevent default link behavior
                                                             handleClickTrainDocument(
                                                                 row.fileName,
                                                                 row.filePath,
-                                                                row.isCheck
+                                                                row.isCheck,
                                                             );
                                                         }
                                                     }}
                                                     to={
-                                                        topic === "user"
+                                                        topic === 'user'
                                                             ? `/admin/user-information/${row.accountId}`
-                                                            : "/admin/documents"
-                                                    }>
-                                                    {topic === "user" ? (
+                                                            : '/admin/documents'
+                                                    }
+                                                >
+                                                    {topic === 'user' ? (
                                                         <VisibilityOutlinedIcon />
                                                     ) : (
-                                                        <>
-                                                            {!row.isTrain && (
-                                                                <SmartToyOutlinedIcon />
-                                                            )}
-                                                        </>
+                                                        <>{!row.isTrain && <SmartToyOutlinedIcon />}</>
                                                     )}
                                                 </Link>
                                             </TableCell>
@@ -237,9 +185,9 @@ export default function DataTable({
             {!countLoading && (
                 <Pagination
                     sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        marginY: "16px",
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginY: '16px',
                     }}
                     count={count}
                     onChange={handleChangePage}

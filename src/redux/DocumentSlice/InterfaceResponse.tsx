@@ -22,7 +22,7 @@ export interface DocumentSearchResponse {
     facultyName: string;
 }
 
-export interface DocumentByAccountRequest{
+export interface DocumentByAccountRequest {
     email: string;
     pageSize: number;
     pageNum: number;

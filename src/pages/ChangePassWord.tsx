@@ -1,9 +1,9 @@
-import { ChangePassWordView } from "../sections/ChangePassWord/view";
+import { ChangePassWordView } from '../sections/ChangePassWord/view';
 
 export default function ChangePassWord() {
-  return (
-    <>
-      <ChangePassWordView />
-    </>
-  );
+    return (
+        <>
+            <ChangePassWordView />
+        </>
+    );
 }

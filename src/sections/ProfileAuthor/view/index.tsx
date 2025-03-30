@@ -1,1 +1,1 @@
-export { default as ProfileAuthorView } from "./ProfileAuthorView";
+export { default as ProfileAuthorView } from './ProfileAuthorView';

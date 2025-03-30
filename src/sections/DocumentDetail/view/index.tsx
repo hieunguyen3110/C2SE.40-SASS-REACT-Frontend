@@ -1,1 +1,1 @@
-export { default as DetailDocumentView } from "./DocumentDetailView";
+export { default as DetailDocumentView } from './DocumentDetailView';

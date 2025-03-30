@@ -1,30 +1,29 @@
-import SearchIcon from "@mui/icons-material/Search";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import styles from "./HeaderBottom.module.scss";
-import classnames from "classnames/bind";
-import { useState } from "react";
+import SearchIcon from '@mui/icons-material/Search';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import styles from './HeaderBottom.module.scss';
+import classnames from 'classnames/bind';
+import { useState } from 'react';
 const cx = classnames.bind(styles);
-import { Link } from "react-scroll";
-import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../../redux/store";
-
+import { Link } from 'react-scroll';
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../../redux/store';
 
 export default function HeaderBottom() {
-    const [searchValue, setSearchValue] = useState<string>("");
+    const [searchValue, setSearchValue] = useState<string>('');
     const navigate = useNavigate();
 
     const { isLogined } = useAppSelector((state) => state.authentication);
 
     const handleClick = () => {
         if (isLogined) {
-            navigate("/document/notification");
+            navigate('/document/notification');
         } else {
-            navigate("/login");
+            navigate('/login');
         }
     };
 
     return (
-        <div className={cx("header-bottom")}>
+        <div className={cx('header-bottom')}>
             <a href="/">TRANG CHỦ</a>
             <Link to="introduction" smooth={true} duration={1000}>
                 GIỚI THIỆU
@@ -51,7 +50,6 @@ export default function HeaderBottom() {
             <button onClick={handleClick}>
                 <NotificationsNoneIcon />
             </button>
-            
         </div>
     );
 }

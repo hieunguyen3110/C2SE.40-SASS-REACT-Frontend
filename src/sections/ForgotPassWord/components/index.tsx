@@ -1,1 +1,1 @@
-export { default as ForgotPassWordComponents } from "./ForgotPassWordComponents";
+export { default as ForgotPassWordComponents } from './ForgotPassWordComponents';

@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
     IChangePassWord,
     AutoLoginApi,
@@ -12,10 +12,10 @@ import {
     SendAuthOtp,
     SendOtpRequest,
     UpdatePasswordApi,
-} from "../../services/AuthenticationApi/AuthenticationApi";
-import { AxiosError } from "axios";
-import { toast } from "react-toastify";
-import { ApiResponse } from "../../types/response.type";
+} from '../../services/AuthenticationApi/AuthenticationApi';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import { ApiResponse } from '../../types/response.type';
 
 interface ILogin {
     //interface login
@@ -69,14 +69,14 @@ const initialState: InitialStateStylesLogin = {
     //initial state login
     loading: false,
     isRefresh: false,
-    Error: "",
+    Error: '',
     isLogined: false,
     isRegister: false,
-    username: "",
+    username: '',
     listRoles: [],
-    isAuthenticated: !!localStorage.getItem("accessToken"),
-    accessToken: getStorageItem("accessToken"),
-    refreshToken: getStorageItem("refreshToken"),
+    isAuthenticated: !!localStorage.getItem('accessToken'),
+    accessToken: getStorageItem('accessToken'),
+    refreshToken: getStorageItem('refreshToken'),
     otp: null,
     otpExpires: null,
     accountId: 0,
@@ -88,7 +88,7 @@ const initialState: InitialStateStylesLogin = {
 };
 
 export const LoginAction = createAsyncThunk<ApiResponse<ILoginS>, ILogin>(
-    "Authentication/LoginAction", //name login
+    'Authentication/LoginAction', //name login
     async (login: ILogin, { rejectWithValue }) => {
         try {
             const response = await LoginApi(login); //login api
@@ -97,11 +97,11 @@ export const LoginAction = createAsyncThunk<ApiResponse<ILoginS>, ILogin>(
             const error = err as AxiosError<{ message?: string }>;
             return rejectWithValue(error.message); //rejectWithValue
         }
-    }
+    },
 );
 
 export const RegisterAction = createAsyncThunk(
-    "Authentication/RegisterAction", //name register
+    'Authentication/RegisterAction', //name register
     async (register: IRegister) => {
         const values = {
             email: register.email,
@@ -116,10 +116,10 @@ export const RegisterAction = createAsyncThunk(
             const error = err as AxiosError<{ message?: string }>;
             throw Error(error.message); //throw error
         }
-    }
+    },
 );
 export const LogoutAction = createAsyncThunk(
-    "Authentication/LogoutAction", //name logout
+    'Authentication/LogoutAction', //name logout
     async () => {
         try {
             const response = await LogoutApi(); //logout api
@@ -129,26 +129,23 @@ export const LogoutAction = createAsyncThunk(
             toast.error(error.message); //toast error
             throw Error(error.message); //throw error
         }
-    }
+    },
 );
-export const AutoLoginAction = createAsyncThunk<ApiResponse<ILoginS>>(
-    "AutoLoginAction",
-    async () => {
-        try {
-            const res = await AutoLoginApi();
-            if (res) {
-                return res as unknown as ApiResponse<ILoginS>;
-            } else {
-                throw new Error("Unauthorized");
-            }
-        } catch (err: unknown) {
-            const error = err as AxiosError<{ message?: string }>;
-            throw Error(error.message); //throw error
+export const AutoLoginAction = createAsyncThunk<ApiResponse<ILoginS>>('AutoLoginAction', async () => {
+    try {
+        const res = await AutoLoginApi();
+        if (res) {
+            return res as unknown as ApiResponse<ILoginS>;
+        } else {
+            throw new Error('Unauthorized');
         }
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        throw Error(error.message); //throw error
     }
-);
+});
 export const ChangePasswordAction = createAsyncThunk(
-    "Authentication/ChangePasswordAction",
+    'Authentication/ChangePasswordAction',
     async (value: IChangePassWord) => {
         try {
             const response = await ChangePasswordAPI(value);
@@ -157,11 +154,11 @@ export const ChangePasswordAction = createAsyncThunk(
             const error = err as AxiosError<{ message?: string }>;
             throw Error(error.message);
         }
-    }
+    },
 );
 
 export const SendAuthOtpAction = createAsyncThunk<string, SendOtpRequest>(
-    "SendAuthOtpAction",
+    'SendAuthOtpAction',
     async (values: SendOtpRequest) => {
         try {
             const response = await SendAuthOtp(values); //SendAuthOtp api
@@ -170,24 +167,24 @@ export const SendAuthOtpAction = createAsyncThunk<string, SendOtpRequest>(
             const error = err as AxiosError<{ message?: string }>;
             throw Error(error.message); //throw error
         }
-    }
+    },
 );
 
-export const UpdatePasswordAction = createAsyncThunk<
-    string,
-    NewPasswordRequest
->("UpdatePasswordAction", async (data: NewPasswordRequest) => {
-    try {
-        const response = await UpdatePasswordApi(data); //UpdatePassword api
-        return response as unknown as string;
-    } catch (err: unknown) {
-        const error = err as AxiosError<{ message?: string }>;
-        throw Error(error.message); //throw error
-    }
-});
+export const UpdatePasswordAction = createAsyncThunk<string, NewPasswordRequest>(
+    'UpdatePasswordAction',
+    async (data: NewPasswordRequest) => {
+        try {
+            const response = await UpdatePasswordApi(data); //UpdatePassword api
+            return response as unknown as string;
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message?: string }>;
+            throw Error(error.message); //throw error
+        }
+    },
+);
 
 export const ClearTokenAction = createAsyncThunk<string, ClearTokenRequest>(
-    "ClearTokenAction",
+    'ClearTokenAction',
     async (data: ClearTokenRequest) => {
         try {
             const response = await ClearTokenApi(data); //UpdatePassword api
@@ -196,10 +193,10 @@ export const ClearTokenAction = createAsyncThunk<string, ClearTokenRequest>(
             const error = err as AxiosError<{ message?: string }>;
             throw Error(error.message); //throw error
         }
-    }
+    },
 );
 const AuthenticationSlice = createSlice({
-    name: "Authentication", //name slice
+    name: 'Authentication', //name slice
     initialState, //initial state
     reducers: {
         userRegister: (state) => {
@@ -219,8 +216,7 @@ const AuthenticationSlice = createSlice({
         },
 
         loginSuccess: (state, action) => {
-            const { username, listRoles, accessToken, refreshToken } =
-                action.payload;
+            const { username, listRoles, accessToken, refreshToken } = action.payload;
             state.loading = false; // Đặt loading = false khi đăng nhập thành công
             state.isLogined = true; //đăng nhập thành công
             state.isAuthenticated = true; //đăng nhập thành công
@@ -246,7 +242,7 @@ const AuthenticationSlice = createSlice({
         logout: (state) => {
             state.isAuthenticated = false; //đăng nhập thất bại
             state.isLogined = false; //đăng nhập thất bại
-            state.username = ""; //username
+            state.username = ''; //username
             state.listRoles = []; //listRoles
             state.accessToken = null; //accessToken
             state.refreshToken = null; //refreshToken
@@ -303,103 +299,81 @@ const AuthenticationSlice = createSlice({
             .addCase(ClearTokenAction.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(
-                LoginAction.fulfilled,
-                (state, action: PayloadAction<ApiResponse<ILoginS>>) => {
-                    const loginData: ILoginS = action.payload.data;
-                    state.loading = false;
-                    state.isLogined = true;
-                    state.accountId = loginData.accountId;
-                    state.listRoles = loginData.listRoles;
-                    state.username = loginData.username;
-                    state.profilePicture = loginData.profilePicture;
-                    state.follower = loginData.follower;
-                    state.following = loginData.following;
-                    state.upload = loginData.upload;
-                    state.ilogins = loginData;
-                }
-            )
+            .addCase(LoginAction.fulfilled, (state, action: PayloadAction<ApiResponse<ILoginS>>) => {
+                const loginData: ILoginS = action.payload.data;
+                state.loading = false;
+                state.isLogined = true;
+                state.accountId = loginData.accountId;
+                state.listRoles = loginData.listRoles;
+                state.username = loginData.username;
+                state.profilePicture = loginData.profilePicture;
+                state.follower = loginData.follower;
+                state.following = loginData.following;
+                state.upload = loginData.upload;
+                state.ilogins = loginData;
+            })
             .addCase(RegisterAction.fulfilled, (state) => {
                 state.loading = false;
                 state.isRegister = true;
             })
             .addCase(LogoutAction.fulfilled, (state) => {
                 state.loading = false;
-                toast.success("Logout successful");
+                toast.success('Logout successful');
                 setTimeout(() => {
-                    window.location.href = "/login";
+                    window.location.href = '/login';
                     state.isLogined = false;
-                    state.username = "";
+                    state.username = '';
                     state.listRoles = [];
                     state.accessToken = null;
                     state.refreshToken = null;
                     state.accountId = null;
                 });
             })
-            .addCase(
-                AutoLoginAction.fulfilled,
-                (state, action: PayloadAction<ApiResponse<ILoginS>>) => {
-                    state.loading = false;
-                    const loginData = action.payload.data;
-                    const isAdmin =
-                        loginData.listRoles?.length > 0 &&
-                        loginData.listRoles[0] === "ADMIN";
-                    const isAdminPath =
-                        window.location.pathname.startsWith("/admin");
+            .addCase(AutoLoginAction.fulfilled, (state, action: PayloadAction<ApiResponse<ILoginS>>) => {
+                state.loading = false;
+                const loginData = action.payload.data;
+                const isAdmin = loginData.listRoles?.length > 0 && loginData.listRoles[0] === 'ADMIN';
+                const isAdminPath = window.location.pathname.startsWith('/admin');
 
-                    if (
-                        (isAdminPath && !isAdmin) ||
-                        (!isAdminPath && isAdmin)
-                    ) {
-                        toast.error(
-                            "Bạn không có quyền truy cập vào trang này"
-                        );
-                        setTimeout(() => {
-                            window.location.href = isAdmin
-                                ? "/admin/dashboard"
-                                : "/document";
-                        }, 2000);
-                        return;
-                    }
-                    state.isLogined = true;
-                    state.accountId = loginData.accountId;
-                    state.listRoles = loginData.listRoles;
-                    state.username = loginData.username;
-                    state.profilePicture = loginData.profilePicture;
-                    state.follower = loginData.follower;
-                    state.following = loginData.following;
-                    state.upload = loginData.upload;
-                    state.ilogins = loginData;
+                if ((isAdminPath && !isAdmin) || (!isAdminPath && isAdmin)) {
+                    toast.error('Bạn không có quyền truy cập vào trang này');
+                    setTimeout(() => {
+                        window.location.href = isAdmin ? '/admin/dashboard' : '/document';
+                    }, 2000);
+                    return;
                 }
-            )
+                state.isLogined = true;
+                state.accountId = loginData.accountId;
+                state.listRoles = loginData.listRoles;
+                state.username = loginData.username;
+                state.profilePicture = loginData.profilePicture;
+                state.follower = loginData.follower;
+                state.following = loginData.following;
+                state.upload = loginData.upload;
+                state.ilogins = loginData;
+            })
             .addCase(ChangePasswordAction.fulfilled, (state) => {
                 state.loading = false;
-                toast.success("Đổi mật khẩu thành công");
+                toast.success('Đổi mật khẩu thành công');
             })
-            .addCase(
-                SendAuthOtpAction.fulfilled,
-                (state, action: PayloadAction<string>) => {
-                    state.loading = false;
-                    toast.success(action.payload);
-                }
-            )
-            .addCase(
-                UpdatePasswordAction.fulfilled,
-                (state, action: PayloadAction<string>) => {
-                    state.loading = false;
-                    state.otp = null;
-                    state.otpExpires = null;
-                    window.location.href = "/login";
-                    toast.success(action.payload);
-                }
-            )
+            .addCase(SendAuthOtpAction.fulfilled, (state, action: PayloadAction<string>) => {
+                state.loading = false;
+                toast.success(action.payload);
+            })
+            .addCase(UpdatePasswordAction.fulfilled, (state, action: PayloadAction<string>) => {
+                state.loading = false;
+                state.otp = null;
+                state.otpExpires = null;
+                window.location.href = '/login';
+                toast.success(action.payload);
+            })
             .addCase(ClearTokenAction.fulfilled, (state) => {
                 state.loading = false;
                 state.otp = null;
                 state.otpExpires = null;
             })
             .addCase(LoginAction.rejected, (state) => {
-                toast.error("Email or password incorrect!");
+                toast.error('Email or password incorrect!');
                 state.loading = false;
                 state.isLogined = false;
             })
@@ -412,29 +386,28 @@ const AuthenticationSlice = createSlice({
                 state.loading = false;
                 state.isLogined = false;
                 toast.error(action.error.message);
-                state.Error = action.error.message || "Logout failed";
+                state.Error = action.error.message || 'Logout failed';
             })
             .addCase(AutoLoginAction.rejected, (state, action) => {
                 // state.loading = false;
                 state.isLogined = false;
-                state.Error = action.error.message || "Auto login failed";
+                state.Error = action.error.message || 'Auto login failed';
             })
             .addCase(ChangePasswordAction.rejected, (state) => {
                 state.loading = false;
-                toast.error("Đổi mật khẩu thất bại");
+                toast.error('Đổi mật khẩu thất bại');
             })
             .addCase(SendAuthOtpAction.rejected, (state, action) => {
                 state.loading = false;
-                state.Error = action.error.message || "Send otp failed";
+                state.Error = action.error.message || 'Send otp failed';
             })
             .addCase(UpdatePasswordAction.rejected, (state, action) => {
                 state.loading = false;
-                state.Error =
-                    action.error.message || "Update new password failed";
+                state.Error = action.error.message || 'Update new password failed';
             })
             .addCase(ClearTokenAction.rejected, (state, action) => {
                 state.loading = false;
-                state.Error = action.error.message || "Clear token failed";
+                state.Error = action.error.message || 'Clear token failed';
             });
     },
 });

@@ -10,7 +10,7 @@ export default function GroupCreationView() {
             <Link to={'/document/group-study'} className={cx('back-link')}>
                 Quay lại
             </Link>
-            <GroupCreationForm />   
+            <GroupCreationForm />
         </div>
     );
 }

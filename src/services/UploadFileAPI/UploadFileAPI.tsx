@@ -1,94 +1,86 @@
-import { AxiosError } from "axios";
-import { axiosInstance } from "../../utils/AxiosInterceptor";
-import { toast } from "react-toastify";
+import { AxiosError } from 'axios';
+import { axiosInstance } from '../../utils/AxiosInterceptor';
+import { toast } from 'react-toastify';
 
 interface ApiPostFile {
-  file: File;
-  title: string;
-  description: string;
-  type: string;
-  subjectCode: string;
-  facultyName: string;
+    file: File;
+    title: string;
+    description: string;
+    type: string;
+    subjectCode: string;
+    facultyName: string;
 }
 export interface SearchFaculty {
-  facultyId: number;
-  facultyName: string;
+    facultyId: number;
+    facultyName: string;
 }
 export interface SearchFolder {
-  id: number;
-  folderName: string;
+    id: number;
+    folderName: string;
 }
 export interface SearchSubject {
-  subjectCode: string;
-  subjectName: string;
+    subjectCode: string;
+    subjectName: string;
 }
 export const postFile = async (data: ApiPostFile) => {
-  const formData = new FormData();
-  formData.append("file", data.file);
-  formData.append("title", data.title);
-  formData.append("description", data.description);
-  formData.append("type", data.type);
-  formData.append("subjectCode", data.subjectCode);
-  formData.append("facultyName", data.facultyName);
-  console.log("formData", formData);
+    const formData = new FormData();
+    formData.append('file', data.file);
+    formData.append('title', data.title);
+    formData.append('description', data.description);
+    formData.append('type', data.type);
+    formData.append('subjectCode', data.subjectCode);
+    formData.append('facultyName', data.facultyName);
+    console.log('formData', formData);
 
-  try {
-    const res = await axiosInstance.post("/document/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return res.data;
-  } catch (err: unknown) {
-    const error = err as AxiosError<{ message?: string }>;
-    const errorMessage = error.response?.data?.message;
-    toast.error(errorMessage);
-    throw new Error(errorMessage);
-  }
+    try {
+        const res = await axiosInstance.post('/document/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return res.data;
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage);
+        throw new Error(errorMessage);
+    }
 };
 export const searchFacultyAPI = async (data: string) => {
-  try {
-    const res = await axiosInstance.get<SearchFaculty[]>(
-      `/document/search/faculty?facultyName=${data}`
-    );
-    return res.data;
-  } catch (err: unknown) {
-    const error = err as AxiosError<{ message?: string }>;
-    const errorMessage =
-      error.response?.data?.message ||
-      "An error occurred while searching faculty";
-    toast.error(errorMessage);
-    throw new Error(errorMessage);
-  }
+    try {
+        const res = await axiosInstance.get<SearchFaculty[]>(`/document/search/faculty?facultyName=${data}`);
+        return res.data;
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        const errorMessage = error.response?.data?.message || 'An error occurred while searching faculty';
+        toast.error(errorMessage);
+        throw new Error(errorMessage);
+    }
 };
 
 export const searchFolderAPI = async () => {
-  try {
-    const res = await axiosInstance.get(`/document/folder/all`);
-    return res.data;
-  } catch (err: unknown) {
-    const error = err as AxiosError<{ message?: string }>;
-    const errorMessage =
-      error.response?.data?.message ||
-      "An error occurred while searching faculty";
-    toast.error(errorMessage);
-    throw new Error(errorMessage);
-  }
+    try {
+        const res = await axiosInstance.get(`/document/folder/all`);
+        return res.data;
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        const errorMessage = error.response?.data?.message || 'An error occurred while searching faculty';
+        toast.error(errorMessage);
+        throw new Error(errorMessage);
+    }
 };
 
 export const searchSubject = async (data: string) => {
-  try {
-    const res = await axiosInstance.get<SearchSubject[]>(
-      `/document/search/subject?subject=${encodeURIComponent(data)}`
-    );
+    try {
+        const res = await axiosInstance.get<SearchSubject[]>(
+            `/document/search/subject?subject=${encodeURIComponent(data)}`,
+        );
 
-    return res.data;
-  } catch (err: unknown) {
-    const error = err as AxiosError<{ message?: string }>;
-    const errorMessage =
-      error.response?.data?.message ||
-      "An error occurred while searching faculty";
-    toast.error(errorMessage);
-    throw new Error(errorMessage);
-  }
+        return res.data;
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        const errorMessage = error.response?.data?.message || 'An error occurred while searching faculty';
+        toast.error(errorMessage);
+        throw new Error(errorMessage);
+    }
 };

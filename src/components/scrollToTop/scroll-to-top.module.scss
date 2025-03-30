@@ -1,4 +1,4 @@
-.button-scroll-top{
+.button-scroll-top {
     position: fixed;
     bottom: 7%;
     right: 5%;
@@ -13,22 +13,22 @@
     z-index: 99;
     transition: all 0.25s ease-in-out;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    &>svg{
+    & > svg {
         width: 40px;
         height: 40px;
         margin: 0 auto;
         color: var(--text-main-color);
     }
-    &:hover{
+    &:hover {
         background-color: #dc4242cf;
     }
 }
 
-@media screen and (max-width: 768px){
-    .button-scroll-top{
+@media screen and (max-width: 768px) {
+    .button-scroll-top {
         width: 40px;
         height: 40px;
-        &>svg{
+        & > svg {
             width: 20px;
             height: 20px;
         }

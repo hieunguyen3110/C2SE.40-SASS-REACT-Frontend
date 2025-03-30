@@ -1,1 +1,1 @@
-export { default as AdminHomeView } from "./AdminHomeView";
+export { default as AdminHomeView } from './AdminHomeView';

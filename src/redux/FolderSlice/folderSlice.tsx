@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+ 
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
     CreateFolder,
     DeleteFolder,
@@ -7,15 +7,12 @@ import {
     GetFolderById,
     GetPopularFolders,
     UpdateFolder,
-} from "../../services/FolderAPI/FolderAPI.tsx";
+} from '../../services/FolderAPI/FolderAPI.tsx';
 
-export const getAllFolders = createAsyncThunk<any>(
-    "folder/getAllFolders",
-    async () => {
-        const res = await GetAllFolders();
-        return res;
-    }
-);
+export const getAllFolders = createAsyncThunk<any>('folder/getAllFolders', async () => {
+    const res = await GetAllFolders();
+    return res;
+});
 
 interface FolderCreateDTO {
     folderName: string;
@@ -29,59 +26,45 @@ interface FolderUpdateDTO {
 }
 
 export const createFolder = createAsyncThunk<any, FolderCreateDTO>(
-    "folder/createFolder",
+    'folder/createFolder',
     async (params: { folderName: string; description: string }) => {
         const res = await CreateFolder(params.folderName, params.description);
         return res;
-    }
+    },
 );
 
-export const getFolderById = createAsyncThunk<any, number>(
-    "folder/getFolderById",
-    async (id: number) => {
-        const res = await GetFolderById(id);
-        return res;
-    }
-);
+export const getFolderById = createAsyncThunk<any, number>('folder/getFolderById', async (id: number) => {
+    const res = await GetFolderById(id);
+    return res;
+});
 
 export const updateFolder = createAsyncThunk<any, FolderUpdateDTO>(
-    "folder/updateFolder",
-    async (params: {
-        folderId: number;
-        folderName: string;
-        description: string;
-    }) => {
-        const res = await UpdateFolder(
-            params.folderId,
-            params.folderName,
-            params.description
-        );
+    'folder/updateFolder',
+    async (params: { folderId: number; folderName: string; description: string }) => {
+        const res = await UpdateFolder(params.folderId, params.folderName, params.description);
         return res;
-    }
+    },
 );
 
-export const deleteFolder = createAsyncThunk<any, number>(
-    "folder/deleteFolder",
-    async (id: number) => {
+export const deleteFolder = createAsyncThunk<any, number>('folder/deleteFolder', async (id: number) => {
+    try {
+        const response = await DeleteFolder(id);
+        return response;
+    } catch (err: any) {
+        throw Error(err.message);
+    }
+});
+
+export const getPopularFolders = createAsyncThunk<any, { page: number; size: number }>(
+    'folder/getPopularFolders',
+    async ({ page, size }: { page: number; size: number }) => {
         try {
-            const response = await DeleteFolder(id);
-            return response;
-        } catch (err: any) {
-            throw Error(err.message);
-        }
-    }
-);
-
-export const getPopularFolders = createAsyncThunk<any, {page: number, size: number}>(
-    "folder/getPopularFolders",
-    async ({page, size}: {page: number, size: number}) => {
-        try {   
             const response = await GetPopularFolders(page, size);
             return response;
         } catch (err: any) {
             throw Error(err.message);
         }
-    }
+    },
 );
 
 interface InitialStateStyles {
@@ -94,18 +77,18 @@ const initialState: InitialStateStyles = {
     loading: false,
     error: null,
     data: [], // Hoặc dữ liệu mặc định
-    successMessage: "",
+    successMessage: '',
 };
 
 const folderSlice = createSlice({
-    name: "folder",
+    name: 'folder',
     initialState,
     reducers: {
         clearError: (state) => {
             state.error = null;
         },
         clearMessage: (state) => {
-            state.successMessage = "";
+            state.successMessage = '';
         },
     },
     extraReducers(builder) {
@@ -120,7 +103,7 @@ const folderSlice = createSlice({
             })
             .addCase(createFolder.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message || "An error occurred";
+                state.error = action.error.message || 'An error occurred';
             })
             .addCase(updateFolder.pending, (state) => {
                 state.loading = true;
@@ -132,7 +115,7 @@ const folderSlice = createSlice({
             })
             .addCase(updateFolder.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message || "An error occurred";
+                state.error = action.error.message || 'An error occurred';
             })
             .addCase(getFolderById.pending, (state) => {
                 state.loading = true;
@@ -144,7 +127,7 @@ const folderSlice = createSlice({
             })
             .addCase(getFolderById.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message || "An error occurred";
+                state.error = action.error.message || 'An error occurred';
             })
             .addCase(getAllFolders.pending, (state) => {
                 state.loading = true;
@@ -156,7 +139,7 @@ const folderSlice = createSlice({
             })
             .addCase(getAllFolders.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message || "An error occurred";
+                state.error = action.error.message || 'An error occurred';
             })
             .addCase(deleteFolder.pending, (state) => {
                 state.loading = true;
@@ -164,11 +147,11 @@ const folderSlice = createSlice({
             })
             .addCase(deleteFolder.fulfilled, (state) => {
                 state.loading = false;
-                state.successMessage = "Xoá thư mục thành công!";
+                state.successMessage = 'Xoá thư mục thành công!';
             })
             .addCase(deleteFolder.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message || "An error occurred";
+                state.error = action.error.message || 'An error occurred';
             })
             .addCase(getPopularFolders.pending, (state) => {
                 state.loading = true;
@@ -180,7 +163,7 @@ const folderSlice = createSlice({
             })
             .addCase(getPopularFolders.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message || "An error occurred";
+                state.error = action.error.message || 'An error occurred';
             });
     },
 });

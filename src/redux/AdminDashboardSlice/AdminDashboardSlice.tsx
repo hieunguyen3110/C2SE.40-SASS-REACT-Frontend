@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+ 
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
     ApproveDocuments,
     ApproveUsers,
@@ -9,7 +9,7 @@ import {
     GetDocumentsForAdmin,
     GetStatsForAdmin,
     GetUsersForAdmin,
-} from "../../services/AdminDashboardAPI/AdminDashboardAPI";
+} from '../../services/AdminDashboardAPI/AdminDashboardAPI';
 
 interface Params {
     page: number;
@@ -17,7 +17,7 @@ interface Params {
 }
 
 export const getDocumentsForAdmin = createAsyncThunk<any, Params>(
-    "adminDashboard/getDocuments",
+    'adminDashboard/getDocuments',
     async ({ page, size }) => {
         try {
             const res = await GetDocumentsForAdmin(page, size);
@@ -25,92 +25,71 @@ export const getDocumentsForAdmin = createAsyncThunk<any, Params>(
         } catch (error: any) {
             throw new Error(error.message);
         }
-    }
+    },
 );
 
-export const getUsersForAdmin = createAsyncThunk<any, Params>(
-    "adminDashboard/getUsers",
-    async ({ page, size }) => {
-        try {
-            const res = await GetUsersForAdmin(page, size);
-            return res;
-        } catch (error: any) {
-            throw new Error(error.message);
-        }
+export const getUsersForAdmin = createAsyncThunk<any, Params>('adminDashboard/getUsers', async ({ page, size }) => {
+    try {
+        const res = await GetUsersForAdmin(page, size);
+        return res;
+    } catch (error: any) {
+        throw new Error(error.message);
     }
-);
+});
 
-export const getStatsForAdmin = createAsyncThunk<any>(
-    "adminDashboard/getStats",
-    async () => {
-        try {
-            const res = await GetStatsForAdmin();
-            return res;
-        } catch (error: any) {
-            throw new Error(error.message);
-        }
+export const getStatsForAdmin = createAsyncThunk<any>('adminDashboard/getStats', async () => {
+    try {
+        const res = await GetStatsForAdmin();
+        return res;
+    } catch (error: any) {
+        throw new Error(error.message);
     }
-);
+});
 
-export const deleteUsers = createAsyncThunk<any, any[]>(
-    "adminDashboard/deleteUsers",
-    async (accountIds) => {
-        try {
-            const res = await DeleteUsers(accountIds);
-            return res;
-        } catch (error: any) {
-            throw new Error(error.message);
-        }
+export const deleteUsers = createAsyncThunk<any, any[]>('adminDashboard/deleteUsers', async (accountIds) => {
+    try {
+        const res = await DeleteUsers(accountIds);
+        return res;
+    } catch (error: any) {
+        throw new Error(error.message);
     }
-);
+});
 
-export const deleteDocuments = createAsyncThunk<any, any[]>(
-    "adminDashboard/deleteDocuments",
-    async (accountIds) => {
-        try {
-            const res = await DeleteDocuments(accountIds);
-            return res;
-        } catch (error: any) {
-            throw new Error(error.message);
-        }
+export const deleteDocuments = createAsyncThunk<any, any[]>('adminDashboard/deleteDocuments', async (accountIds) => {
+    try {
+        const res = await DeleteDocuments(accountIds);
+        return res;
+    } catch (error: any) {
+        throw new Error(error.message);
     }
-);
+});
 
-export const approveUsers = createAsyncThunk<any, any[]>(
-    "adminDashboard/approveUsers",
-    async (accountIds) => {
-        try {
-            const res = await ApproveUsers(accountIds);
-            return res;
-        } catch (error: any) {
-            throw new Error(error.message);
-        }
+export const approveUsers = createAsyncThunk<any, any[]>('adminDashboard/approveUsers', async (accountIds) => {
+    try {
+        const res = await ApproveUsers(accountIds);
+        return res;
+    } catch (error: any) {
+        throw new Error(error.message);
     }
-);
+});
 
-export const approveDocuments = createAsyncThunk<any, any[]>(
-    "adminDashboard/approveDocuments",
-    async (documentIds) => {
-        try {
-            const res = await ApproveDocuments(documentIds);
-            return res;
-        } catch (error: any) {
-            throw new Error(error.message);
-        }
+export const approveDocuments = createAsyncThunk<any, any[]>('adminDashboard/approveDocuments', async (documentIds) => {
+    try {
+        const res = await ApproveDocuments(documentIds);
+        return res;
+    } catch (error: any) {
+        throw new Error(error.message);
     }
-);
+});
 
-export const checkDocument = createAsyncThunk<any, number>(
-    "adminDashboard/checkDocument",
-    async (documentId) => {
-        try {
-            const res = await CheckDocument(documentId);
-            return res;
-        } catch (error: any) {
-            throw new Error(error.message);
-        }
+export const checkDocument = createAsyncThunk<any, number>('adminDashboard/checkDocument', async (documentId) => {
+    try {
+        const res = await CheckDocument(documentId);
+        return res;
+    } catch (error: any) {
+        throw new Error(error.message);
     }
-);
+});
 
 interface InitialStateStyles {
     loading: boolean;
@@ -123,22 +102,22 @@ interface InitialStateStyles {
 
 const initialState: InitialStateStyles = {
     loading: false,
-    error: "",
+    error: '',
     users: [],
     documents: [],
     data: [],
-    successMessage: "",
+    successMessage: '',
 };
 
 export const AdminDashboardSlice = createSlice({
-    name: "adminDashboard",
+    name: 'adminDashboard',
     initialState,
     reducers: {
         clearError: (state) => {
-            state.error = "";
+            state.error = '';
         },
         clearMessage: (state) => {
-            state.successMessage = "";
+            state.successMessage = '';
         },
     },
     extraReducers(builder) {
@@ -152,9 +131,7 @@ export const AdminDashboardSlice = createSlice({
             })
             .addCase(getDocumentsForAdmin.rejected, (state, action) => {
                 state.loading = false;
-                state.error =
-                    action.error.message ||
-                    "error when i call api get documents for admin!";
+                state.error = action.error.message || 'error when i call api get documents for admin!';
             })
             .addCase(getUsersForAdmin.pending, (state) => {
                 state.loading = true;
@@ -165,9 +142,7 @@ export const AdminDashboardSlice = createSlice({
             })
             .addCase(getUsersForAdmin.rejected, (state, action) => {
                 state.loading = false;
-                state.error =
-                    action.error.message ||
-                    "error when i call api get users for admin!";
+                state.error = action.error.message || 'error when i call api get users for admin!';
             })
             .addCase(getStatsForAdmin.pending, (state) => {
                 state.loading = true;
@@ -178,72 +153,62 @@ export const AdminDashboardSlice = createSlice({
             })
             .addCase(getStatsForAdmin.rejected, (state, action) => {
                 state.loading = false;
-                state.error =
-                    action.error.message ||
-                    "error when i call api get stats for admin!";
+                state.error = action.error.message || 'error when i call api get stats for admin!';
             })
             .addCase(deleteUsers.pending, (state) => {
                 state.loading = true;
             })
             .addCase(deleteUsers.fulfilled, (state) => {
                 state.loading = false;
-                state.successMessage = "Xoá thành công!";
+                state.successMessage = 'Xoá thành công!';
             })
             .addCase(deleteUsers.rejected, (state, action) => {
                 state.loading = false;
-                state.error =
-                    action.error.message ||
-                    "error when i call api get documents for admin!";
+                state.error = action.error.message || 'error when i call api get documents for admin!';
             })
             .addCase(deleteDocuments.pending, (state) => {
                 state.loading = true;
             })
             .addCase(deleteDocuments.fulfilled, (state) => {
                 state.loading = false;
-                state.successMessage = "Xoá thành công!";
+                state.successMessage = 'Xoá thành công!';
             })
             .addCase(deleteDocuments.rejected, (state, action) => {
                 state.loading = false;
-                state.error =
-                    action.error.message ||
-                    "error when i call api get documents for admin!";
+                state.error = action.error.message || 'error when i call api get documents for admin!';
             })
             .addCase(approveUsers.pending, (state) => {
                 state.loading = true;
             })
             .addCase(approveUsers.fulfilled, (state) => {
                 state.loading = false;
-                state.successMessage = "Phê duyệt tài khoản thành công!";
+                state.successMessage = 'Phê duyệt tài khoản thành công!';
             })
             .addCase(approveUsers.rejected, (state, action) => {
                 state.loading = false;
-                state.error =
-                    action.error.message ||
-                    "error when i call api get stats for admin!";
+                state.error = action.error.message || 'error when i call api get stats for admin!';
             })
             .addCase(approveDocuments.pending, (state) => {
                 state.loading = true;
             })
             .addCase(approveDocuments.fulfilled, (state) => {
                 state.loading = false;
-                state.successMessage = "Phê duyệt tài liệu thành công!";
+                state.successMessage = 'Phê duyệt tài liệu thành công!';
             })
             .addCase(approveDocuments.rejected, (state) => {
                 state.loading = false;
-                state.error = "Tài liệu cần được kiểm tra!";
+                state.error = 'Tài liệu cần được kiểm tra!';
             })
             .addCase(checkDocument.pending, (state) => {
                 state.loading = true;
             })
             .addCase(checkDocument.fulfilled, (state) => {
                 state.loading = false;
-                state.successMessage = "Kiểm tra tài liệu thành công!";
+                state.successMessage = 'Kiểm tra tài liệu thành công!';
             })
             .addCase(checkDocument.rejected, (state, action) => {
                 state.loading = false;
-                state.error =
-                    action.error.message ||
-                    "Tài liệu chứa từ nhạy cảm hoặc đã được check!";
+                state.error = action.error.message || 'Tài liệu chứa từ nhạy cảm hoặc đã được check!';
             });
     },
 });

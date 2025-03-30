@@ -1,13 +1,13 @@
-import { Banner } from './Banner'
+import { Banner } from './Banner';
 import { Content } from './Content';
 
 const FAQDetailComponent = () => {
-  return (
-    <div>
-      <Banner />
-      <Content />
-    </div>
-  )
-}
+    return (
+        <div>
+            <Banner />
+            <Content />
+        </div>
+    );
+};
 
 export default FAQDetailComponent;

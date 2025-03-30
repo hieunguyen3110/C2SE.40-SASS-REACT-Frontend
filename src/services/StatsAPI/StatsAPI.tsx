@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { axiosInstance } from "../../utils/AxiosInterceptor";
+ 
+import { axiosInstance } from '../../utils/AxiosInterceptor';
 
 export const GetStatsForUser = async () => {
     try {

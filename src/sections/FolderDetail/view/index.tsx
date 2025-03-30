@@ -1,1 +1,1 @@
-export { default as FolderDetailView } from "./FolderDetailView";
+export { default as FolderDetailView } from './FolderDetailView';

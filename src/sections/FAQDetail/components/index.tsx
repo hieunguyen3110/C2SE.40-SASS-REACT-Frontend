@@ -1,1 +1,1 @@
-export {default as FAQDetailComponent} from "./FAQDetailComponent";
+export { default as FAQDetailComponent } from './FAQDetailComponent';

@@ -1,1 +1,1 @@
-export { default as ChangePassWordComponents } from "./ChangePassWordComponents";
+export { default as ChangePassWordComponents } from './ChangePassWordComponents';

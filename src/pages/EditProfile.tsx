@@ -1,11 +1,11 @@
-import EditProfileView from "../sections/EditProfile/view/EditProfileView";
+import EditProfileView from '../sections/EditProfile/view/EditProfileView';
 
 const EditProfile = () => {
-  return (
-    <>
-      <EditProfileView />
-    </>
-  );
+    return (
+        <>
+            <EditProfileView />
+        </>
+    );
 };
 
 export default EditProfile;

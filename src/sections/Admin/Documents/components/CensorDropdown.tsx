@@ -1,7 +1,7 @@
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 interface ICensorDropdown {
     censor: string;
@@ -9,11 +9,7 @@ interface ICensorDropdown {
     values: any[];
 }
 
-export default function CensorDropdown({
-    censor,
-    onDropdownChange,
-    values,
-}: ICensorDropdown) {
+export default function CensorDropdown({ censor, onDropdownChange, values }: ICensorDropdown) {
     const handleChange = (event: SelectChangeEvent) => {
         onDropdownChange(event.target.value);
     };
@@ -21,16 +17,15 @@ export default function CensorDropdown({
     return (
         <div>
             <FormControl sx={{ m: 1, minWidth: 190 }}>
-                <InputLabel id="demo-simple-select-helper-label">
-                    Phân loại theo...
-                </InputLabel>
+                <InputLabel id="demo-simple-select-helper-label">Phân loại theo...</InputLabel>
                 <Select
                     labelId="demo-simple-select-helper-label"
                     id="demo-simple-select-helper"
                     value={censor}
-                    style={{ borderRadius: "10px" }}
+                    style={{ borderRadius: '10px' }}
                     label="Phân loại theo..."
-                    onChange={handleChange}>
+                    onChange={handleChange}
+                >
                     <MenuItem value="">
                         <em>None</em>
                     </MenuItem>

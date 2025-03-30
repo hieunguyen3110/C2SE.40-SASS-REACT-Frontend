@@ -1,12 +1,12 @@
 // import { useParams } from "react-router-dom";
-import { ProfileAuthorComponent } from "../components";
+import { ProfileAuthorComponent } from '../components';
 
 const ProfileAuthorView = () => {
-  return (
-    <>
-      <ProfileAuthorComponent  />
-    </>
-  );
+    return (
+        <>
+            <ProfileAuthorComponent />
+        </>
+    );
 };
 
 export default ProfileAuthorView;

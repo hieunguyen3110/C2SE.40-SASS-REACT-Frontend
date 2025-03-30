@@ -1,11 +1,11 @@
-import classNames from "classnames/bind";
-import styles from "./FolderDirectory.module.scss";
+import classNames from 'classnames/bind';
+import styles from './FolderDirectory.module.scss';
 const cx = classNames.bind(styles);
 
-import Carousel from "react-multi-carousel";
-import FolderSpecialIcon from "@mui/icons-material/FolderSpecial";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
-import "react-multi-carousel/lib/styles.css";
+import Carousel from 'react-multi-carousel';
+import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import 'react-multi-carousel/lib/styles.css';
 
 // import { useState } from "react";
 // import logoTitle from "../../../../assets/images/Folder.png";
@@ -14,16 +14,16 @@ import "react-multi-carousel/lib/styles.css";
 // import logoNumberDocs from "../../../../assets/images/File_dock.png";
 // import logoNumberStudent from "../../../../assets/images/User_alt.png";
 // import { Button } from "../../../../components/Button";
-import { useNavigate } from "react-router-dom";
-import Loader from "../../../../components/Loader/Loader";
-import { truncateTextWithLength } from "../../../../utils/truncateText";
+import { useNavigate } from 'react-router-dom';
+import Loader from '../../../../components/Loader/Loader';
+import { truncateTextWithLength } from '../../../../utils/truncateText';
 
 export default function FolderDirectory({ data }: any) {
     const navigate = useNavigate();
 
     return (
-        <div className={cx("folder-directory")}>
-            <div className={cx("directory-title")}>
+        <div className={cx('folder-directory')}>
+            <div className={cx('directory-title')}>
                 <h2>THƯ MỤC CỦA TÔI</h2>
             </div>
             {Array.isArray(data) ? (
@@ -32,7 +32,7 @@ export default function FolderDirectory({ data }: any) {
                     arrows
                     autoPlaySpeed={3000}
                     centerMode={true}
-                    className={cx("carousel")}
+                    className={cx('carousel')}
                     containerClass="container"
                     dotListClass=""
                     draggable
@@ -62,25 +62,18 @@ export default function FolderDirectory({ data }: any) {
                     showDots={false}
                     sliderClass=""
                     slidesToSlide={4}
-                    swipeable>
+                    swipeable
+                >
                     {data.map((folder: any, index) => (
-                        <div key={index} className={cx("popular-folder")}>
-                            <FolderSpecialIcon sx={{ color: "#f36a1c" }} />
-                            <h3>
-                                {truncateTextWithLength(folder.folderName, 14)}
-                            </h3>
+                        <div key={index} className={cx('popular-folder')}>
+                            <FolderSpecialIcon sx={{ color: '#f36a1c' }} />
+                            <h3>{truncateTextWithLength(folder.folderName, 14)}</h3>
                             <p>{folder.subjectCode}</p>
                             <p>by {folder.ownerName}</p>
                             <p>
-                                <InsertDriveFileIcon /> {folder.documentCount}{" "}
-                                documents
+                                <InsertDriveFileIcon /> {folder.documentCount} documents
                             </p>
-                            <button
-                                onClick={() =>
-                                    navigate(
-                                        `/document/folder/${folder.folderId}`
-                                    )
-                                }>
+                            <button onClick={() => navigate(`/document/folder/${folder.folderId}`)}>
                                 Xem chi tiết
                             </button>
                         </div>

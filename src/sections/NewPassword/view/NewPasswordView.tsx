@@ -1,11 +1,11 @@
-import { NewPasswordComponents } from "../components";
+import { NewPasswordComponents } from '../components';
 
 const NewPasswordView = () => {
-  return (
-    <>
-      <NewPasswordComponents />
-    </>
-  );
+    return (
+        <>
+            <NewPasswordComponents />
+        </>
+    );
 };
 
 export default NewPasswordView;

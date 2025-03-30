@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
-import { AxiosError } from "axios";
-import { axiosInstance } from "../../utils/AxiosInterceptor";
-import { DocumentByAccountRequest } from "../../redux/DocumentSlice/InterfaceResponse";
-import { DocumentDtos } from "../../redux/ProfileAuthorSlice/ProfileAuthorSlice";
-import { toast } from "react-toastify";
-import { GetProfileRequest } from "../ProfilePersonalAPI/ProfilePersonalAPI";
-import { ApiResponse } from "../../types/response.type";
+import { AxiosError } from 'axios';
+import { axiosInstance } from '../../utils/AxiosInterceptor';
+import { DocumentByAccountRequest } from '../../redux/DocumentSlice/InterfaceResponse';
+import { DocumentDtos } from '../../redux/ProfileAuthorSlice/ProfileAuthorSlice';
+import { toast } from 'react-toastify';
+import { GetProfileRequest } from '../ProfilePersonalAPI/ProfilePersonalAPI';
+import { ApiResponse } from '../../types/response.type';
 
 // export interface DocumentStorage {
 //   saveId: number;
@@ -64,9 +64,7 @@ export const GetDocumentByID = async (id: number) => {
 //   }
 export const GetAllDocuments = async (size: number) => {
     try {
-        const res: any = await axiosInstance.get(
-            "/document/document/all" + "?size=" + size
-        );
+        const res: any = await axiosInstance.get('/document/document/all' + '?size=' + size);
         return res.data.content;
     } catch (error: any) {
         throw new Error(error.message);
@@ -100,12 +98,10 @@ export const GetDocumentByFolder = async (folder: string) => {
     }
 };
 
-export const FindAllDocumentByEmailAPI = async (
-    data: DocumentByAccountRequest
-) => {
+export const FindAllDocumentByEmailAPI = async (data: DocumentByAccountRequest) => {
     try {
         const res = await axiosInstance.get(
-            `/document/document/account?email=${data.email}&pageNum=${data.pageNum}&pageSize=${data.pageSize}`
+            `/document/document/account?email=${data.email}&pageNum=${data.pageNum}&pageSize=${data.pageSize}`,
         );
         return res.data as unknown as DocumentDtos[];
     } catch (error: any) {
@@ -113,12 +109,10 @@ export const FindAllDocumentByEmailAPI = async (
     }
 };
 
-export const AllDocumentPersonalByEmailAPI = async (
-    data: DocumentByAccountRequest
-) => {
+export const AllDocumentPersonalByEmailAPI = async (data: DocumentByAccountRequest) => {
     try {
         const res = await axiosInstance.get(
-            `/document/document/account?email=${data.email}&pageNum=${data.pageNum}&pageSize=${data.pageSize}`
+            `/document/document/account?email=${data.email}&pageNum=${data.pageNum}&pageSize=${data.pageSize}`,
         );
         return res.data as unknown as GetProfileRequest;
     } catch (error: any) {
@@ -162,7 +156,7 @@ export const GetDocumentByFalcuty = async (falcuty: string) => {
 export const GetDocumentSizeAPI = async (data: DocumentByAccountRequest) => {
     try {
         const res = await axiosInstance.get(
-            `/document/account?email=${data.email}&pageNum=${data.pageNum}&pageSize=${data.pageSize}`
+            `/document/account?email=${data.email}&pageNum=${data.pageNum}&pageSize=${data.pageSize}`,
         );
         return res.data;
     } catch (err: unknown) {
@@ -181,11 +175,7 @@ export const DownloadDocumentAuthorApi = async (documentId: number) => {
     }
 };
 
-
-export const SaveDownLoadHistoryApi = async (
-    username: string,
-    docId: number
-) => {
+export const SaveDownLoadHistoryApi = async (username: string, docId: number) => {
     try {
         const res = await axiosInstance.post(
             `/document/history/track`,
@@ -195,7 +185,7 @@ export const SaveDownLoadHistoryApi = async (
                     docId,
                     username,
                 },
-            }
+            },
         );
         return res.data;
     } catch (err: unknown) {
@@ -213,21 +203,14 @@ export const SaveDocummentStogeAPI = async (docId: number) => {
         return res.data;
     } catch (err: unknown) {
         const error = err as AxiosError<{ message?: string }>;
-        if (
-            error.status === 502 ||
-            error.response?.data.message ===
-                "Error saving document: Document already saved."
-        ) {
-            toast.error("Tài liệu đã tồn tại trong kho lưu trữ!");
+        if (error.status === 502 || error.response?.data.message === 'Error saving document: Document already saved.') {
+            toast.error('Tài liệu đã tồn tại trong kho lưu trữ!');
         }
         throw new Error(error.response?.data.message || error.message);
     }
 };
 
-export const GetDocumentStogeAPI = async (
-    page: number = 0,
-    size: number = 5
-) => {
+export const GetDocumentStogeAPI = async (page: number = 0, size: number = 5) => {
     try {
         const response = await axiosInstance.get(`/document/saved-documents/list`, {
             params: { page, size },
@@ -252,9 +235,7 @@ export const DelectDocumentStoge = async (docId: number) => {
 
 export const GetPopularDocuments = async (page: number, size: number) => {
     try {
-        const res = await axiosInstance.get(
-            `/document/popular?page=${page}&size=${size}`
-        );
+        const res = await axiosInstance.get(`/document/popular?page=${page}&size=${size}`);
         console.log(res);
         return res.data;
     } catch (err: unknown) {

@@ -46,7 +46,10 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ memberCount = 0, pinnedMe
                     }
                     className={cx('tab')}
                 />
-                <Tab label={<span className={cx('tab-label', { 'active-tab': value === 2 })}>Cài đặt</span>} className={cx('tab')} />
+                <Tab
+                    label={<span className={cx('tab-label', { 'active-tab': value === 2 })}>Cài đặt</span>}
+                    className={cx('tab')}
+                />
             </Tabs>
         </div>
     );

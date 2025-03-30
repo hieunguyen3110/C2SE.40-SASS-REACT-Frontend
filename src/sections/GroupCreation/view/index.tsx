@@ -1,1 +1,1 @@
-export { default as GroupCreationView } from "./GroupCreationView"; 
+export { default as GroupCreationView } from './GroupCreationView';

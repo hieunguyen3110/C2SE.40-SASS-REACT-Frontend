@@ -1,5 +1,5 @@
-import { Helmet } from "react-helmet-async";
-import { SearchView } from "../sections/Search/view";
+import { Helmet } from 'react-helmet-async';
+import { SearchView } from '../sections/Search/view';
 
 export default function SearchPage() {
     return (

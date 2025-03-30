@@ -1,1 +1,1 @@
-export { default as PersonalTeacherComponents } from "./PersonalTeacherComponents";
+export { default as PersonalTeacherComponents } from './PersonalTeacherComponents';

@@ -1,1 +1,1 @@
-export { default as SupportView } from "./SupportView";
+export { default as SupportView } from './SupportView';

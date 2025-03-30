@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GetStatsForUser } from "../../services/StatsAPI/StatsAPI";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { GetStatsForUser } from '../../services/StatsAPI/StatsAPI';
 
-export const getStatsForUser = createAsyncThunk<any>("user/stats", async () => {
+export const getStatsForUser = createAsyncThunk<any>('user/stats', async () => {
     try {
         const response: any = await GetStatsForUser();
         return response;
@@ -21,7 +21,7 @@ const initialState: InitialStateStyles = {
 };
 
 const StatsSlice = createSlice({
-    name: "stats",
+    name: 'stats',
     initialState,
     reducers: {},
     extraReducers(builder) {
@@ -36,7 +36,7 @@ const StatsSlice = createSlice({
             })
             .addCase(getStatsForUser.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message || "An error occurred";
+                state.error = action.error.message || 'An error occurred';
             });
     },
 });

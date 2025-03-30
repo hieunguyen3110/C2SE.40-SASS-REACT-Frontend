@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { axiosInstance, baseUrl } from "../../utils/AxiosInterceptor";
+ 
+import { axiosInstance, baseUrl } from '../../utils/AxiosInterceptor';
 
 export const GetAllFolders = async () => {
     try {
@@ -31,19 +31,12 @@ export const GetFolderById = async (id: number) => {
     }
 };
 
-export const UpdateFolder = async (
-    folderId: number,
-    folderName: string,
-    description: string
-) => {
+export const UpdateFolder = async (folderId: number, folderName: string, description: string) => {
     try {
-        const res = await axiosInstance.put(
-            `${baseUrl}/document/folder/update/${folderId}`,
-            {
-                folderName,
-                description,
-            }
-        );
+        const res = await axiosInstance.put(`${baseUrl}/document/folder/update/${folderId}`, {
+            folderName,
+            description,
+        });
         return res.data;
     } catch (error: any) {
         throw Error(error.message);
@@ -52,9 +45,7 @@ export const UpdateFolder = async (
 
 export const DeleteFolder = async (folderId: number) => {
     try {
-        const res = await axiosInstance.delete(
-            `/document/folder/delete/${folderId}`
-        );
+        const res = await axiosInstance.delete(`/document/folder/delete/${folderId}`);
         return res.data;
     } catch (error: any) {
         throw Error(error.message);
@@ -63,9 +54,7 @@ export const DeleteFolder = async (folderId: number) => {
 
 export const GetPopularFolders = async (page: number, size: number) => {
     try {
-        const res = await axiosInstance.get(
-            `/document/folder/top-folders?page=${page}&size=${size}`
-        );
+        const res = await axiosInstance.get(`/document/folder/top-folders?page=${page}&size=${size}`);
         return res.data;
     } catch (err: any) {
         throw Error(err.message);
