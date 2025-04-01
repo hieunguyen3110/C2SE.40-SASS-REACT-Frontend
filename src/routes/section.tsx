@@ -36,6 +36,10 @@ import CreateGroup from '../pages/GroupStudyPages/GroupCreation';
 import GroupStudyLayout from '../components/GroupStudyLayout/GroupStudyLayout';
 import GroupSearch from '../pages/GroupStudyPages/GroupSearch';
 import GroupStudyDetailPage from '../pages/GroupStudyPages/GroupStudyDetail';
+import KnowledgeTestPage from '../pages/AIQuizPages/KnowledgeTest';
+import AIQuizLayout from '../components/AIQuizLayout';
+import TestProcessPage from '../pages/AIQuizPages/TestProcess';
+import AIQuizHome from '../sections/AIQuiz/AIQuizHome';
 export default function Router() {
     const routes = useRoutes([
         {
@@ -146,8 +150,30 @@ export default function Router() {
                         },
                     ],
                 },
+                {
+                    path: 'ai-quiz',
+                    element: (
+                        <AIQuizLayout>
+                            <Outlet />
+                        </AIQuizLayout>
+                    ),
+                    children: [
+                        {
+                            index: true,
+                            element: <AIQuizHome />,
+                        },
+                        {
+                            path: 'knowledge-test',
+                            element: <KnowledgeTestPage />,
+                        },
+                        {
+                            path: 'test-process/:id',
+                            element: <TestProcessPage />,
+                        }
+                    ],
+                },
             ],
-        },
+        }, 
         {
             path: '/admin',
             element: (

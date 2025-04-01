@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background -->
+  <circle cx="100" cy="100" r="90" fill="white" stroke="black" stroke-width="4"/>
+  
+  <!-- Brain outline representing AI -->
+  <path d="M140,85 C140,65 125,50 105,50 C85,50 70,65 70,85 C70,95 75,105 82,110 L82,130 C82,135 87,140 92,140 L117,140 C122,140 127,135 127,130 L127,110 C135,105 140,95 140,85 Z" 
+        fill="white" stroke="black" stroke-width="3"/>
+  
+  <!-- Brain details -->
+  <path d="M95,65 Q100,60 105,65 Q110,70 115,65" fill="none" stroke="black" stroke-width="2"/>
+  <path d="M90,80 Q100,75 110,80 Q120,85 125,80" fill="none" stroke="black" stroke-width="2"/>
+  <path d="M85,95 Q95,90 105,95 Q115,100 125,95" fill="none" stroke="black" stroke-width="2"/>
+  
+  <!-- Circuit lines representing AI -->
+  <line x1="95" y1="50" x2="95" y2="40" stroke="black" stroke-width="2"/>
+  <line x1="115" y1="50" x2="115" y2="40" stroke="black" stroke-width="2"/>
+  <line x1="95" y1="40" x2="115" y2="40" stroke="black" stroke-width="2"/>
+  
+  <line x1="70" y1="75" x2="60" y2="75" stroke="black" stroke-width="2"/>
+  <line x1="70" y1="95" x2="60" y2="95" stroke="black" stroke-width="2"/>
+  <line x1="60" y1="75" x2="60" y2="95" stroke="black" stroke-width="2"/>
+  
+  <line x1="140" y1="75" x2="150" y2="75" stroke="black" stroke-width="2"/>
+  <line x1="140" y1="95" x2="150" y2="95" stroke="black" stroke-width="2"/>
+  <line x1="150" y1="75" x2="150" y2="95" stroke="black" stroke-width="2"/>
+  
+  <!-- Question mark representing Quiz -->
+  <text x="100" y="160" font-family="Arial, sans-serif" font-size="60" text-anchor="middle" fill="black" font-weight="bold">?</text>
+  
+  <!-- Small circuit dots -->
+  <circle cx="95" cy="40" r="2" fill="black"/>
+  <circle cx="115" cy="40" r="2" fill="black"/>
+  <circle cx="60" cy="75" r="2" fill="black"/>
+  <circle cx="60" cy="95" r="2" fill="black"/>
+  <circle cx="150" cy="75" r="2" fill="black"/>
+  <circle cx="150" cy="95" r="2" fill="black"/>
+</svg>

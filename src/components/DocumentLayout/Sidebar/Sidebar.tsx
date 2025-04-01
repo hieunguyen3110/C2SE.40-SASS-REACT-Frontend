@@ -1,4 +1,3 @@
- 
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 const cx = classNames.bind(styles);
@@ -9,6 +8,7 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import AIQuizIcon from '../../../assets/images/icons/AIQuiz.svg';
 
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
@@ -35,7 +35,7 @@ import { useSelector } from 'react-redux';
 const menuItems = [
     { title: 'Trang chủ', icon: HomeOutlinedIcon, pathActive: '/document' },
     { title: 'Nhóm học tập', icon: PeopleOutlineIcon, pathActive: '/document/group-study' },
-    { title: 'Sách', icon: AutoStoriesOutlinedIcon, pathActive: '/404' },
+    { title: 'AI Quiz', icon: `${AIQuizIcon}`, pathActive: '/document/ai-quiz' },
 ];
 const docItems = [
     {
@@ -200,7 +200,11 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
                         className={cx(isMenuItemActive(item.pathActive) && 'active')}
                         to={item.pathActive}
                     >
-                        <item.icon sx={{ width: '22px', height: '22px' }} />
+                        {typeof item.icon === 'string' ? (
+                            <img src={item.icon} alt={item.title} style={{ width: '22px', height: '22px' }} />
+                        ) : (
+                            <item.icon sx={{ width: '22px', height: '22px' }} />
+                        )}
                         {isOpen && <h3>{item.title}</h3>}
                     </Link>
                 ))}
