@@ -1,1 +1,1 @@
-export { default as Outstanding } from "./Outstanding";
+export { default as Outstanding } from './Outstanding';

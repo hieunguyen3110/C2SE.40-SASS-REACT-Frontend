@@ -1,11 +1,11 @@
-import { PersonalTeacherComponents } from "../components";
+import { PersonalTeacherComponents } from '../components';
 
 const PersonalTeacherView = () => {
-  return (
-    <>
-      <PersonalTeacherComponents />
-    </>
-  );
+    return (
+        <>
+            <PersonalTeacherComponents />
+        </>
+    );
 };
 
 export default PersonalTeacherView;

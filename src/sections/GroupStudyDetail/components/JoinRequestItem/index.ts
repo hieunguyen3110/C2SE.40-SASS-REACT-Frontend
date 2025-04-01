@@ -1,1 +1,1 @@
-export { default } from './JoinRequestItem'; 
+export { default } from './JoinRequestItem';

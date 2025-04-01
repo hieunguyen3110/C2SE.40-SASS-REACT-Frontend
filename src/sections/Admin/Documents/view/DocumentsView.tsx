@@ -1,13 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import classNames from "classnames/bind";
-import styles from "./DocumentsView.module.scss";
+ 
+ 
+import classNames from 'classnames/bind';
+import styles from './DocumentsView.module.scss';
 const cx = classNames.bind(styles);
-import { useEffect, useState } from "react";
-import CensorDropdown from "../components/CensorDropdown";
-import SearchIcon from "@mui/icons-material/Search";
-import DataTable from "../components/DataTable";
-import { useAppDispatch, useAppSelector } from "../../../../redux/store";
+import { useEffect, useState } from 'react';
+import CensorDropdown from '../components/CensorDropdown';
+import SearchIcon from '@mui/icons-material/Search';
+import DataTable from '../components/DataTable';
+import { useAppDispatch, useAppSelector } from '../../../../redux/store';
 import {
     approveDocuments,
     checkDocument,
@@ -16,76 +16,69 @@ import {
     deleteDocuments,
     getDocumentsForAdmin,
     getStatsForAdmin,
-} from "../../../../redux/AdminDashboardSlice/AdminDashboardSlice";
-import AlertDialog from "../../Users/components/AlertDialog";
-import ApproveDialog from "../../Users/components/ApproveDialog";
-import Loader from "../../../../components/Loader/Loader";
-import { toast } from "react-toastify";
+} from '../../../../redux/AdminDashboardSlice/AdminDashboardSlice';
+import AlertDialog from '../../Users/components/AlertDialog';
+import ApproveDialog from '../../Users/components/ApproveDialog';
+import Loader from '../../../../components/Loader/Loader';
+import { toast } from 'react-toastify';
 
 const columns: any[] = [
     {
-        id: "docId",
-        label: "ID",
+        id: 'docId',
+        label: 'ID',
         minWidth: 50,
-        align: "center",
+        align: 'center',
     },
-    { id: "title", label: "Tên tài liệu", minWidth: 170 },
-    { id: "subjectName", label: "Môn học", minWidth: 100 },
+    { id: 'title', label: 'Tên tài liệu', minWidth: 170 },
+    { id: 'subjectName', label: 'Môn học', minWidth: 100 },
     {
-        id: "folderName",
-        label: "Thư mục",
+        id: 'folderName',
+        label: 'Thư mục',
         minWidth: 100,
-        align: "center",
+        align: 'center',
     },
     {
-        id: "createdAt",
-        label: "Ngày tạo",
+        id: 'createdAt',
+        label: 'Ngày tạo',
         minWidth: 120,
-        align: "center",
+        align: 'center',
     },
     {
-        id: "authorName",
-        label: "Tác giả",
+        id: 'authorName',
+        label: 'Tác giả',
         minWidth: 100,
-        align: "center",
+        align: 'center',
     },
     {
-        id: "isActive",
-        label: "Phê duyệt",
+        id: 'isActive',
+        label: 'Phê duyệt',
         minWidth: 100,
-        align: "center",
+        align: 'center',
     },
 ];
 
 const censorValues: any = [
-    { code: "docId", title: "ID" },
-    { code: "title", title: "Tên tài liệu" },
-    { code: "subjectName", title: "Môn học" },
-    { code: "folderName", title: "Thư mục" },
-    { code: "authorName", title: "Tác giả" },
-    { code: "isActive", title: "Phê duyệt" },
+    { code: 'docId', title: 'ID' },
+    { code: 'title', title: 'Tên tài liệu' },
+    { code: 'subjectName', title: 'Môn học' },
+    { code: 'folderName', title: 'Thư mục' },
+    { code: 'authorName', title: 'Tác giả' },
+    { code: 'isActive', title: 'Phê duyệt' },
 ];
 
 export default function DocumentsView() {
-    const [censor, setCensor] = useState<string>("");
-    const [searchValue, setSearchValue] = useState<string>("");
+    const [censor, setCensor] = useState<string>('');
+    const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(1);
     const [data, setData] = useState<any>([]);
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const dispatch = useAppDispatch();
 
-    const documents: any[] = useAppSelector(
-        (state: any) => state.adminDashboard.documents?.content
-    );
+    const documents: any[] = useAppSelector((state: any) => state.adminDashboard.documents?.content);
 
-    const { loading, successMessage, error } = useAppSelector(
-        (state) => state.adminDashboard
-    );
+    const { loading, successMessage, error } = useAppSelector((state) => state.adminDashboard);
 
-    const {
-        data: statsData,
-        loading: statsLoading,
-    } = useAppSelector((state) => state.adminDashboard);
+    const { data: statsData, loading: statsLoading } = useAppSelector((state) => state.adminDashboard);
 
     useEffect(() => {
         if (documents && documents.length !== 0) {
@@ -111,14 +104,14 @@ export default function DocumentsView() {
         if (selectedIds.length !== 0) {
             setOpenAlertDialog(true);
         } else {
-            toast.error("Phải chọn ít nhất 1 tài liệu");
+            toast.error('Phải chọn ít nhất 1 tài liệu');
         }
     };
     const handleOpenApproveDialog = () => {
         if (selectedIds.length !== 0) {
             setOpenApproveDialog(true);
         } else {
-            toast.error("Phải chọn ít nhất 1 tài liệu");
+            toast.error('Phải chọn ít nhất 1 tài liệu');
         }
     };
     const handleCloseAlertDialog = () => setOpenAlertDialog(false);
@@ -128,7 +121,7 @@ export default function DocumentsView() {
         try {
             dispatch(deleteDocuments(selectedIds));
         } catch (error: any) {
-            toast.error("Xảy ra lỗi, vui lòng thử lại sau");
+            toast.error('Xảy ra lỗi, vui lòng thử lại sau');
         }
     };
 
@@ -136,7 +129,7 @@ export default function DocumentsView() {
         try {
             dispatch(approveDocuments(selectedIds));
         } catch (error: any) {
-            toast.error("Xảy ra lỗi, vui lòng thử lại sau");
+            toast.error('Xảy ra lỗi, vui lòng thử lại sau');
         }
     };
 
@@ -145,25 +138,25 @@ export default function DocumentsView() {
             dispatch(getDocumentsForAdmin({ page, size: 10 }));
         } catch (error) {
             console.log(error);
-            toast.error("Xảy ra lỗi, vui lòng thử lại sau");
+            toast.error('Xảy ra lỗi, vui lòng thử lại sau');
         }
     };
 
     const handleCheckDocument = () => {
         try {
             if (selectedIds.length !== 1) {
-                toast.error("Chọn duy nhất 1 tài liệu để kiểm tra");
+                toast.error('Chọn duy nhất 1 tài liệu để kiểm tra');
                 return;
             }
             dispatch(checkDocument(selectedIds[0]));
         } catch (error) {
             console.log(error);
-            toast.error("Xảy ra lỗi, vui lòng thử lại sau");
+            toast.error('Xảy ra lỗi, vui lòng thử lại sau');
         }
     };
 
     useEffect(() => {
-        if (successMessage !== "") {
+        if (successMessage !== '') {
             if (openAlertDialog) {
                 setOpenAlertDialog(false);
             } else {
@@ -177,7 +170,7 @@ export default function DocumentsView() {
     }, [successMessage]);
 
     useEffect(() => {
-        if (error !== "") {
+        if (error !== '') {
             if (openAlertDialog) {
                 setOpenAlertDialog(false);
             } else {
@@ -191,10 +184,8 @@ export default function DocumentsView() {
     }, [error]);
 
     const activeFilter = (
-        <div className={cx("search-container")}>
-            <select
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}>
+        <div className={cx('search-container')}>
+            <select value={searchValue} onChange={(e) => setSearchValue(e.target.value)}>
                 <option defaultChecked value="unchecked">
                     Chưa phê duyệt
                 </option>
@@ -204,53 +195,43 @@ export default function DocumentsView() {
     );
 
     return (
-        <div className={cx("admin-documents-view")}>
+        <div className={cx('admin-documents-view')}>
             <span>DTUDASHBOARD / Tài liệu</span>
-            <div className={cx("actions")}>
-                <CensorDropdown
-                    censor={censor}
-                    onDropdownChange={handleClassifyChange}
-                    values={censorValues}
-                />
-                {censor === "isActive" ? (
+            <div className={cx('actions')}>
+                <CensorDropdown censor={censor} onDropdownChange={handleClassifyChange} values={censorValues} />
+                {censor === 'isActive' ? (
                     activeFilter
                 ) : (
-                    <div className={cx("search-container")}>
+                    <div className={cx('search-container')}>
                         <input
                             onChange={(e) => {
                                 setSearchValue(e.target.value);
                             }}
                             value={searchValue}
                             placeholder={`Lọc dữ liệu...`}
-                            disabled={censor === ""}
+                            disabled={censor === ''}
                             type="text"
                         />
                         <SearchIcon
                             style={{
-                                color: "#757575",
-                                position: "absolute",
-                                top: "50%",
-                                right: "15px",
-                                transform: "translateY(-50%)",
-                                pointerEvents: "none",
+                                color: '#757575',
+                                position: 'absolute',
+                                top: '50%',
+                                right: '15px',
+                                transform: 'translateY(-50%)',
+                                pointerEvents: 'none',
                             }}
                         />
                     </div>
                 )}
-                <div className={cx("rightActions")}>
-                    <button
-                        onClick={handleCheckDocument}
-                        className={cx("reload-btn")}>
+                <div className={cx('rightActions')}>
+                    <button onClick={handleCheckDocument} className={cx('reload-btn')}>
                         Kiểm tra
                     </button>
-                    <button
-                        onClick={handleOpenAlertDialog}
-                        className={cx("delete-btn")}>
+                    <button onClick={handleOpenAlertDialog} className={cx('delete-btn')}>
                         Xoá
                     </button>
-                    <button
-                        onClick={handleOpenApproveDialog}
-                        className={cx("censor-btn")}>
+                    <button onClick={handleOpenApproveDialog} className={cx('censor-btn')}>
                         Duyệt tài liệu mới
                     </button>
                 </div>

@@ -1,20 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import classNames from "classnames/bind";
-import styles from "./Content.module.scss";
+ 
+ 
+import classNames from 'classnames/bind';
+import styles from './Content.module.scss';
 const cx = classNames.bind(styles);
-import Background from "../../../assets/images/library.background.jpeg";
-import { Statistics } from "./Statistics";
-import { Docs } from "./Docs";
+import Background from '../../../assets/images/library.background.jpeg';
+import { Statistics } from './Statistics';
+import { Docs } from './Docs';
 
-import { useAppDispatch, useAppSelector } from "../../../redux/store";
-import { useEffect, useState } from "react";
-import {
-    getPopularDocuments,
-} from "../../../redux/DocumentSlice/documentSlice";
-import { PopularFolders } from "./PopularFolders";
-import { getPopularFolders } from "../../../redux/FolderSlice/folderSlice";
-import { getStatsForUser } from "../../../redux/StatsSlice/statsSlice";
+import { useAppDispatch, useAppSelector } from '../../../redux/store';
+import { useEffect, useState } from 'react';
+import { getPopularDocuments } from '../../../redux/DocumentSlice/documentSlice';
+import { PopularFolders } from './PopularFolders';
+import { getPopularFolders } from '../../../redux/FolderSlice/folderSlice';
+import { getStatsForUser } from '../../../redux/StatsSlice/statsSlice';
 
 export default function Content() {
     const dispatch = useAppDispatch();
@@ -25,8 +23,8 @@ export default function Content() {
     const [statsData, setStatsData] = useState<any>({});
 
     useEffect(() => {
-        dispatch(getPopularDocuments({page: 1, size: 3}));
-        dispatch(getPopularFolders({page: 1, size: 8}));
+        dispatch(getPopularDocuments({ page: 1, size: 3 }));
+        dispatch(getPopularFolders({ page: 1, size: 8 }));
         dispatch(getStatsForUser());
     }, [dispatch]);
 
@@ -40,31 +38,23 @@ export default function Content() {
     }, [popularFolders, stats]);
 
     const handleLoadMore = (status: string) => {
-        if (status === "loadmore") {
-            dispatch(getPopularDocuments({page: 2, size: 3}));
+        if (status === 'loadmore') {
+            dispatch(getPopularDocuments({ page: 2, size: 3 }));
         } else {
-            dispatch(getPopularDocuments({page: 1, size: 3}));
+            dispatch(getPopularDocuments({ page: 1, size: 3 }));
         }
     };
 
-
-
-
-
     return (
-        <div className={cx("content")}>
+        <div className={cx('content')}>
             <img src={Background} alt="bg" />
-            <div className={cx("central")}>
-                <div className={cx("category")}>
-                    <Docs
-                        title={"Tài liệu phổ biến"}
-                        onLoadMore={handleLoadMore}
-                        docs={documents}
-                    />
+            <div className={cx('central')}>
+                <div className={cx('category')}>
+                    <Docs title={'Tài liệu phổ biến'} onLoadMore={handleLoadMore} docs={documents} />
                 </div>
                 <Statistics data={statsData} />
             </div>
-            
+
             <PopularFolders data={dataPopularFolders} />
         </div>
     );

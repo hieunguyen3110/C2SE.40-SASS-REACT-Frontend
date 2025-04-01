@@ -1,1 +1,1 @@
-export { default as EditProfileComponents } from "./EditProfileComponents";
+export { default as EditProfileComponents } from './EditProfileComponents';

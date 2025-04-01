@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { axiosInstance, baseUrl } from "../../utils/AxiosInterceptor";
+ 
+import { axiosInstance, baseUrl } from '../../utils/AxiosInterceptor';
 
 export const SearchDocumentByTitle = async (title: string) => {
     try {
-        const res = await axiosInstance.get(
-            `/document/search/title?title=${title}`
-        );
+        const res = await axiosInstance.get(`/document/search/title?title=${title}`);
         return res.data;
     } catch (error: any) {
         if (error) {
@@ -16,9 +14,7 @@ export const SearchDocumentByTitle = async (title: string) => {
 
 export const SearchDocumentBySubject = async (subject: string) => {
     try {
-        const res = await axiosInstance.get(
-            `/document/search/subject?subject=${subject}`
-        );
+        const res = await axiosInstance.get(`/document/search/subject?subject=${subject}`);
         return res.data;
     } catch (error: any) {
         if (error) {
@@ -29,9 +25,7 @@ export const SearchDocumentBySubject = async (subject: string) => {
 
 export const SearchDocumentByFolder = async (folderName: string) => {
     try {
-        const res = await axiosInstance.get(
-            baseUrl + `/search/folder?folderName=${folderName}`
-        );
+        const res = await axiosInstance.get(baseUrl + `/search/folder?folderName=${folderName}`);
         return res.data;
     } catch (error: any) {
         if (error) {
@@ -42,9 +36,7 @@ export const SearchDocumentByFolder = async (folderName: string) => {
 
 export const SearchDocumentByFaculty = async (faculty: string) => {
     try {
-        const res = await axiosInstance.get(
-            `/document/search/faculty?facultyName=${faculty}`
-        );
+        const res = await axiosInstance.get(`/document/search/faculty?facultyName=${faculty}`);
         return res.data;
     } catch (error: any) {
         if (error) {

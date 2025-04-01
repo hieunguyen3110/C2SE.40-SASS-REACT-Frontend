@@ -1,11 +1,11 @@
-import { EditProfileComponents } from "../components";
+import { EditProfileComponents } from '../components';
 
 const EditProfileView = () => {
-  return (
-    <>
-      <EditProfileComponents />
-    </>
-  );
+    return (
+        <>
+            <EditProfileComponents />
+        </>
+    );
 };
 
 export default EditProfileView;

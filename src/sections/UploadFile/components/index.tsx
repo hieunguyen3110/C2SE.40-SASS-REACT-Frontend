@@ -1,1 +1,1 @@
-export { default as UploadFileComponents } from "./UploadFileComponents";
+export { default as UploadFileComponents } from './UploadFileComponents';

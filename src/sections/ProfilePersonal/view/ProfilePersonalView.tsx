@@ -1,11 +1,11 @@
-import { ProfilePersonalComponents } from "../components";
+import { ProfilePersonalComponents } from '../components';
 
 const ProfilePersonalView = () => {
-  return (
-    <>
-      <ProfilePersonalComponents />
-    </>
-  );
+    return (
+        <>
+            <ProfilePersonalComponents />
+        </>
+    );
 };
 
 export default ProfilePersonalView;

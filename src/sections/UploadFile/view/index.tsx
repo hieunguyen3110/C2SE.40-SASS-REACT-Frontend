@@ -1,1 +1,1 @@
-export { default as UploadFileView } from "./UploadFileView";
+export { default as UploadFileView } from './UploadFileView';

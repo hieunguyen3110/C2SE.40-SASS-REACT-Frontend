@@ -1,1 +1,1 @@
-export { default as NewPasswordView } from "./NewPasswordView";
+export { default as NewPasswordView } from './NewPasswordView';

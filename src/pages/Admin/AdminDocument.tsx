@@ -1,5 +1,5 @@
-import { Helmet } from "react-helmet-async";
-import { DocumentsView } from "../../sections/Admin/Documents/view";
+import { Helmet } from 'react-helmet-async';
+import { DocumentsView } from '../../sections/Admin/Documents/view';
 
 export default function AdminDocumenPage() {
     return (

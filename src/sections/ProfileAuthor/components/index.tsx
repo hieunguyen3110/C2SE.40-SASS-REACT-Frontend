@@ -1,1 +1,1 @@
-export { default as ProfileAuthorComponent } from "./ProfileAuthorComponents";
+export { default as ProfileAuthorComponent } from './ProfileAuthorComponents';

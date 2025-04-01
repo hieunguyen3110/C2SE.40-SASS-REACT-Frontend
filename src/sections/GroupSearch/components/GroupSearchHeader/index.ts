@@ -1,1 +1,1 @@
-export { default } from './GroupSearchHeader'; 
+export { default } from './GroupSearchHeader';

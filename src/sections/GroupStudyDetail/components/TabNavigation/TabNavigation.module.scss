@@ -1,46 +1,46 @@
 .tab-navigation {
-  width: 100%;
-  border-bottom: 1px solid #e0e0e0;
-  
-  .tabs {
-    min-height: 48px;
-    
-    .tab {
-      min-height: 48px;
-      text-transform: none;
-      font-weight: 500;
-      
-      &.Mui-selected {
-        color: var(--main-color) !important;
-      }
-      
-      .MuiTouchRipple-child {
-        background-color: rgba(255, 153, 102, 0.3) !important;
-      }
+    width: 100%;
+    border-bottom: 1px solid #e0e0e0;
+
+    .tabs {
+        min-height: 48px;
+
+        .tab {
+            min-height: 48px;
+            text-transform: none;
+            font-weight: 500;
+
+            &.Mui-selected {
+                color: var(--main-color) !important;
+            }
+
+            .MuiTouchRipple-child {
+                background-color: rgba(255, 153, 102, 0.3) !important;
+            }
+        }
+
+        .indicator {
+            background-color: var(--main-color) !important;
+            height: 3px;
+        }
     }
-    
-    .indicator {
-      background-color: var(--main-color) !important;
-      height: 3px;
+
+    .badge {
+        .MuiBadge-badge {
+            font-size: 0.75rem;
+            height: 18px;
+            min-width: 18px;
+            padding: 0 5px;
+            top: -5px;
+            right: -15px;
+        }
     }
-  }
-  
-  .badge {
-    .MuiBadge-badge {
-      font-size: 0.75rem;
-      height: 18px;
-      min-width: 18px;
-      padding: 0 5px;
-      top: -5px;
-      right: -15px;
+
+    .tab-label {
+        font-size: 0.9rem;
+
+        &.active-tab {
+            color: red;
+        }
     }
-  }
-  
-  .tab-label {
-    font-size: 0.9rem;
-    
-    &.active-tab {
-      color: red;
-    }
-  }
-} 
+}

@@ -1,1 +1,1 @@
-export { default as DocumentStorageComponents } from "./DocumentStorageComponents";
+export { default as DocumentStorageComponents } from './DocumentStorageComponents';

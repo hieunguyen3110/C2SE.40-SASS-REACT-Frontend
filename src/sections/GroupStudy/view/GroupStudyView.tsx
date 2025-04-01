@@ -85,7 +85,7 @@ export default function GroupStudyView() {
     const [message, setMessage] = useState('');
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const dispatch = useAppDispatch();
-    const { groupId } = useParams();    
+    const { groupId } = useParams();
     const toggleMembersSidebar = () => {
         setIsMembersSidebarOpen(!isMembersSidebarOpen);
     };

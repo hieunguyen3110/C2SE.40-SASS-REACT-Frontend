@@ -1,1 +1,1 @@
-export { default as EditDocumentComponents } from "./EditDocumentComponents";
+export { default as EditDocumentComponents } from './EditDocumentComponents';

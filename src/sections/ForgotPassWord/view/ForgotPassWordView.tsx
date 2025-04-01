@@ -1,11 +1,11 @@
-import { ForgotPassWordComponents } from "../components";
+import { ForgotPassWordComponents } from '../components';
 
 const ForgotPassWordView = () => {
-  return (
-    <>
-      <ForgotPassWordComponents />
-    </>
-  );
+    return (
+        <>
+            <ForgotPassWordComponents />
+        </>
+    );
 };
 
 export default ForgotPassWordView;

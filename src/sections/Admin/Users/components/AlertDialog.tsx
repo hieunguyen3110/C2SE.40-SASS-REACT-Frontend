@@ -1,10 +1,10 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 interface AlertDialogProps {
     open: boolean;
@@ -14,20 +14,15 @@ interface AlertDialogProps {
     title: string;
 }
 
-export default function AlertDialog({
-    open,
-    onClose,
-    onDelete,
-    ids,
-    title,
-}: AlertDialogProps) {
+export default function AlertDialog({ open, onClose, onDelete, ids, title }: AlertDialogProps) {
     return (
         <React.Fragment>
             <Dialog
                 open={open}
                 onClose={onClose}
                 aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description">
+                aria-describedby="alert-dialog-description"
+            >
                 <DialogTitle id="alert-dialog-title">Xoá {title}?</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
@@ -36,16 +31,16 @@ export default function AlertDialog({
                             <>
                                 <br />
                                 <br />
-                                ID {title}: {ids.join(", ")}
+                                ID {title}: {ids.join(', ')}
                             </>
                         )}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button sx={{ marginRight: "5px" }} onClick={onClose}>
+                    <Button sx={{ marginRight: '5px' }} onClick={onClose}>
                         Huỷ
                     </Button>
-                    <Button sx={{ color: "red" }} onClick={onDelete} autoFocus>
+                    <Button sx={{ color: 'red' }} onClick={onDelete} autoFocus>
                         Xác nhận xoá
                     </Button>
                 </DialogActions>

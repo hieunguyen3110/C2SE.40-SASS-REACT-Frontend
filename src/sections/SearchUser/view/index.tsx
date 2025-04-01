@@ -1,1 +1,1 @@
-export { default as SearchUserView } from "./SearchUserView";
+export { default as SearchUserView } from './SearchUserView';

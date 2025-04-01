@@ -1,11 +1,11 @@
-import { DirectoryComponents } from "../components";
+import { DirectoryComponents } from '../components';
 
 const DirectoryView = () => {
-  return (
-    <>
-      <DirectoryComponents />
-    </>
-  );
+    return (
+        <>
+            <DirectoryComponents />
+        </>
+    );
 };
 
 export default DirectoryView;

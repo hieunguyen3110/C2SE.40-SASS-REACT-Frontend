@@ -1,1 +1,1 @@
-export { default as DocumentStorageView } from "./DocumentStorageView";
+export { default as DocumentStorageView } from './DocumentStorageView';

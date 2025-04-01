@@ -1,6 +1,5 @@
-import { Helmet } from "react-helmet-async";
-import { GroupCreationView } from "../../sections/GroupCreation/view";
-
+import { Helmet } from 'react-helmet-async';
+import { GroupCreationView } from '../../sections/GroupCreation/view';
 
 export default function GroupCreationPage() {
     return (
@@ -12,4 +11,3 @@ export default function GroupCreationPage() {
         </>
     );
 }
-    

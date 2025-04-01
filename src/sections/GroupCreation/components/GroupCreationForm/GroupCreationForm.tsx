@@ -50,7 +50,6 @@ const GroupCreationForm = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-
             // await dispatch(createGroupAction({
             //     groupName: groupName,
             //     description,

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from 'react';
 
 interface SharingModalContextType {
     open: boolean;
@@ -8,15 +8,11 @@ interface SharingModalContextType {
     closeSharingModal: () => void;
 }
 
-const SharingModalContext = createContext<SharingModalContextType | undefined>(
-    undefined
-);
+const SharingModalContext = createContext<SharingModalContextType | undefined>(undefined);
 
-export const SharingModalProvider: React.FC<{ children: React.ReactNode }> = ({
-    children,
-}) => {
+export const SharingModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [open, setOpen] = useState(false);
-    const [url, setUrl] = useState("");
+    const [url, setUrl] = useState('');
 
     const openSharingModal = () => {
         setOpen(true);
@@ -24,8 +20,7 @@ export const SharingModalProvider: React.FC<{ children: React.ReactNode }> = ({
     const closeSharingModal = () => setOpen(false);
 
     return (
-        <SharingModalContext.Provider
-            value={{ open, url, setUrl, openSharingModal, closeSharingModal }}>
+        <SharingModalContext.Provider value={{ open, url, setUrl, openSharingModal, closeSharingModal }}>
             {children}
         </SharingModalContext.Provider>
     );
@@ -34,9 +29,7 @@ export const SharingModalProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useSharingModal = () => {
     const context = useContext(SharingModalContext);
     if (!context) {
-        throw new Error(
-            "useSharingModal must be used within a SharingModalProvider"
-        );
+        throw new Error('useSharingModal must be used within a SharingModalProvider');
     }
     return context;
 };

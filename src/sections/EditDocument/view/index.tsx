@@ -1,1 +1,1 @@
-export { default as EditDocumentView } from "./EditDocumentView";
+export { default as EditDocumentView } from './EditDocumentView';

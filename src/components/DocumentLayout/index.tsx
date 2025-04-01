@@ -1,1 +1,1 @@
-export { default as DocumentLayout } from "./DocumentLayout";
+export { default as DocumentLayout } from './DocumentLayout';

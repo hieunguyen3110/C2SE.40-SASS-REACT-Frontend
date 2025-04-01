@@ -1,1 +1,1 @@
-export { default as ProposalDocs } from "./ProposalDocs";
+export { default as ProposalDocs } from './ProposalDocs';

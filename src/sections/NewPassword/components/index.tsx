@@ -1,1 +1,1 @@
-export { default as NewPasswordComponents } from "./NewPasswordComponents";
+export { default as NewPasswordComponents } from './NewPasswordComponents';

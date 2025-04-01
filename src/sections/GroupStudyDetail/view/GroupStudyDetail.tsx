@@ -9,7 +9,6 @@ import styles from './GroupStudyDetail.module.scss';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useParams } from 'react-router-dom';
 
-
 // Import custom components
 import TabNavigation from '../components/TabNavigation/TabNavigation';
 import JoinRequestItem from '../components/JoinRequestItem';
@@ -22,21 +21,21 @@ const cx = classNames.bind(styles);
 export default function GroupStudyDetail() {
     const [activeTab, setActiveTab] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
-    
+
     // Get groupId from URL params
     const { groupId } = useParams<{ groupId: string }>();
-    
+
     // Redux state
     const dispatch = useAppDispatch();
     // const { currentGroup, loading, error } = useAppSelector((state) => state.groupStudy);
-    
+
     // Fetch group details when component mounts
     useEffect(() => {
         if (groupId) {
             // dispatch(getGroupDetailsAction(parseInt(groupId)));
         }
     }, [dispatch, groupId]);
-    
+
     // Log the data from API
     // useEffect(() => {
     //     console.log('Group details:', currentGroup);
@@ -135,7 +134,7 @@ export default function GroupStudyDetail() {
                             Nghiên cứu các chức năng hỗ trợ học thuật với công cụ AI
                         </Typography>
                         <div className={cx('group-study-detail__info__meta')}>
-                            <CalendarMonthIcon fontSize='small' sx={{ marginRight: '4px' }} />
+                            <CalendarMonthIcon fontSize="small" sx={{ marginRight: '4px' }} />
                             <span>Tạo ngày 2025-01-15</span>
                             <span className={cx('separator')}>•</span>
                             <span>10 members</span>

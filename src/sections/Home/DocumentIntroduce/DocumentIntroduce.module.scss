@@ -43,7 +43,7 @@
                 background-size: cover;
                 background-position: center center;
                 background-repeat: no-repeat;
-                background-image: url("../../../assets/images/homepage.introduce2.jpeg");
+                background-image: url('../../../assets/images/homepage.introduce2.jpeg');
                 & > h1 {
                     font-family: Arial;
                     font-size: 50px;
@@ -68,18 +68,14 @@
                 }
             }
             & > .img2::after {
-                content: "";
+                content: '';
                 z-index: -1;
                 position: absolute;
                 left: 0;
                 top: 0;
                 height: 100%;
                 width: 100%;
-                background: linear-gradient(
-                    180deg,
-                    rgba(0, 0, 0, 0.28) 0%,
-                    rgba(172, 72, 76, 0.7) 41.5%
-                );
+                background: linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(172, 72, 76, 0.7) 41.5%);
             }
             & > .img3 {
                 position: absolute;
@@ -95,7 +91,7 @@
             }
 
             & > .img3::after {
-                content: "";
+                content: '';
                 position: absolute;
                 left: -10px;
                 top: -10px;

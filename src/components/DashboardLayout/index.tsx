@@ -1,1 +1,1 @@
-export { default as DocumentLayout } from "./DashboardLayout";
+export { default as DocumentLayout } from './DashboardLayout';

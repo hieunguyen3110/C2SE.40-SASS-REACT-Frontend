@@ -1,5 +1,5 @@
 footer {
-    background-image: url("../../assets/images/footer-image.jpeg");
+    background-image: url('../../assets/images/footer-image.jpeg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% 50%;
@@ -10,8 +10,8 @@ footer {
     align-items: center;
     justify-content: center;
     position: relative;
-    &::after{
-        content: "";
+    &::after {
+        content: '';
         position: absolute;
         top: 0;
         bottom: 0;
@@ -50,16 +50,16 @@ footer {
                     color: #ffffff;
                 }
             }
-            &>.contact{
-                &>.box{
+            & > .contact {
+                & > .box {
                     color: #ffffff;
                     display: flex;
                     align-items: center;
                     gap: 1rem;
-                    &>svg{
+                    & > svg {
                         font-size: 30px;
                     }
-                    &>p{
+                    & > p {
                         display: flex;
                         flex-direction: column;
                         gap: 0.25rem;
@@ -67,7 +67,7 @@ footer {
                 }
             }
         }
-        &>.social-icons{
+        & > .social-icons {
             background-color: #ffffff;
             border-radius: 10px;
             opacity: 0.9;
@@ -77,22 +77,21 @@ footer {
             justify-content: center;
             gap: 1rem;
             padding: 10px;
-            &>h3{
+            & > h3 {
                 font-size: 25px;
             }
-            &>.list-icon{
+            & > .list-icon {
                 display: flex;
                 align-items: center;
                 gap: 4rem;
-                
-                &>a{
+
+                & > a {
                     text-decoration: none;
                     color: #ffffff;
-                    &>img{
+                    & > img {
                         width: 32px;
                     }
                 }
-                
             }
         }
         & > .footer-bottom {
@@ -100,7 +99,7 @@ footer {
             justify-content: space-between;
             align-items: center;
             margin: 24px 0px;
-            &>.policy>a,
+            & > .policy > a,
             & > p {
                 font-family: var(--font-family-secondary);
                 font-weight: 400;
@@ -109,11 +108,11 @@ footer {
                 text-align: center;
                 color: var(--text-main-color);
             }
-            &>.policy{
+            & > .policy {
                 display: flex;
                 align-items: center;
                 gap: 2rem;
-                &>a{
+                & > a {
                     text-decoration: none;
                 }
             }

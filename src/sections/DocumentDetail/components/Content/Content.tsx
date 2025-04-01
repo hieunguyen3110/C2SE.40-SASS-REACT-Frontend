@@ -1,23 +1,20 @@
-import classNames from "classnames/bind";
-import styles from "./Content.module.scss";
+import classNames from 'classnames/bind';
+import styles from './Content.module.scss';
 
 const cx = classNames.bind(styles);
 
 // Import the main component
-import { Viewer } from "@react-pdf-viewer/core";
-import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
-import ShortcutOutlinedIcon from "@mui/icons-material/ShortcutOutlined";
+import { Viewer } from '@react-pdf-viewer/core';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
+import ShortcutOutlinedIcon from '@mui/icons-material/ShortcutOutlined';
 // Import the styles
-import "@react-pdf-viewer/core/lib/styles/index.css";
+import '@react-pdf-viewer/core/lib/styles/index.css';
 
-import { Worker } from "@react-pdf-viewer/core";
-import { useSharingModal } from "../../../../contexts/SharingModalContext";
-import { useAppDispatch, useAppSelector } from "../../../../redux/store";
-import {
-    DownloadDocumentAction,
-    SaveDocumentStogeAction,
-} from "../../../../redux/DocumentSlice/documentSlice";
+import { Worker } from '@react-pdf-viewer/core';
+import { useSharingModal } from '../../../../contexts/SharingModalContext';
+import { useAppDispatch, useAppSelector } from '../../../../redux/store';
+import { DownloadDocumentAction, SaveDocumentStogeAction } from '../../../../redux/DocumentSlice/documentSlice';
 
 interface IDetailDoc {
     url: string | undefined;
@@ -45,22 +42,23 @@ function Content({ url, id }: IDetailDoc) {
 
     return (
         <div
-            className={cx("content")}
+            className={cx('content')}
             style={{
-                border: "1px solid rgba(0, 0, 0, 0.3)",
-                height: "750px",
-            }}>
-            <div className={cx("actions")}>
+                border: '1px solid rgba(0, 0, 0, 0.3)',
+                height: '750px',
+            }}
+        >
+            <div className={cx('actions')}>
                 <button onClick={handleDownload}>
                     <FileDownloadOutlinedIcon /> Tải xuống
                 </button>
-                <div className={cx("right-actions")}>
+                <div className={cx('right-actions')}>
                     <button onClick={handleSave}>
                         <BookmarkBorderOutlinedIcon />
                         Lưu
                     </button>
                     <button onClick={() => handleOpenModal(id)}>
-                        <ShortcutOutlinedIcon sx={{ color: "black" }} />
+                        <ShortcutOutlinedIcon sx={{ color: 'black' }} />
                         Chia sẻ
                     </button>
                 </div>

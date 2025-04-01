@@ -1,5 +1,5 @@
-import styles from "./Button.module.scss";
-import classnames from "classnames/bind";
+import styles from './Button.module.scss';
+import classnames from 'classnames/bind';
 
 const cx = classnames.bind(styles);
 
@@ -18,13 +18,7 @@ interface submitButton {
     borderRadius: number;
     background: string;
 }
-export default function Button({
-    text,
-    paddingY,
-    paddingX,
-    fontSize,
-    onClick,
-}: IButton) {
+export default function Button({ text, paddingY, paddingX, fontSize, onClick }: IButton) {
     return (
         <button
             type="submit"
@@ -33,7 +27,8 @@ export default function Button({
                 padding: `${paddingY}px ${paddingX}px`,
                 fontSize: `${fontSize}px`,
             }}
-            className={cx("button-wrapper")}>
+            className={cx('button-wrapper')}
+        >
             {text}
         </button>
     );
@@ -51,13 +46,14 @@ export const ButtonSubmit: React.FC<submitButton> = ({
         <button
             type="submit"
             disabled={isSubmitting}
-            className={cx("button")}
+            className={cx('button')}
             style={{
                 padding: `${padding}px`,
                 fontSize: `${fontsize}px`,
                 borderRadius: `${borderRadius}px`,
                 backgroundColor: `${background}`,
-            }}>
+            }}
+        >
             {titleButton}
         </button>
     );

@@ -1,68 +1,68 @@
 .groupSearchView {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 30px 0;
-  width: calc(100% - 250px) !important;
-  
-  .resultsCount {
-    margin: 20px 0 16px;
-    color: #555;
-    font-weight: 500;
-  }
-  
-  .groupsList {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    margin-top: 10px;
-  }
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 0;
+    width: calc(100% - 250px) !important;
+
+    .resultsCount {
+        margin: 20px 0 16px;
+        color: #555;
+        font-weight: 500;
+    }
+
+    .groupsList {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        margin-top: 10px;
+    }
 }
 
 // Empty state styles
 .emptyState {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin: 40px auto;
-  padding: 40px 20px;
-  max-width: 600px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 40px auto;
+    padding: 40px 20px;
+    max-width: 600px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .emptyStateImage {
-  width: 200px;
-  height: auto;
-  margin-bottom: 24px;
-  opacity: 0.85;
+    width: 200px;
+    height: auto;
+    margin-bottom: 24px;
+    opacity: 0.85;
 }
 
 .emptyStateTitle {
-  margin-bottom: 16px;
-  font-weight: 600;
-  color: #333;
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: #333;
 }
 
 .emptyStateDescription {
-  margin-bottom: 28px;
-  color: #666;
-  line-height: 1.6;
-  max-width: 450px;
+    margin-bottom: 28px;
+    color: #666;
+    line-height: 1.6;
+    max-width: 450px;
 }
 
 .createGroupButton {
-  background-color: #e74c3c !important;
-  color: white !important;
-  padding: 10px 24px !important;
-  text-transform: none !important;
-  font-size: 16px !important;
-  border-radius: 5px !important;
-  font-weight: 500 !important;
-  
-  &:hover {
-    background-color: #f85c4d !important;
-  }
+    background-color: #e74c3c !important;
+    color: white !important;
+    padding: 10px 24px !important;
+    text-transform: none !important;
+    font-size: 16px !important;
+    border-radius: 5px !important;
+    font-weight: 500 !important;
+
+    &:hover {
+        background-color: #f85c4d !important;
+    }
 }

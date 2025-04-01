@@ -1,11 +1,11 @@
-import UserInformationComponents from "../components/UserInformationComponents";
+import UserInformationComponents from '../components/UserInformationComponents';
 
 const UsersInformationViews = () => {
-  return (
-    <>
-      <UserInformationComponents />
-    </>
-  );
+    return (
+        <>
+            <UserInformationComponents />
+        </>
+    );
 };
 
 export default UsersInformationViews;

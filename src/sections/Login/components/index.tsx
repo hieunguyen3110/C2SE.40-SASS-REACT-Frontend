@@ -1,1 +1,1 @@
-export { default as LoginComponents } from "./LoginComponents";
+export { default as LoginComponents } from './LoginComponents';

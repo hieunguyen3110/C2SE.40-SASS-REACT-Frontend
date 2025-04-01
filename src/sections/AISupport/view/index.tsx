@@ -1,1 +1,1 @@
-export { default as AISupportView } from "./AISupportView";
+export { default as AISupportView } from './AISupportView';

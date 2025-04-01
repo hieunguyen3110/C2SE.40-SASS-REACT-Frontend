@@ -1,1 +1,1 @@
-export { default as HeaderCenter } from "./HeaderCenter";
+export { default as HeaderCenter } from './HeaderCenter';

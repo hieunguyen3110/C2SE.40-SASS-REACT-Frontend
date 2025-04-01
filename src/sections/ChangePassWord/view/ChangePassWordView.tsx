@@ -1,11 +1,11 @@
-import ChangePassWordViewComponents from "../components/ChangePassWordComponents";
+import ChangePassWordViewComponents from '../components/ChangePassWordComponents';
 
 const ChangePassWordView = () => {
-  return (
-    <>
-      <ChangePassWordViewComponents />
-    </>
-  );
+    return (
+        <>
+            <ChangePassWordViewComponents />
+        </>
+    );
 };
 
 export default ChangePassWordView;

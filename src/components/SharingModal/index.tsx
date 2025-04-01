@@ -1,1 +1,1 @@
-export { default as SharingModal } from "./SharingModal";
+export { default as SharingModal } from './SharingModal';

@@ -1,1 +1,1 @@
-export { default as DocsDirectory } from "./DocsDirectory";
+export { default as DocsDirectory } from './DocsDirectory';

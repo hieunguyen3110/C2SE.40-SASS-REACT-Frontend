@@ -1,11 +1,11 @@
-import { SearchUserComponents } from "../components";
+import { SearchUserComponents } from '../components';
 
 const SearchUserView = () => {
-  return (
-    <>
-      <SearchUserComponents />
-    </>
-  );
+    return (
+        <>
+            <SearchUserComponents />
+        </>
+    );
 };
 
 export default SearchUserView;

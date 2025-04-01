@@ -1,49 +1,49 @@
-import classNames from "classnames/bind";
-import styles from "./UsersView.module.scss";
+import classNames from 'classnames/bind';
+import styles from './UsersView.module.scss';
 const cx = classNames.bind(styles);
-import { useEffect, useState } from "react";
-import CensorDropdown from "../../Documents/components/CensorDropdown";
-import SearchIcon from "@mui/icons-material/Search";
-import DataTable from "../../Documents/components/DataTable";
-import { useAppDispatch, useAppSelector } from "../../../../redux/store";
+import { useEffect, useState } from 'react';
+import CensorDropdown from '../../Documents/components/CensorDropdown';
+import SearchIcon from '@mui/icons-material/Search';
+import DataTable from '../../Documents/components/DataTable';
+import { useAppDispatch, useAppSelector } from '../../../../redux/store';
 import {
     approveUsers,
     clearError,
     deleteUsers,
     getStatsForAdmin,
     getUsersForAdmin,
-} from "../../../../redux/AdminDashboardSlice/AdminDashboardSlice";
-import AlertDialog from "../components/AlertDialog";
-import { toast } from "react-toastify";
-import Loader from "../../../../components/Loader/Loader";
-import ApproveDialog from "../components/ApproveDialog";
+} from '../../../../redux/AdminDashboardSlice/AdminDashboardSlice';
+import AlertDialog from '../components/AlertDialog';
+import { toast } from 'react-toastify';
+import Loader from '../../../../components/Loader/Loader';
+import ApproveDialog from '../components/ApproveDialog';
 
 const columns: any[] = [
-    { id: "accountId", label: "ID", width: 50 },
-    { id: "firstName", label: "Họ", minWidth: 100 },
+    { id: 'accountId', label: 'ID', width: 50 },
+    { id: 'firstName', label: 'Họ', minWidth: 100 },
     {
-        id: "lastName",
-        label: "Tên",
+        id: 'lastName',
+        label: 'Tên',
         minWidth: 100,
-        align: "center",
+        align: 'center',
     },
     {
-        id: "email",
-        label: "Email",
+        id: 'email',
+        label: 'Email',
         minWidth: 100,
-        align: "center",
+        align: 'center',
     },
     {
-        id: "birthDate",
-        label: "Ngày sinh",
+        id: 'birthDate',
+        label: 'Ngày sinh',
         minWidth: 120,
-        align: "center",
+        align: 'center',
     },
     {
-        id: "gender",
-        label: "Giới tính",
+        id: 'gender',
+        label: 'Giới tính',
         minWidth: 90,
-        align: "center",
+        align: 'center',
     },
     // {
     //     id: "hometown",
@@ -52,42 +52,38 @@ const columns: any[] = [
     //     align: "center",
     // },
     {
-        id: "role",
-        label: "Chức vụ",
+        id: 'role',
+        label: 'Chức vụ',
         minWidth: 50,
-        align: "center",
+        align: 'center',
     },
     {
-        id: "isActive",
-        label: "Phê duyệt",
+        id: 'isActive',
+        label: 'Phê duyệt',
         minWidth: 100,
-        align: "center",
+        align: 'center',
     },
 ];
 
 const censorValues: any = [
-    { code: "accountId", title: "ID" },
-    { code: "firstName", title: "Họ" },
-    { code: "lastName", title: "Tên" },
-    { code: "email", title: "Email" },
-    { code: "role", title: "Chức vụ" },
-    { code: "isActive", title: "Phê duyệt" },
+    { code: 'accountId', title: 'ID' },
+    { code: 'firstName', title: 'Họ' },
+    { code: 'lastName', title: 'Tên' },
+    { code: 'email', title: 'Email' },
+    { code: 'role', title: 'Chức vụ' },
+    { code: 'isActive', title: 'Phê duyệt' },
 ];
 
 export default function UsersView() {
-    const [censor, setCensor] = useState<string>("");
-    const [searchValue, setSearchValue] = useState<string>("");
+    const [censor, setCensor] = useState<string>('');
+    const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(1);
     const [data, setData] = useState<any>([]);
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const dispatch = useAppDispatch();
-    const users: any[] = useAppSelector(
-        (state: any) => state.adminDashboard.users?.content
-    );
+    const users: any[] = useAppSelector((state: any) => state.adminDashboard.users?.content);
 
-    const { loading, successMessage, error } = useAppSelector(
-        (state) => state.adminDashboard
-    );
+    const { loading, successMessage, error } = useAppSelector((state) => state.adminDashboard);
 
     useEffect(() => {
         if (users && users.length !== 0) {
@@ -109,10 +105,8 @@ export default function UsersView() {
     }, [dispatch, page]);
 
     const activeFilter = (
-        <div className={cx("search-container")}>
-            <select
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}>
+        <div className={cx('search-container')}>
+            <select value={searchValue} onChange={(e) => setSearchValue(e.target.value)}>
                 <option defaultChecked value="unchecked">
                     Chưa phê duyệt
                 </option>
@@ -128,14 +122,14 @@ export default function UsersView() {
         if (selectedIds.length !== 0) {
             setOpenAlertDialog(true);
         } else {
-            toast.error("Phải chọn ít nhất 1 tài khoản");
+            toast.error('Phải chọn ít nhất 1 tài khoản');
         }
     };
     const handleOpenApproveDialog = () => {
         if (selectedIds.length !== 0) {
             setOpenApproveDialog(true);
         } else {
-            toast.error("Phải chọn ít nhất 1 tài khoản");
+            toast.error('Phải chọn ít nhất 1 tài khoản');
         }
     };
     const handleCloseAlertDialog = () => setOpenAlertDialog(false);
@@ -154,12 +148,12 @@ export default function UsersView() {
             dispatch(getUsersForAdmin({ page, size: 10 }));
         } catch (error) {
             console.log(error);
-            toast.error("Xảy ra lỗi, vui lòng thử lại sau");
+            toast.error('Xảy ra lỗi, vui lòng thử lại sau');
         }
     };
 
     useEffect(() => {
-        if (successMessage !== "") {
+        if (successMessage !== '') {
             if (openAlertDialog) {
                 setOpenAlertDialog(false);
             }
@@ -173,7 +167,7 @@ export default function UsersView() {
     }, [successMessage]);
 
     useEffect(() => {
-        if (error !== "") {
+        if (error !== '') {
             if (openAlertDialog) {
                 setOpenAlertDialog(false);
             } else {
@@ -187,53 +181,43 @@ export default function UsersView() {
     }, [error]);
 
     return (
-        <div className={cx("admin-users-view")}>
+        <div className={cx('admin-users-view')}>
             <span>DTUDASHBOARD / Người dùng</span>
-            <div className={cx("actions")}>
-                <CensorDropdown
-                    censor={censor}
-                    onDropdownChange={handleClassifyChange}
-                    values={censorValues}
-                />
-                {censor === "isActive" ? (
+            <div className={cx('actions')}>
+                <CensorDropdown censor={censor} onDropdownChange={handleClassifyChange} values={censorValues} />
+                {censor === 'isActive' ? (
                     activeFilter
                 ) : (
-                    <div className={cx("search-container")}>
+                    <div className={cx('search-container')}>
                         <input
                             onChange={(e) => {
                                 setSearchValue(e.target.value);
                             }}
                             value={searchValue}
                             placeholder={`Lọc dữ liệu...`}
-                            disabled={censor === ""}
+                            disabled={censor === ''}
                             type="text"
                         />
                         <SearchIcon
                             style={{
-                                color: "#757575",
-                                position: "absolute",
-                                top: "50%",
-                                right: "15px",
-                                transform: "translateY(-50%)",
-                                pointerEvents: "none",
+                                color: '#757575',
+                                position: 'absolute',
+                                top: '50%',
+                                right: '15px',
+                                transform: 'translateY(-50%)',
+                                pointerEvents: 'none',
                             }}
                         />
                     </div>
                 )}
-                <div className={cx("rightActions")}>
-                    <button
-                        onClick={handleReloadTable}
-                        className={cx("reload-btn")}>
+                <div className={cx('rightActions')}>
+                    <button onClick={handleReloadTable} className={cx('reload-btn')}>
                         Tải lại
                     </button>
-                    <button
-                        onClick={handleOpenAlertDialog}
-                        className={cx("delete-btn")}>
+                    <button onClick={handleOpenAlertDialog} className={cx('delete-btn')}>
                         Xoá
                     </button>
-                    <button
-                        onClick={handleOpenApproveDialog}
-                        className={cx("censor-btn")}>
+                    <button onClick={handleOpenApproveDialog} className={cx('censor-btn')}>
                         Duyệt người dùng mới
                     </button>
                 </div>
@@ -249,11 +233,7 @@ export default function UsersView() {
                     topic="user"
                     selectedDocuments={selectedIds}
                     setSelectedDocuments={setSelectedIds}
-                    count={Math.ceil(
-                        ((statsData?.totalStudents || 0) +
-                            (statsData?.totalLecturers || 0)) /
-                            10
-                    )}
+                    count={Math.ceil(((statsData?.totalStudents || 0) + (statsData?.totalLecturers || 0)) / 10)}
                 />
             )}
             <AlertDialog

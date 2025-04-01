@@ -1,1 +1,1 @@
-export { default as GroupSidebar } from "./GroupSidebar";
+export { default as GroupSidebar } from './GroupSidebar';

@@ -1,4 +1,4 @@
-import { Sidebar } from "../Sidebar";
+import { Sidebar } from '../Sidebar';
 
 interface PropsType {
     children: React.ReactNode;
@@ -6,7 +6,7 @@ interface PropsType {
 
 export default function Main(props: PropsType) {
     return (
-        <div style={{ marginTop: "100px", width: "100%", display: "flex" }}>
+        <div style={{ marginTop: '100px', width: '100%', display: 'flex' }}>
             <Sidebar />
             {props.children}
         </div>

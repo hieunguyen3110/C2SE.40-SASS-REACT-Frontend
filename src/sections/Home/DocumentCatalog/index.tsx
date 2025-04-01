@@ -1,1 +1,1 @@
-export { default as DocumentCatalog } from "./DocumentCatalog";
+export { default as DocumentCatalog } from './DocumentCatalog';

@@ -1,19 +1,19 @@
-import { ApiResponse } from "../../types/response.type";
-import { axiosInstance } from "../../utils/AxiosInterceptor";
-import { AxiosError } from "axios";
+import { ApiResponse } from '../../types/response.type';
+import { axiosInstance } from '../../utils/AxiosInterceptor';
+import { AxiosError } from 'axios';
 import {
     StudyGroup,
     Message,
     ChatMessage,
     GroupResponse,
     CreateGroupRequest,
-    ShareDocumentRequest
+    ShareDocumentRequest,
 } from '../../types/groupStudy.types';
 
 // API Functions
 export const createGroupApi = async (data: CreateGroupRequest) => {
     try {
-        const res = await axiosInstance.post("/study-group", data);
+        const res = await axiosInstance.post('/study-group', data);
         return res as unknown as ApiResponse<StudyGroup>;
     } catch (err: unknown) {
         const error = err as AxiosError<{ message?: string }>;
@@ -64,7 +64,7 @@ export const deleteGroupApi = async (groupId: number) => {
 export const listMembersApi = async (groupId: number, page: number = 0, size: number = 10) => {
     try {
         const res = await axiosInstance.get(`/study-group/${groupId}/members`, {
-            params: { page, size }
+            params: { page, size },
         });
         return res as unknown as ApiResponse<GroupResponse[]>;
     } catch (err: unknown) {
@@ -86,7 +86,7 @@ export const editGroupApi = async (groupId: number, data: CreateGroupRequest) =>
 export const getPinnedMessagesApi = async (groupId: number, page: number = 0, size: number = 10) => {
     try {
         const res = await axiosInstance.get(`/study-group/${groupId}/pinned-messages`, {
-            params: { page, size }
+            params: { page, size },
         });
         return res as unknown as ApiResponse<Message[]>;
     } catch (err: unknown) {
@@ -109,7 +109,7 @@ export const sendMessageApi = async (data: ChatMessage) => {
     try {
         const res = await axiosInstance.post(`/study-group/${data.groupId}/messages`, {
             content: data.content,
-            senderId: data.senderId
+            senderId: data.senderId,
         });
         return res as unknown as ApiResponse<Message>;
     } catch (err: unknown) {
