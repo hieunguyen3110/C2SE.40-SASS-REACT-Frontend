@@ -327,7 +327,7 @@ const UploadFileComponents = () => {
         <div className={cx('file-component-main')}>
             <HeaderUploadFile
                 avatar={{
-                    profilePicture: ilogins?.profilePicture,
+                    profilePicture: ilogins?.profilePicture || undefined,
                 }}
             />
             <div className={cx('component-main-body')}>
