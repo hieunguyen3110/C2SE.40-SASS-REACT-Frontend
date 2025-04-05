@@ -1,0 +1,100 @@
+.knowledge-test {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    width: 100%;
+
+    &-container {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
+        width: 100%;
+        max-width: 1000px;
+        margin: 2rem;
+        height: fit-content;
+    }
+
+    .title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .label {
+        display: block;
+        font-size: 0.95rem;
+        color: #555;
+        margin-bottom: 0.5rem;
+    }
+
+    .number-input {
+        width: 100%;
+        
+        input {
+            font-size: 1rem;
+            padding: 12px;
+            border-radius: 6px;
+        }
+    }
+
+    .start-button {
+        background-color: #ff3c3c !important;
+        color: white !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        padding: 12px !important;
+        font-size: 1rem !important;
+        margin-top: 1.5rem !important;
+        border-radius: 6px !important;
+        transition: background-color 0.3s !important;
+
+        &:hover {
+            background-color: #e62e2e !important;
+        }
+    }
+
+    /* Styling for the Autocomplete subject selection */
+    :global(.MuiAutocomplete-root) {
+        width: 100%;
+    }
+
+    :global(.MuiInputBase-root) {
+        border-radius: 6px;
+        padding: 3px 10px !important;
+    }
+
+    .subject-select {
+        & :global(.MuiOutlinedInput-root) {
+            padding: 4px;
+        }
+    }
+
+    .subject-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .subject-option-item {
+        padding: 8px 16px !important;
+    }
+
+    .subject-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .selected-icon {
+        display: flex;
+        align-items: center;
+        margin-right: 8px;
+    }
+}

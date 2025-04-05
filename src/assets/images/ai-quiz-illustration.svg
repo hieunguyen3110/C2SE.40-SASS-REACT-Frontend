@@ -1,0 +1,38 @@
+<svg width="500" height="400" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Nền -->
+  <rect width="500" height="400" fill="#f9f9f9" rx="20" ry="20"/>
+  
+  <!-- Vòng tròn nền -->
+  <circle cx="250" cy="200" r="150" fill="#ffeeee" />
+  
+  <!-- Biểu tượng não AI -->
+  <path d="M250 100 C320 100, 350 170, 350 200 C350 270, 300 300, 250 300 C200 300, 150 270, 150 200 C150 170, 180 100, 250 100" fill="#ff3c3c" opacity="0.8" />
+  
+  <!-- Đường kết nối -->
+  <path d="M250 150 L300 180 L330 150 M250 150 L200 180 L170 150" stroke="#ff3c3c" stroke-width="4" fill="none" />
+  <path d="M250 250 L300 220 L330 250 M250 250 L200 220 L170 250" stroke="#ff3c3c" stroke-width="4" fill="none" />
+  
+  <!-- Biểu tượng suy nghĩ -->
+  <circle cx="350" cy="120" r="20" fill="white" stroke="#ff3c3c" stroke-width="3" />
+  <circle cx="380" cy="150" r="15" fill="white" stroke="#ff3c3c" stroke-width="3" />
+  <circle cx="400" cy="180" r="10" fill="white" stroke="#ff3c3c" stroke-width="3" />
+  
+  <!-- Dấu hỏi -->
+  <text x="160" y="160" font-family="Arial" font-size="40" fill="#ff3c3c" font-weight="bold">?</text>
+  <text x="330" y="240" font-family="Arial" font-size="40" fill="#ff3c3c" font-weight="bold">?</text>
+  <text x="220" y="280" font-family="Arial" font-size="40" fill="#ff3c3c" font-weight="bold">?</text>
+  
+  <!-- Đáp án quiz -->
+  <rect x="120" y="300" width="80" height="30" rx="15" ry="15" fill="#ff3c3c" />
+  <rect x="210" y="300" width="80" height="30" rx="15" ry="15" fill="white" stroke="#ff3c3c" stroke-width="2" />
+  <rect x="300" y="300" width="80" height="30" rx="15" ry="15" fill="white" stroke="#ff3c3c" stroke-width="2" />
+  
+  <!-- Nút bấm -->
+  <circle cx="150" cy="315" r="5" fill="white" />
+  <circle cx="250" cy="315" r="5" fill="#ff3c3c" />
+  <circle cx="340" cy="315" r="5" fill="#ff3c3c" />
+  
+  <!-- Hiệu ứng ánh sáng -->
+  <circle cx="250" cy="200" r="120" fill="none" stroke="white" stroke-width="8" opacity="0.5" />
+  <circle cx="250" cy="200" r="100" fill="none" stroke="white" stroke-width="5" opacity="0.3" />
+</svg>

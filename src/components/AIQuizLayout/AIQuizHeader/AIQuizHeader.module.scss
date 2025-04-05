@@ -1,0 +1,56 @@
+.ai-quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  height: 70px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.dtu {
+  color: #FF0000;
+  font-weight: 700;
+  font-size: 20px;
+  margin-right: 6px;
+}
+
+.document {
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #444;
+  transition: all 0.2s ease;
+  
+  span {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  &.active {
+    color: #fff;
+    background-color: #FF0000;
+  }
+}
