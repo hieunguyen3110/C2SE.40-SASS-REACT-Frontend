@@ -58,7 +58,7 @@ const GroupCreationForm = () => {
             // })).unwrap();
 
             // Chuyển hướng về trang danh sách nhóm sau khi tạo thành công
-            navigate('/document/group-study');
+            // navigate('/document/group-study');
         } catch (error) {
             console.error('Lỗi khi tạo nhóm:', error);
         }

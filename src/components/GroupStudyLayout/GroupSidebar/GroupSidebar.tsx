@@ -42,7 +42,7 @@ const GroupSidebar = () => {
         {
             icon: <GroupIcon />,
             label: 'Quản lý nhóm học tập',
-            path: '/document/group-study/manage',
+            path: '/document/group-study/management',
         },
         {
             icon: <SearchIcon />,

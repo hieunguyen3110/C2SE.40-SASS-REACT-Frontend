@@ -22,7 +22,7 @@ import OpenIcon from '../../../assets/images/icons/OpenArrowIcon.png';
 
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import ContactICON from '../../../assets/images/icons/ContactICON.png';
+import ContactICON from '../../../assets/images/icons/ContactIcon.png';
 import Badge from '@mui/material/Badge';
 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
