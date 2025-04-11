@@ -1,5 +1,4 @@
 import './App.css';
-import { GlobalStyles } from './components/GlobalStyles';
 import { SharingModal } from './components/SharingModal';
 import { SharingModalProvider } from './contexts/SharingModalContext';
 import Router from './routes/section';
@@ -10,9 +9,7 @@ function App() {
         <SharingModalProvider>
             <SharingModal />
             <ToastContainer autoClose={3000} />
-            <GlobalStyles>
-                <Router />
-            </GlobalStyles>
+            <Router />
         </SharingModalProvider>
     );
 }

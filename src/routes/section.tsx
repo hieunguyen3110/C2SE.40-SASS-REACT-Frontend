@@ -40,6 +40,7 @@ import KnowledgeTestPage from '../pages/AIQuizPages/KnowledgeTest';
 import AIQuizLayout from '../components/AIQuizLayout';
 import TestProcessPage from '../pages/AIQuizPages/TestProcess';
 import AIQuizHome from '../sections/AIQuiz/AIQuizHome';
+import GroupManagementPage from '../pages/GroupStudyPages/GroupManagement';
 export default function Router() {
     const routes = useRoutes([
         {
@@ -147,6 +148,10 @@ export default function Router() {
                         {
                             path: ':id',
                             element: <GroupStudyDetailPage />,
+                        },
+                        {
+                            path: 'management',
+                            element: <GroupManagementPage />,
                         },
                     ],
                 },

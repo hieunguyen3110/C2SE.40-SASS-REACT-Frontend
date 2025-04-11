@@ -3,7 +3,7 @@ import styles from './ForgotPassWordComponents.module.scss';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
-import user from '../../../assets/images/user.png';
+import user from '../../../assets/images/User.png'
 import check from '../../../assets/images/Chield_check.png';
 import image4 from '../../../assets/images/Return-Outline.svg';
 import logoLogin from '../../../assets/images/image_main_login.jfif';

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RootState, useAppDispatch } from '../../../redux/store';
 
-import user from '../../../assets/images/user.png';
+import user from '../../../assets/images/User.png';
 import unlock from '../../../assets/images/Unlock.png';
 import check from '../../../assets/images/Chield_check.png';
 import image4 from '../../../assets/images/Return-Outline.svg';

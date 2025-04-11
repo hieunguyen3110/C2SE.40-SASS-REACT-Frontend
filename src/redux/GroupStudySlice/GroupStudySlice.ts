@@ -31,7 +31,7 @@ export const createGroupAction = createAsyncThunk<StudyGroup, CreateGroupRequest
             return response.data;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
-            toast.error(error.message);
+            toast.error('Không thể tạo nhóm. Vui lòng thử lại sau.');
             throw Error(error.message);
         }
     },
@@ -45,7 +45,7 @@ export const getGroupDetailsAction = createAsyncThunk<StudyGroup, number>(
             return response.data;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
-            toast.error(error.message);
+            toast.error('Không thể lấy thông tin nhóm. Vui lòng thử lại sau.');
             throw Error(error.message);
         }
     },
@@ -59,7 +59,7 @@ export const removeMemberAction = createAsyncThunk<void, { groupId: number; user
             toast.success('Đã xóa thành viên thành công');
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
-            toast.error(error.message);
+            toast.error('Không thể xóa thành viên. Vui lòng thử lại sau.');
             throw Error(error.message);
         }
     },
@@ -73,7 +73,7 @@ export const listMembersAction = createAsyncThunk<GroupResponse[], { groupId: nu
             return response.data;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
-            toast.error(error.message);
+            toast.error('Không thể lấy danh sách thành viên. Vui lòng thử lại sau.');
             throw Error(error.message);
         }
     },
@@ -85,7 +85,7 @@ export const deleteGroupAction = createAsyncThunk<void, number>('groupStudy/dele
         toast.success('Đã xóa nhóm thành công');
     } catch (err: unknown) {
         const error = err as AxiosError<{ message?: string }>;
-        toast.error(error.message);
+        toast.error('Không thể xóa nhóm. Vui lòng thử lại sau.');
         throw Error(error.message);
     }
 });
@@ -99,7 +99,7 @@ export const editGroupAction = createAsyncThunk<StudyGroup, { groupId: number; d
             return response.data;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
-            toast.error(error.message);
+            toast.error('Không thể cập nhật thông tin nhóm. Vui lòng thử lại sau.');
             throw Error(error.message);
         }
     },
@@ -113,7 +113,7 @@ export const pinMessageAction = createAsyncThunk<Message[], { messageId: number 
             return response.data;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
-            toast.error(error.message);
+            toast.error('Không thể ghim tin nhắn. Vui lòng thử lại sau.');
             throw Error(error.message);
         }
     },
@@ -128,7 +128,7 @@ export const shareDocumentAction = createAsyncThunk<Message, { groupId: number; 
             return response.data;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
-            toast.error(error.message);
+            toast.error('Không thể chia sẻ tài liệu. Vui lòng thử lại sau.');
             throw Error(error.message);
         }
     },
@@ -142,7 +142,7 @@ export const getPinnedMessagesAction = createAsyncThunk<Message[], { groupId: nu
             return response.data;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
-            toast.error(error.message);
+            toast.error('Không thể lấy tin nhắn đã ghim. Vui lòng thử lại sau.');
             throw Error(error.message);
         }
     },
@@ -156,7 +156,7 @@ export const sendMessageAction = createAsyncThunk<Message, { data: ChatMessage }
             return response.data;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
-            toast.error(error.message);
+            toast.error('Không thể gửi tin nhắn. Vui lòng thử lại sau.');
             throw Error(error.message);
         }
     },
