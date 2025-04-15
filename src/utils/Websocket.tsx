@@ -19,6 +19,7 @@ type NotificationResponse = {
 };
 
 let stompClient: Client;
+const websocketUrl = import.meta.env.VITE_APP_WEBSOCKET_URL;
 export const WebsocketConnection: React.FC = () => {
     const dispatch = useAppDispatch();
     const { accountId } = useAppSelector((state) => state.authentication);
@@ -31,7 +32,7 @@ export const WebsocketConnection: React.FC = () => {
         }
 
         stompClient = new Client({
-            webSocketFactory: () => new SockJS(` http://localhost:8080/ws`),
+            webSocketFactory: () => new SockJS(`${websocketUrl}`),
             connectHeaders: {
                 token: token,
             },
