@@ -1,113 +1,281 @@
 .container {
-    display: flex;
-    justify-content: center;
-    margin: 0px 40px;
-    border-radius: 8px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 .formPaper {
-    width: 100%;
-    padding: 0;
-    overflow: hidden;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
 }
 
 .formTitle {
-    background-color: #e62e2d;
-    color: white;
-    padding: 16px;
-    margin: 0;
-    font-weight: 500;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #333;
+    text-align: center;
 }
 
 .form {
-    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
 
 .section {
-    margin-bottom: 24px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
 }
 
 .sectionHeader {
     display: flex;
     align-items: center;
-    margin-bottom: 16px;
-    gap: 8px;
+    gap: 10px;
+    margin-bottom: 20px;
+    
+    h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+        color: #333;
+    }
 }
 
 .formField {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .fieldLabel {
+    display: block;
     font-weight: 500;
     margin-bottom: 8px;
-    color: #e62e2d;
-}
-
-.required {
-    color: #e62e2d;
+    color: #333;
+    
+    .required {
+        color: #ff3c3c;
+        margin-left: 2px;
+    }
 }
 
 .input {
-    background-color: #f5f5f5;
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    
+    &:focus {
+        outline: none;
+        border-color: #ff3c3c;
+        box-shadow: 0 0 0 2px rgba(255, 60, 60, 0.2);
+    }
+}
+
+.textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 100px;
+    
+    &:focus {
+        outline: none;
+        border-color: #ff3c3c;
+        box-shadow: 0 0 0 2px rgba(255, 60, 60, 0.2);
+    }
+}
+
+.searchContainer {
+    position: relative;
+    
+    .searchIcon {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        color: #777;
+    }
+    
+    .input {
+        padding-left: 40px;
+    }
 }
 
 .categoryChips {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 16px;
+    gap: 10px;
+    margin-top: 15px;
 }
 
 .categoryChip {
-    margin-right: 4px;
-    margin-bottom: 4px;
-
+    padding: 6px 12px;
+    border-radius: 16px;
+    background: transparent;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    
     &:hover {
-        background-color: rgba(230, 46, 45, 0.1);
+        background-color: #f5f5f5;
+    }
+    
+    &.selected {
+        background-color: #FFE0E1;
+        color: #ff3c3c;
+        border: 1px solid #ff3c3c;
     }
 }
 
 .switchControl {
-    width: 100%;
-    margin: 0;
-    padding: 8px 16px;
-    border-radius: 4px;
-    background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.toggleContainer {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-right: 15px;
+    
+    .toggleInput {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        
+        &:checked + .toggleSlider {
+            background-color: #ff3c3c;
+        }
+        
+        &:checked + .toggleSlider:before {
+            transform: translateX(26px);
+        }
+    }
+    
+    .toggleSlider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+        
+        &:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+    }
 }
 
 .switchLabel {
     display: flex;
     flex-direction: column;
+    
+    span {
+        font-weight: 500;
+    }
+    
+    small {
+        color: #777;
+        font-size: 12px;
+        margin-top: 2px;
+    }
 }
 
 .charCount {
     display: block;
     text-align: right;
-    margin-top: 4px;
+    color: #777;
+    margin-top: 5px;
+    font-size: 12px;
 }
 
 .memberLimitContainer {
     display: flex;
     align-items: center;
-    gap: 8px;
-}
-
-.memberLimitInput {
-    width: 100px;
-}
-
-.memberLimitLabel {
-    color: #666;
+    gap: 10px;
+    
+    .memberLimitInput {
+        width: 80px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        text-align: center;
+        
+        &:focus {
+            outline: none;
+            border-color: #ff3c3c;
+        }
+    }
+    
+    .memberLimitLabel {
+        color: #555;
+    }
 }
 
 .submitButton {
-    margin-top: 16px;
-    padding: 12px;
-    font-weight: bold;
-    background-color: #e62e2d;
-
+    background-color: #ff3c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    
     &:hover {
-        background-color: #c62828;
+        background-color: #e62e2e;
+    }
+}
+
+.searchResults {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    margin-top: 4px;
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 14px;
+
+            &:hover {
+                background-color: rgba(255, 60, 60, 0.1);
+            }
+        }
     }
 }

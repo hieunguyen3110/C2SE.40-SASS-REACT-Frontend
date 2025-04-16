@@ -1,0 +1,255 @@
+.groupSupportView {
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f7f9;
+    width: 100%;
+    min-height: 100vh;
+    max-width: 1000px;
+    margin: 0 auto;
+    .header {
+        background-color: #fff;
+        padding: 30px 40px;
+        border-bottom: 1px solid #e0e0e0;
+        
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            
+            span {
+                color: #ff3c3c;
+            }
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.5;
+        }
+    }
+    
+    .content {
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        
+        .sectionTitle {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            
+            &:after {
+                content: '';
+                display: block;
+                width: 60px;
+                height: 3px;
+                background-color: #ff3c3c;
+                margin-top: 8px;
+            }
+        }
+        
+        .faqSection {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            
+            .faqItem {
+                border-bottom: 1px solid #eee;
+                
+                &:last-child {
+                    border-bottom: none;
+                }
+                
+                .questionArea {
+                    padding: 18px 24px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    cursor: pointer;
+                    transition: background-color 0.2s ease;
+                    
+                    &:hover {
+                        background-color: #fff9f9;
+                    }
+                    
+                    .question {
+                        font-size: 16px;
+                        font-weight: 500;
+                        color: #333;
+                    }
+                    
+                    .expandIcon {
+                        color: #ff3c3c;
+                        transition: transform 0.3s ease;
+                        
+                        &.expanded {
+                            transform: rotate(180deg);
+                        }
+                    }
+                }
+                
+                .answerArea {
+                    overflow: hidden;
+                    background-color: #fff9f9;
+                    
+                    .answer {
+                        padding: 0 24px 18px;
+                        font-size: 15px;
+                        line-height: 1.6;
+                        color: #555;
+                    }
+                }
+            }
+        }
+        
+        .contactSection {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            padding: 30px;
+            
+            .contactForm {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                
+                .formGroup {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    
+                    label {
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: #444;
+                    }
+                    
+                    input, textarea, select {
+                        padding: 12px 16px;
+                        border: 1px solid #e0e0e0;
+                        border-radius: 8px;
+                        font-size: 15px;
+                        transition: all 0.2s ease;
+                        
+                        &:focus {
+                            outline: none;
+                            border-color: #ff3c3c;
+                            box-shadow: 0 0 0 2px rgba(255, 60, 60, 0.1);
+                        }
+                    }
+                    
+                    textarea {
+                        min-height: 120px;
+                        resize: vertical;
+                    }
+                }
+                
+                .submitButton {
+                    background-color: #ff3c3c;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 14px 24px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    align-self: flex-start;
+                    margin-top: 10px;
+                    
+                    &:hover {
+                        background-color: #e63535;
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(255, 60, 60, 0.2);
+                    }
+                    
+                    &:active {
+                        transform: translateY(0);
+                    }
+                }
+            }
+        }
+        
+        .resourcesSection {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            
+            .resourceCard {
+                background-color: #fff;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                overflow: hidden;
+                transition: all 0.3s ease;
+                
+                &:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                    
+                    .resourceImage {
+                        transform: scale(1.05);
+                    }
+                }
+                
+                .resourceImageContainer {
+                    height: 160px;
+                    overflow: hidden;
+                    
+                    .resourceImage {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        transition: transform 0.5s ease;
+                    }
+                }
+                
+                .resourceContent {
+                    padding: 20px;
+                    
+                    .resourceTitle {
+                        font-size: 18px;
+                        font-weight: 600;
+                        color: #333;
+                        margin-bottom: 8px;
+                    }
+                    
+                    .resourceDescription {
+                        font-size: 14px;
+                        color: #666;
+                        line-height: 1.5;
+                        margin-bottom: 16px;
+                    }
+                    
+                    .resourceButton {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        color: #ff3c3c;
+                        font-size: 14px;
+                        font-weight: 500;
+                        text-decoration: none;
+                        
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+} 

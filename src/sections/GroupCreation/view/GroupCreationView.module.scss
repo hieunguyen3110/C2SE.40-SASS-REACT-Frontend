@@ -1,7 +1,10 @@
 .group-creation-view {
     display: flex;
     flex-direction: column;
-    width: calc(100% - 250px) !important;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
     & > .back-link {
         margin: 16px 40px;
         font-weight: 500;

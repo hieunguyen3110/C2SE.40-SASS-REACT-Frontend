@@ -2,17 +2,25 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
-    margin-bottom: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
 
     .user-info {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 16px;
 
         .avatar {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
         }
 
         .details {
@@ -21,41 +29,57 @@
             margin-right: 16px;
 
             .name {
-                font-weight: 500;
+                font-weight: 600;
+                font-size: 1rem;
+                margin: 0 0 4px 0;
+                color: #333;
             }
 
             .request-type {
                 font-size: 0.85rem;
-                color: #666;
+                color: #777;
             }
         }
 
         .date {
             font-size: 0.85rem;
-            color: #666;
+            color: #777;
+            margin-left: auto;
         }
     }
 
     .actions {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 12px;
+
+        button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
 
         .accept-btn {
-            background-color: rgba(46, 125, 50, 0.1);
-            color: #2e7d32;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
 
             &:hover {
-                background-color: rgba(46, 125, 50, 0.2);
+                background-color: rgba(40, 167, 69, 0.2);
             }
         }
 
         .reject-btn {
-            background-color: rgba(211, 47, 47, 0.1);
-            color: #d32f2f;
+            background-color: rgba(255, 60, 60, 0.1);
+            color: #ff3c3c;
 
             &:hover {
-                background-color: rgba(211, 47, 47, 0.2);
+                background-color: rgba(255, 60, 60, 0.2);
             }
         }
     }

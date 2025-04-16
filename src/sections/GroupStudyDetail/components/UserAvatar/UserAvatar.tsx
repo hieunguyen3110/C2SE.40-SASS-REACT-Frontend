@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar } from '@mui/material';
+import { motion } from 'framer-motion';
 import classNames from 'classnames/bind';
 import styles from './UserAvatar.module.scss';
 
@@ -40,7 +40,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ src, name, size = 'medium', cla
             '#CDDC39',
             '#FFC107',
             '#FF9800',
-            '#FF5722',
+            '#ff3c3c', // Added primary color
         ];
 
         let hash = 0;
@@ -51,19 +51,23 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ src, name, size = 'medium', cla
         return colors[Math.abs(hash) % colors.length];
     };
 
+    const avatarStyle = {
+        backgroundColor: !src ? getRandomColor(name) : undefined,
+    };
+
     return (
-        <Avatar
-            src={src}
-            alt={name}
+        <motion.div
             className={cx('user-avatar', size, className)}
-            sx={{
-                bgcolor: !src ? getRandomColor(name) : undefined,
-                width: size === 'small' ? 32 : size === 'large' ? 48 : 40,
-                height: size === 'small' ? 32 : size === 'large' ? 48 : 40,
-            }}
+            style={avatarStyle}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
         >
-            {!src && getInitials(name)}
-        </Avatar>
+            {src ? (
+                <img src={src} alt={name} className={cx('avatar-image')} />
+            ) : (
+                <span className={cx('initials')}>{getInitials(name)}</span>
+            )}
+        </motion.div>
     );
 };
 

@@ -1,114 +1,127 @@
-import { useState, useEffect } from 'react';
-import { Typography, TextField, InputAdornment, Avatar } from '@mui/material';
+import { useState, useEffect, useMemo } from 'react';
+import { Typography, Avatar, Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LanguageIcon from '@mui/icons-material/Language';
+import LockIcon from '@mui/icons-material/Lock';
 import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
 import SchoolIcon from '@mui/icons-material/School';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { motion, AnimatePresence } from 'framer-motion';
 import classNames from 'classnames/bind';
 import styles from './GroupStudyDetail.module.scss';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import PersonAddDisabledIcon from '@mui/icons-material/PersonAddDisabled';
+import GroupIcon from '@mui/icons-material/Group';
 import { useParams } from 'react-router-dom';
 
 // Import custom components
 import TabNavigation from '../components/TabNavigation/TabNavigation';
 import JoinRequestItem from '../components/JoinRequestItem';
 import MemberItem from '../components/MemberItem';
-import { useAppDispatch } from '../../../redux/store';
-import { getGroupDetailsAction } from '../../../redux/GroupStudySlice/GroupStudySlice';
+import { RootState, useAppDispatch, useAppSelector } from '../../../redux/store';
+import {
+    getGroupDetailsAction,
+    listMembersAction,
+    deleteGroupAction,
+    removeMemberAction,
+    updateMemberList,
+    approveJoinRequestAction,
+    rejectJoinRequestAction,
+} from '../../../redux/GroupStudySlice/GroupStudySlice';
+import GroupEditForm from '../components/GroupEditForm/GroupEditForm';
+import AlertModal from '../../../components/AlertModal/AlertModal';
+import { useAlertModal } from '../../../hooks/useAlertModal';
+import { JoinRequest } from '../../../types/groupStudy.types';
+import GroupSetting from '../components/GroupSetting/GroupSetting';
+import PinnedMessages from '../components/PinnedMessages/PinnedMessages';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
 export default function GroupStudyDetail() {
     const [activeTab, setActiveTab] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
-
-    // Get groupId from URL params
-    const { groupId } = useParams<{ groupId: string }>();
+    const [openEditForm, setOpenEditForm] = useState(false);
+    const { id } = useParams<{ id: string }>();
+    const dispatch = useAppDispatch();
+    const { isOpen, title, content, onConfirm, confirmText, openModal, closeModal } = useAlertModal();
 
     // Redux state
-    const dispatch = useAppDispatch();
-    // const { currentGroup, loading, error } = useAppSelector((state) => state.groupStudy);
+    const { currentGroup, loading, error, memberList } = useAppSelector((state) => state.groupStudy);
+    const { accountId } = useAppSelector((state: RootState) => state.authentication);
+
+    // Check if current user is the owner
+    const isOwner = currentGroup?.userId === accountId;
 
     // Fetch group details when component mounts
     useEffect(() => {
-        if (groupId) {
-            // dispatch(getGroupDetailsAction(parseInt(groupId)));
+        if (id) {
+            dispatch(getGroupDetailsAction(parseInt(id)));
+            dispatch(listMembersAction({ groupId: parseInt(id), page: 0, size: 10 }));
         }
-    }, [dispatch, groupId]);
-
-    // Log the data from API
-    // useEffect(() => {
-    //     console.log('Group details:', currentGroup);
-    //     console.log('Loading state:', loading);
-    //     console.log('Error:', error);
-    // }, [currentGroup, loading, error]);
-
-    // Mock data for join requests
-    const joinRequests = [
-        {
-            id: '1',
-            name: 'Trần B',
-            avatar: '',
-            requestDate: '2025-03-01',
-        },
-        {
-            id: '2',
-            name: 'Nguyễn A',
-            avatar: '',
-            requestDate: '2025-03-02',
-        },
-    ];
-
-    // Mock data for members
-    const members = [
-        {
-            id: '1',
-            name: 'Nguyễn Hiếu',
-            avatar: '',
-            joinDate: '2025-01-15',
-            role: 'Admin',
-        },
-        {
-            id: '2',
-            name: 'Phạm Tùng',
-            avatar: '',
-            joinDate: '2025-01-15',
-            role: 'Creator',
-        },
-        {
-            id: '3',
-            name: 'Nguyễn Huy',
-            avatar: '',
-            joinDate: '2025-02-20',
-            role: 'Member',
-        },
-        {
-            id: '4',
-            name: 'Cao An',
-            avatar: '',
-            joinDate: '2025-03-05',
-            role: 'Member',
-        },
-        {
-            id: '5',
-            name: 'Đoàn Khương',
-            avatar: '',
-            joinDate: '2025-03-10',
-            role: 'Member',
-        },
-    ];
+    }, [dispatch, id]);
 
     // Filter members based on search term
-    const filteredMembers = members.filter((member) => member.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filteredMembers = memberList.filter((member) => member.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    // Handlers for join request actions
-    const handleAcceptRequest = (id: string) => {
-        console.log('Accepted request', id);
+    // Handle join request actions
+    const handleAcceptRequest = (id: number) => {
+        dispatch(approveJoinRequestAction(id));
     };
 
-    const handleRejectRequest = (id: string) => {
-        console.log('Rejected request', id);
+    const handleRejectRequest = (id: number) => {
+        dispatch(rejectJoinRequestAction(id));
     };
+
+    // Handle member delete action
+    const handleDeleteMember = (memberId: number) => {
+        if (id) {
+            dispatch(removeMemberAction({ groupId: parseInt(id), userId: memberId }))
+                .unwrap()
+                .then(() => {
+                    // Sau khi xóa thành công, cập nhật state local
+                    const updatedMembers = memberList.filter((member) => member.memberId !== memberId);
+                    dispatch(updateMemberList(updatedMembers));
+                })
+                .catch((error) => {
+                    console.error('Lỗi khi xóa thành viên:', error);
+                });
+        }
+    };
+
+    // Handle edit and delete actions
+    const handleEditGroup = () => {
+        setOpenEditForm(true);
+    };
+
+    const handleDeleteGroup = () => {
+        if (!id) return;
+
+        openModal({
+            title: 'Xác nhận xóa',
+            content: <p>Bạn có chắc chắn muốn xóa nhóm này không?</p>,
+            onConfirm: performDeleteGroup,
+            confirmText: 'Xóa',
+        });
+    };
+
+    const performDeleteGroup = async () => {
+        if (!id) return;
+
+        try {
+            await dispatch(deleteGroupAction(parseInt(id))).unwrap();
+            window.location.href = '/document/group-study';
+        } catch (error) {
+            console.error('Lỗi khi xóa nhóm:', error);
+        }
+    };
+
+    // Use joinRequests from the API if available, otherwise use mock data
+    const displayJoinRequests = useMemo(() => {
+        return currentGroup?.joinRequests || [];
+    }, [currentGroup]);
 
     return (
         <div className={cx('group-study-detail')}>
@@ -119,103 +132,187 @@ export default function GroupStudyDetail() {
                         <ArrowBackIcon />
                     </a>
                     <div className={cx('title-wrapper')}>
-                        <h1 className={cx('group-study-detail__header__title')}>Nghiên cứu khoa học</h1>
-                        <LanguageIcon className={cx('globe-icon')} />
+                        <h1 className={cx('group-study-detail__header__title')}>
+                            {currentGroup?.groupName || 'Loading...'}
+                        </h1>
+                        {currentGroup?.isPrivate ? (
+                            <LockIcon className={cx('globe-icon')} />
+                        ) : (
+                            <LanguageIcon className={cx('globe-icon')} />
+                        )}
                     </div>
+
+                    {/* Owner Actions */}
+                    {isOwner && (
+                        <div className={cx('owner-actions')}>
+                            <Button
+                                variant="contained"
+                                color="warning"
+                                size="small"
+                                startIcon={<EditIcon />}
+                                className={cx('action-button')}
+                                onClick={handleEditGroup}
+                            >
+                                Sửa
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                size="small"
+                                startIcon={<DeleteIcon />}
+                                className={cx('action-button')}
+                                onClick={handleDeleteGroup}
+                            >
+                                Xóa
+                            </Button>
+                        </div>
+                    )}
                 </div>
                 {/* Group Info */}
                 <div className={cx('group-study-detail__info')}>
-                    {/* Có avatar thì thay thế = avatar sau */}
-                    <Avatar className={cx('group-study-detail__info__logo')} sx={{ bgcolor: '#1976d2' }}>
+                    {/* Conditionally render avatar based on group picture */}
+                    <Avatar
+                        className={cx('group-study-detail__info__logo')}
+                        sx={{ bgcolor: '#ff3c3c' }}
+                        src={currentGroup?.picture || undefined}
+                    >
                         <SchoolIcon />
                     </Avatar>
                     <div className={cx('info-wrapper')}>
                         <Typography className={cx('group-study-detail__info__title')}>
-                            Nghiên cứu các chức năng hỗ trợ học thuật với công cụ AI
+                            {currentGroup?.description || 'Loading...'}
                         </Typography>
                         <div className={cx('group-study-detail__info__meta')}>
                             <CalendarMonthIcon fontSize="small" sx={{ marginRight: '4px' }} />
-                            <span>Tạo ngày 2025-01-15</span>
+                            <span>
+                                Tạo ngày{' '}
+                                {currentGroup
+                                    ? new Date(currentGroup.createdAt).toLocaleDateString('vi-VN')
+                                    : '--/--/----'}
+                            </span>
                             <span className={cx('separator')}>•</span>
-                            <span>10 members</span>
+                            <span>{currentGroup?.memberLimited || 0} thành viên tối đa</span>
                         </div>
                     </div>
                 </div>
             </header>
 
             {/* Tabs */}
-            <TabNavigation memberCount={5} pinnedMessagesCount={0} onChange={setActiveTab} />
+            <TabNavigation memberCount={memberList.length} pinnedMessagesCount={0} onChange={setActiveTab} />
 
             {/* Content based on active tab */}
             <div className={cx('group-study-detail__content')}>
                 {activeTab === 0 && (
                     <>
                         {/* Join Requests Section */}
-                        {joinRequests.length > 0 && (
-                            <div className={cx('section')}>
-                                <div className={cx('section__header')}>
-                                    <h2 className={cx('section__header__title')}>Yêu cầu tham gia</h2>
-                                    <span className={cx('section__header__count')}>
-                                        {joinRequests.length} người yêu cầu tham gia nhóm
-                                    </span>
-                                </div>
-                                <div className={cx('section__list')}>
-                                    {joinRequests.map((request) => (
+                        <div className={cx('section')}>
+                            <div className={cx('section__header')}>
+                                <h2 className={cx('section__header__title')}>Yêu cầu tham gia</h2>
+                                <span className={cx('section__header__count')}>
+                                    {displayJoinRequests.length} người yêu cầu tham gia nhóm
+                                </span>
+                            </div>
+                            <div className={cx('section__list')}>
+                                {displayJoinRequests.length > 0 ? (
+                                    displayJoinRequests.map((request: JoinRequest) => (
                                         <JoinRequestItem
                                             key={request.id}
                                             avatar={request.avatar}
                                             name={request.name}
-                                            requestDate={request.requestDate}
+                                            requestDate={request.createdAt}
                                             onAccept={() => handleAcceptRequest(request.id)}
                                             onReject={() => handleRejectRequest(request.id)}
                                         />
-                                    ))}
-                                </div>
+                                    ))
+                                ) : (
+                                    <motion.div
+                                        className={cx('empty-requests')}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.4 }}
+                                    >
+                                        <PersonAddDisabledIcon
+                                            sx={{ fontSize: 28, marginRight: '10px', color: '#999' }}
+                                        />
+                                        <p>Không có yêu cầu tham gia nào</p>
+                                    </motion.div>
+                                )}
                             </div>
-                        )}
+                        </div>
 
                         {/* Members Section */}
                         <div className={cx('section')}>
                             <div className={cx('section__header')}>
-                                <h2 className={cx('section__header__title')}>Thành viên ({members.length})</h2>
+                                <h2 className={cx('section__header__title')}>Thành viên ({memberList.length})</h2>
                             </div>
 
                             {/* Search input */}
                             <div className={cx('section__search')}>
-                                <TextField
-                                    placeholder="Tìm kiếm thành viên"
-                                    variant="outlined"
-                                    fullWidth
-                                    size="small"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <SearchIcon />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
+                                <motion.div
+                                    className={cx('search-container')}
+                                    initial={{ opacity: 0, y: -5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <div className={cx('search-icon')}>
+                                        <SearchIcon />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        className={cx('search-input')}
+                                        placeholder="Tìm kiếm thành viên"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                    <AnimatePresence>
+                                        {searchTerm && (
+                                            <motion.button
+                                                className={cx('clear-button')}
+                                                onClick={() => setSearchTerm('')}
+                                                initial={{ opacity: 0, scale: 0.8 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0.8 }}
+                                                whileHover={{ scale: 1.1 }}
+                                                whileTap={{ scale: 0.9 }}
+                                            >
+                                                <CloseIcon fontSize="small" />
+                                            </motion.button>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>
                             </div>
 
                             {/* Members list */}
                             <div className={cx('section__list')}>
                                 <div className={cx('member-list-header')}>
-                                    <Typography variant="body2">Thành viên</Typography>
-                                    <Typography variant="body2">Đã tham gia</Typography>
-                                    <Typography variant="body2">Chức vụ</Typography>
+                                    <span className={cx('header-item')}>Thành viên</span>
+                                    <span className={cx('header-item')}>Email</span>
+                                    <span className={cx('header-item')}>Chức vụ</span>
                                 </div>
 
-                                {filteredMembers.map((member) => (
-                                    <MemberItem
-                                        key={member.id}
-                                        avatar={member.avatar}
-                                        name={member.name}
-                                        joinDate={member.joinDate}
-                                        role={member.role as 'Admin' | 'Creator' | 'Member'}
-                                    />
-                                ))}
+                                {filteredMembers.length > 0 ? (
+                                    filteredMembers.map((member) => (
+                                        <MemberItem
+                                            key={member.memberId}
+                                            avatar={''}
+                                            name={member.name}
+                                            joinDate={member.email}
+                                            role={currentGroup?.userId === member.memberId ? 'Admin' : 'Member'}
+                                            canDelete={isOwner && currentGroup?.userId !== member.memberId}
+                                            onDelete={() => handleDeleteMember(member.memberId)}
+                                        />
+                                    ))
+                                ) : (
+                                    <motion.div
+                                        className={cx('empty-requests')}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.4 }}
+                                    >
+                                        <GroupIcon sx={{ fontSize: 28, marginRight: '10px', color: '#999' }} />
+                                        <p>Không tìm thấy thành viên nào</p>
+                                    </motion.div>
+                                )}
                             </div>
                         </div>
                     </>
@@ -223,20 +320,29 @@ export default function GroupStudyDetail() {
 
                 {activeTab === 1 && (
                     <div className={cx('section')}>
-                        <Typography variant="body1" align="center" sx={{ py: 4 }}>
-                            Không có tin nhắn đã ghim
-                        </Typography>
+                        <PinnedMessages />
                     </div>
                 )}
 
                 {activeTab === 2 && (
                     <div className={cx('section')}>
-                        <Typography variant="body1" align="center" sx={{ py: 4 }}>
-                            Cài đặt nhóm
-                        </Typography>
+                        <GroupSetting />
                     </div>
                 )}
             </div>
+
+            {/* Edit Group Form Dialog */}
+            <GroupEditForm open={openEditForm} onClose={() => setOpenEditForm(false)} />
+
+            {/* Alert Modal */}
+            <AlertModal
+                isOpen={isOpen}
+                onClose={closeModal}
+                title={title}
+                content={content}
+                onConfirm={onConfirm}
+                confirmText={confirmText}
+            />
         </div>
     );
 }

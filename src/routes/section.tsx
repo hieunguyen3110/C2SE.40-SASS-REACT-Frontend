@@ -31,7 +31,6 @@ import CommingSoonPage from '../pages/CommingSoon';
 import EditDocument from '../pages/EditDocument';
 import FAQDetailPage from '../pages/FAQDetail';
 import SupportPage from '../pages/Support';
-import GroupStudy from '../pages/GroupStudyPages/GroupStudy';
 import CreateGroup from '../pages/GroupStudyPages/GroupCreation';
 import GroupStudyLayout from '../components/GroupStudyLayout/GroupStudyLayout';
 import GroupSearch from '../pages/GroupStudyPages/GroupSearch';
@@ -44,6 +43,9 @@ import GroupManagementPage from '../pages/GroupStudyPages/GroupManagement';
 import LearningStatisticsPage from '../pages/AIQuizPages/LearningStatistics';
 import TestResultDetailPage from '../pages/AIQuizPages/TestResultDetail';
 
+import GroupStudyHome from '../sections/GroupStudyHome/view';
+import GroupChatPage from '../pages/GroupStudyPages/GroupChat';
+import GroupSupport from '../pages/GroupStudyPages/GroupSupport';
 export default function Router() {
     const routes = useRoutes([
         {
@@ -138,7 +140,7 @@ export default function Router() {
                     children: [
                         {
                             index: true,
-                            element: <GroupStudy />,
+                            element: <GroupStudyHome />,
                         },
                         {
                             path: 'search',
@@ -156,6 +158,14 @@ export default function Router() {
                             path: 'management',
                             element: <GroupManagementPage />,
                         },
+                        {
+                            path: ':id/chat',
+                            element: <GroupChatPage />,
+                        },
+                        {
+                            path: 'support',
+                            element: <GroupSupport />,
+                        }
                     ],
                 },
                 {
