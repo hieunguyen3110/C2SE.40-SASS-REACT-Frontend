@@ -24,6 +24,8 @@ import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutl
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import ContactICON from '../../../assets/images/icons/ContactIcon.png';
 import Badge from '@mui/material/Badge';
+import Tooltip from '@mui/material/Tooltip';
+import { styled } from '@mui/material/styles';
 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -43,12 +45,6 @@ const docItems = [
         icon: InsertDriveFileOutlinedIcon,
         regex: /^\/document\/(directory|folder)/,
         linkTo: '/document/directory',
-    },
-    {
-        title: 'Môn học',
-        icon: StickyNote2OutlinedIcon,
-        regex: /^\/document\/(subject)/,
-        linkTo: '/404',
     },
     {
         title: 'Thông báo',
@@ -89,6 +85,25 @@ const customAppear = {
     },
 };
 
+// Custom styled tooltip
+const CustomTooltip = styled(({ className, ...props }: any) => (
+    <Tooltip {...props} arrow classes={{ popper: className }} />
+))(({ theme }) => ({
+    [`& .MuiTooltip-tooltip`]: {
+        backgroundColor: '#ffd9db',
+        color: '#333',
+        fontSize: '13px',
+        fontWeight: 500,
+        padding: '8px 12px',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+        borderRadius: '6px',
+        maxWidth: '200px',
+    },
+    [`& .MuiTooltip-arrow`]: {
+        color: '#ffd9db',
+    },
+}));
+
 export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
     const navigate = useNavigate();
     const pathName = useLocation().pathname;
@@ -97,6 +112,7 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
 
     const { numberOfNotificationsUnRead } = useAppSelector((state) => state.notication);
     const isOpenAndModal = isModal && isOpen;
+    const shouldShowTooltip = !isOpen;
 
     const handleClickUpFIle = () => {
         navigate('/document/upload-file');
@@ -195,73 +211,101 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
             {uploadFileDropdown}
             <div style={{ ...(!isOpen && { alignItems: 'center' }) }} className={cx('items')}>
                 {menuItems.map((item, index) => (
-                    <Link
-                        key={index}
-                        className={cx(isMenuItemActive(item.pathActive) && 'active')}
-                        to={item.pathActive}
+                    <CustomTooltip 
+                        key={index} 
+                        title={item.title} 
+                        placement="right" 
+                        arrow 
+                        disableHoverListener={!shouldShowTooltip}
                     >
-                        {typeof item.icon === 'string' ? (
-                            <img src={item.icon} alt={item.title} style={{ width: '22px', height: '22px' }} />
-                        ) : (
-                            <item.icon sx={{ width: '22px', height: '22px' }} />
-                        )}
-                        {isOpen && <h3>{item.title}</h3>}
-                    </Link>
+                        <Link
+                            className={cx(isMenuItemActive(item.pathActive) && 'active')}
+                            to={item.pathActive}
+                        >
+                            {typeof item.icon === 'string' ? (
+                                <img src={item.icon} alt={item.title} style={{ width: '22px', height: '22px' }} />
+                            ) : (
+                                <item.icon sx={{ width: '22px', height: '22px' }} />
+                            )}
+                            {isOpen && <h3>{item.title}</h3>}
+                        </Link>
+                    </CustomTooltip>
                 ))}
             </div>
             <div style={{ ...(!isOpen && { alignItems: 'center' }) }} className={cx('items')}>
                 <span style={{ ...(!isOpen && { visibility: 'hidden' }) }}>Tài liệu của tôi</span>
                 {docItems.map((item, index) => (
-                    <Link
-                        key={index}
-                        className={cx(
-                            (item.regex ? item.regex.test(pathName) : pathName === item.linkTo) && 'active',
-                            `${
-                                item.linkTo === '/document/notification' && numberOfNotificationsUnRead > 0
-                                    ? 'brings'
-                                    : ''
-                            }`,
-                        )}
-                        to={item.linkTo}
+                    <CustomTooltip 
+                        key={index} 
+                        title={item.title} 
+                        placement="right" 
+                        arrow 
+                        disableHoverListener={!shouldShowTooltip}
                     >
-                        {item.linkTo === '/document/notification' ? (
-                            <Badge
-                                badgeContent={numberOfNotificationsUnRead > 0 ? numberOfNotificationsUnRead : 0}
-                                color="error"
-                            >
+                        <Link
+                            className={cx(
+                                (item.regex ? item.regex.test(pathName) : pathName === item.linkTo) && 'active',
+                                `${
+                                    item.linkTo === '/document/notification' && numberOfNotificationsUnRead > 0
+                                        ? 'brings'
+                                        : ''
+                                }`,
+                            )}
+                            to={item.linkTo}
+                        >
+                            {item.linkTo === '/document/notification' ? (
+                                <Badge
+                                    badgeContent={numberOfNotificationsUnRead > 0 ? numberOfNotificationsUnRead : 0}
+                                    color="error"
+                                >
+                                    <item.icon sx={{ width: '22px', height: '22px' }} />
+                                </Badge>
+                            ) : (
                                 <item.icon sx={{ width: '22px', height: '22px' }} />
-                            </Badge>
-                        ) : (
-                            <item.icon sx={{ width: '22px', height: '22px' }} />
-                        )}
+                            )}
 
-                        {isOpen && <h3>{item.title}</h3>}
-                    </Link>
+                            {isOpen && <h3>{item.title}</h3>}
+                        </Link>
+                    </CustomTooltip>
                 ))}
             </div>
             <div style={{ ...(!isOpen && { alignItems: 'center' }) }} className={cx('items')}>
                 <span style={{ ...(!isOpen && { visibility: 'hidden' }) }}>Tìm kiếm nâng cao</span>
                 {searchItems.map((item, index) => (
-                    <Link
-                        key={index}
-                        className={cx(isMenuItemActive(item.pathAcitve) && 'active')}
-                        to={item.pathAcitve}
+                    <CustomTooltip 
+                        key={index} 
+                        title={item.title} 
+                        placement="right" 
+                        arrow 
+                        disableHoverListener={!shouldShowTooltip}
                     >
-                        <item.icon sx={{ width: '22px', height: '22px' }} />
-                        {isOpen && <h3>{item.title}</h3>}
-                    </Link>
+                        <Link
+                            className={cx(isMenuItemActive(item.pathAcitve) && 'active')}
+                            to={item.pathAcitve}
+                        >
+                            <item.icon sx={{ width: '22px', height: '22px' }} />
+                            {isOpen && <h3>{item.title}</h3>}
+                        </Link>
+                    </CustomTooltip>
                 ))}
             </div>
-            <button
-                id={cx(pathName === '/document/support' && 'support-active')}
-                className={cx('support-btn')}
-                onClick={() => {
-                    navigate('/document/support');
-                }}
+            <CustomTooltip 
+                title="Hỗ trợ 24/7" 
+                placement="right" 
+                arrow 
+                disableHoverListener={!shouldShowTooltip}
             >
-                <img src={ContactICON} alt="contact" />
-                {isOpen && <span>Hỗ trợ 24/7</span>}
-            </button>
+                <button
+                    id={cx(pathName === '/document/support' && 'support-active')}
+                    className={cx('support-btn')}
+                    onClick={() => {
+                        navigate('/document/support');
+                    }}
+                >
+                    <img src={ContactICON} alt="contact" />
+                    {isOpen && <span>Hỗ trợ 24/7</span>}
+                </button>
+            </CustomTooltip>
         </div>
     );
 }
