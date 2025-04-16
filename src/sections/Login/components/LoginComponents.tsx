@@ -18,13 +18,19 @@ import { LoginAction, loginFailure, loginStart } from '../../../redux/Authentica
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Loader from '../../../components/Loader/Loader';
 import { ApiResponse } from '../../../types/response.type';
 import { ILoginS } from '../../../services/AuthenticationApi/AuthenticationApi';
+
+// Add interface for authentication state
+interface AuthState {
+    loading: boolean;
+}
+
 const cx = classnames.bind(styles);
 
 interface informationLogin {
@@ -50,12 +56,6 @@ interface ILogin {
 interface PopsInformation {
     pops: informationLogin[];
 }
-const validationSchema: Yup.ObjectSchema<LoginData> = Yup.object({
-    // Tạo schema kiểm tra với Yup
-    email: Yup.string().required('Vui lòng nhập email'),
-    password: Yup.string().required('Vui lòng nhập password'),
-    captcha: Yup.string().required('Vui lòng nhập mã xác nhận'),
-});
 const LoginComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation) => {
     const [typePass, setTypePass] = useState(false); //useState xem hoặc ẩn password
     const randomString = () => Math.random().toString(36).slice(2, 6); // Tạo mã captcha
@@ -64,7 +64,18 @@ const LoginComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation) =
     const dispatch = useAppDispatch(); //dispatch login
 
     const { clickLogin, setClickForgotPass, setClickRegister } = useGlobalContextLoin(); //hiện ứng animation login
-    const loading = useSelector((state: RootState) => state.authentication.loading); //loading login
+    const loading = useSelector((state: RootState) => (state as any).authentication.loading); //loading login
+
+    // Define validation schema with access to the captcha state
+    const validationSchema = Yup.object({
+        email: Yup.string().required('Vui lòng nhập email'),
+        password: Yup.string().required('Vui lòng nhập password'),
+        captcha: Yup.string()
+            .required('Vui lòng nhập mã xác nhận')
+            .test('captcha-match', 'Mã xác nhận không đúng', function(value) {
+                return value === captcha;
+            }),
+    });
 
     const refreshString = () => {
         //hàm refresh mã captcha
@@ -91,21 +102,21 @@ const LoginComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation) =
 
     const handleSubmit = async (
         //hàm submit login
-        values: ILogin,
-        {
-            setSubmitting,
-            resetForm,
-        }: {
-            setSubmitting: (isSubmitting: boolean) => void;
-            resetForm: () => void;
-        },
+        values: LoginData & ILogin,
+        { setSubmitting, resetForm }: FormikHelpers<LoginData>,
     ) => {
+        // Now we've already validated the CAPTCHA match in the validation schema
+        const loginData: ILogin = {
+            email: values.email,
+            password: values.password,
+        };
+        
         resetForm();
         setSubmitting(true); //setSubmitting true
         refreshString(); // Reset lại form sau khi submit thành công
         try {
             dispatch(loginStart()); //dispatch loginStart
-            const result = await dispatch(LoginAction(values)); //dispatch LoginAction
+            const result = await dispatch(LoginAction(loginData)); //dispatch LoginAction
             const payload = result.payload as ApiResponse<ILoginS>;
             if (payload.code === 400) {
                 toast.error(payload.message);
