@@ -7,7 +7,7 @@ import avartar from '../../../../assets/images/Frame 8720.png';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import React, { useState } from 'react';
+import React from 'react';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -25,7 +25,7 @@ const options = ['Lưu tài liệu', 'Tải xuống', 'Chia sẻ'];
 
 const ITEM_HEIGHT = 48;
 
-export default function Docs({ title, docs, onLoadMore }: any) {
+export default function Docs({ title, docs }: any) {
     // configs cho nút chia sẻ
     const { openSharingModal, setUrl } = useSharingModal();
     const handleOpenModal = (id: number) => {
@@ -58,7 +58,7 @@ export default function Docs({ title, docs, onLoadMore }: any) {
         setAnchorEls((prev) => ({ ...prev, [docId]: null }));
     };
 
-    const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+    // const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
     const navigate = useNavigate();
     const username = useAppSelector((state) => state.authentication.username);
 
@@ -69,7 +69,7 @@ export default function Docs({ title, docs, onLoadMore }: any) {
         <div className={cx('docs')}>
             <div className={cx('titles')}>
                 <h2>{title}</h2>
-                <span
+                {/* <span
                     onClick={() => {
                         setIsLoadingMore(!isLoadingMore);
                         if (isLoadingMore) {
@@ -80,7 +80,7 @@ export default function Docs({ title, docs, onLoadMore }: any) {
                     }}
                 >
                     {!isLoadingMore ? 'Xem thêm' : 'Thu gọn'}
-                </span>
+                </span> */}
             </div>
             {loading ? (
                 <Loader height={1} />

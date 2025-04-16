@@ -8,6 +8,9 @@ import Avatar from '../../../../assets/images/Frame 8720.png';
 import FlagIcon from '@mui/icons-material/Flag';
 import { formatDate } from '../../../../utils/formatDate';
 import { toast } from 'react-toastify';
+import starImg from '../../../../assets/images/star.jpg';
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 
 interface IDoc {
     doc: {
@@ -48,6 +51,19 @@ export default function Sidebar({ doc }: IDoc) {
                 </h3>
 
                 <span>{formatDate(doc?.createdAt)}</span>
+            </div>
+            <hr />
+            <div className={cx('rating')}>
+                <h3>
+                    <img src={starImg} alt='star-img' /> Đánh giá tài liệu <span>(+81)</span>
+                </h3>
+                <div className={cx('rating-list')}>
+                   <StarIcon className={cx('active')} />
+                   <StarBorderIcon />
+                   <StarBorderIcon />
+                   <StarBorderIcon />
+                   <StarBorderIcon />
+                </div>
             </div>
             <hr />
             <div className={cx('author')}>
