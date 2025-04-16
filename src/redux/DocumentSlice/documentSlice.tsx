@@ -22,6 +22,8 @@ import {
 import { DocumentByAccountRequest, DocumentResponse, DocumentSearchResponse } from './InterfaceResponse';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
+import { ApiResponse } from '../../types/response.type';
+import { ratedForDocument, RatingRequest } from '../../services/RatingAPI/RatingAPI';
 
 interface InitialStateStyles {
     Error: string;
@@ -207,17 +209,30 @@ export const getDocumentByFalcuty = createAsyncThunk<DocumentResponse, string>(
     },
 );
 
-export const getPopularDocuments = createAsyncThunk<any, { page: number; size: number }>(
+export const getPopularDocuments = createAsyncThunk<any>(
     'documents/getPopularDocuments',
-    async ({ page, size }: { page: number; size: number }) => {
+    async () => {
         try {
-            const response = await GetPopularDocuments(page, size);
+            const response = await GetPopularDocuments();
             return response;
         } catch (err: any) {
             throw Error(err.message);
         }
     },
 );
+
+export const rateForDocumentAction = createAsyncThunk<ApiResponse<string>,RatingRequest>(
+    'documents/rateForDocument',
+    async (data: RatingRequest) => {
+        try {
+            const response = await ratedForDocument(data);
+            return response;
+        } catch (err: any) {
+            throw Error(err.message);
+        }
+    },
+);
+
 
 const initialState: InitialStateStyles = {
     loading: false,
@@ -266,6 +281,17 @@ export const DocumentSlice = createSlice({
             })
             .addCase(getDocumentByTitle.pending, (state) => {
                 state.isSearching = true;
+            })
+            .addCase(rateForDocumentAction.pending, (state) => {
+                state.loading= true;
+            })
+            .addCase(rateForDocumentAction.fulfilled, (state) => {
+                state.loading= false;
+            })
+            .addCase(rateForDocumentAction.rejected, (state, action) => {
+                state.loading= false;
+                state.Error= (action.error && action.error.message)?action.error.message : "Something went wrong!";
+                toast.error("Rating is failed!");
             })
             .addCase(getDocumentByTitle.fulfilled, (state, action) => {
                 state.isSearching = false;
@@ -372,7 +398,7 @@ export const DocumentSlice = createSlice({
             })
             .addCase(getPopularDocuments.fulfilled, (state, action) => {
                 state.loading = false;
-                state.Documents = action.payload.content;
+                state.Documents = action.payload;
             })
             .addCase(getPopularDocuments.rejected, (state, action) => {
                 state.loading = false;

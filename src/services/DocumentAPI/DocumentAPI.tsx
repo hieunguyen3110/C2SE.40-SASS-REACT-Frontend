@@ -233,10 +233,9 @@ export const DelectDocumentStoge = async (docId: number) => {
     }
 };
 
-export const GetPopularDocuments = async (page: number, size: number) => {
+export const GetPopularDocuments = async () => {
     try {
-        const res = await axiosInstance.get(`/document/popular?page=${page}&size=${size}`);
-        console.log(res);
+        const res = await axiosInstance.get(`/document/popular`);
         return res.data;
     } catch (err: unknown) {
         const error = err as AxiosError<{ message?: string }>;

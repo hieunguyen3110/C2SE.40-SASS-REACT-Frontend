@@ -1,5 +1,3 @@
- 
- 
 import classNames from 'classnames/bind';
 import styles from './Content.module.scss';
 const cx = classNames.bind(styles);
@@ -23,7 +21,7 @@ export default function Content() {
     const [statsData, setStatsData] = useState<any>({});
 
     useEffect(() => {
-        dispatch(getPopularDocuments({ page: 1, size: 3 }));
+        dispatch(getPopularDocuments());
         dispatch(getPopularFolders({ page: 1, size: 8 }));
         dispatch(getStatsForUser());
     }, [dispatch]);
@@ -37,20 +35,20 @@ export default function Content() {
         }
     }, [popularFolders, stats]);
 
-    const handleLoadMore = (status: string) => {
-        if (status === 'loadmore') {
-            dispatch(getPopularDocuments({ page: 2, size: 3 }));
-        } else {
-            dispatch(getPopularDocuments({ page: 1, size: 3 }));
-        }
-    };
+    // const handleLoadMore = (status: string) => {
+    //     if (status === 'loadmore') {
+    //         dispatch(getPopularDocuments({ page: 2, size: 3 }));
+    //     } else {
+    //         dispatch(getPopularDocuments({ page: 1, size: 3 }));
+    //     }
+    // };
 
     return (
         <div className={cx('content')}>
             <img src={Background} alt="bg" />
             <div className={cx('central')}>
                 <div className={cx('category')}>
-                    <Docs title={'Tài liệu phổ biến'} onLoadMore={handleLoadMore} docs={documents} />
+                    <Docs title={'Tài liệu phổ biến'} docs={documents} />
                 </div>
                 <Statistics data={statsData} />
             </div>
