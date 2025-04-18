@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './DocumentDetailView.module.scss';
 import { Sidebar } from '../components/Sidebar';
 import { Content } from '../components/Content';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import { useParams } from 'react-router-dom';
 import { getDocumentByIDAction } from '../../../redux/DocumentSlice/documentSlice';
@@ -17,6 +17,25 @@ export default function DocumentDetailView() {
     const document: any = useAppSelector((state) => state.document.DocumentDetail);
 
     const { loading } = useAppSelector((state) => state.document);
+
+    // Calculate total ratings and average rating from accountRatingDtos
+    const documentWithRatings = useMemo(() => {
+        if (!document) return null;
+        
+        const accountRatings = document.accountRatingDtos || [];
+        const totalRatings = accountRatings.length;
+        
+        // Calculate average rating if there are ratings
+        const rating = totalRatings > 0 
+            ? accountRatings.reduce((sum: number, item: any) => sum + item.rating, 0) / totalRatings 
+            : 0;
+        
+        return {
+            ...document,
+            totalRatings,
+            rating
+        };
+    }, [document]);
 
     useEffect(() => {
         dispatch(getDocumentByIDAction(parseInt(id)));
@@ -57,7 +76,7 @@ export default function DocumentDetailView() {
 
     return (
         <div className={cx('document-detail-view')}>
-            <Sidebar doc={document} />
+            <Sidebar doc={documentWithRatings} />
             <Content id={id} url={document?.filePath} />
         </div>
     );
