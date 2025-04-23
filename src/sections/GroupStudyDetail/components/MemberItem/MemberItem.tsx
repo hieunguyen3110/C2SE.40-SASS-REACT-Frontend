@@ -1,9 +1,12 @@
-import React from 'react';
-import { Typography, IconButton, Box } from '@mui/material';
+import React, { useState, useRef, useEffect } from 'react';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { motion, AnimatePresence } from 'framer-motion';
 import classNames from 'classnames/bind';
 import styles from './MemberItem.module.scss';
 import UserAvatar from '../UserAvatar/UserAvatar';
+import AlertModal from '../../../../components/AlertModal/AlertModal';
+import { useAlertModal } from '../../../../hooks/useAlertModal';
 
 const cx = classNames.bind(styles);
 
@@ -13,47 +16,193 @@ interface MemberItemProps {
     joinDate: string;
     role?: 'Admin' | 'Creator' | 'Member';
     showActions?: boolean;
+    canDelete?: boolean;
+    onDelete?: () => void;
 }
 
-const MemberItem: React.FC<MemberItemProps> = ({ avatar, name, joinDate, role = 'Member', showActions = true }) => {
+const MemberItem: React.FC<MemberItemProps> = ({ 
+    avatar, 
+    name, 
+    joinDate, 
+    role = 'Member', 
+    showActions = true,
+    canDelete,
+    onDelete
+}) => {
+    const [menuOpen, setMenuOpen] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const menuButtonRef = useRef<HTMLButtonElement>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
+    const { isOpen, title, content, onConfirm, confirmText, openModal, closeModal } = useAlertModal();
+    
+    // Handle click outside to close the menu
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+            if (
+                menuOpen && 
+                containerRef.current && 
+                !containerRef.current.contains(event.target as Node)
+            ) {
+                setMenuOpen(false);
+            }
+        };
+        
+        // Add event listeners for both mouse and touch events
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('touchstart', handleClickOutside);
+        
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('touchstart', handleClickOutside);
+        };
+    }, [menuOpen]);
+    
+    const handleToggleMenu = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent event from bubbling up
+        setMenuOpen(prev => !prev);
+    };
+    
+    const handleDeleteClick = () => {
+        setMenuOpen(false);
+        openModal({
+            title: "Xác nhận xóa",
+            content: <p>Bạn có chắc chắn muốn xóa thành viên <strong>{name}</strong> khỏi nhóm?</p>,
+            onConfirm: () => {
+                if (onDelete) onDelete();
+                setMenuOpen(false);
+            },
+            confirmText: "Xóa"
+        });
+    };
+
+    // Menu animation variants
+    const menuVariants = {
+        hidden: { 
+            opacity: 0,
+            scale: 0.85,
+            y: -5,
+            transformOrigin: 'top right'
+        },
+        visible: { 
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 25
+            }
+        },
+        exit: { 
+            opacity: 0,
+            scale: 0.85,
+            y: -5,
+            transition: {
+                duration: 0.2
+            }
+        }
+    };
+
+    const backdropVariants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1 },
+        exit: { opacity: 0 }
+    };
+
     return (
-        <div className={cx('member-item')}>
-            <div className={cx('member-info')}>
-                <UserAvatar src={avatar} name={name} className={cx('avatar')} />
-                <div className={cx('details')}>
-                    <Typography variant="body1" className={cx('name')}>
-                        {name}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" className={cx('date')}>
-                        {joinDate}
-                    </Typography>
+        <>
+            <motion.div 
+                className={cx('member-item')}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+            >
+                <div className={cx('member-info')}>
+                    <UserAvatar src={avatar} name={name} className={cx('avatar')} />
+                    <div className={cx('details')}>
+                        <h4 className={cx('name')}>{name}</h4>
+                        <span className={cx('date')}>{joinDate}</span>
+                    </div>
                 </div>
-            </div>
-            <div className={cx('role-actions')}>
-                <Box className={cx('role-badge', role.toLowerCase())}>
-                    {role === 'Admin' && (
-                        <Box className={cx('role-icon-wrapper')}>
-                            <Typography variant="body2">{role}</Typography>
-                        </Box>
+                <div className={cx('role-actions')}>
+                    <div className={cx('role-badge', role.toLowerCase())}>
+                        <span className={cx('role-text')}>{role}</span>
+                    </div>
+                    {showActions && (
+                        <div className={cx('menu-container')} ref={containerRef}>
+                            <motion.button 
+                                ref={menuButtonRef}
+                                className={cx('more-actions', { active: menuOpen })}
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={handleToggleMenu}
+                            >
+                                <MoreHorizIcon />
+                            </motion.button>
+                            
+                            <AnimatePresence>
+                                {menuOpen && (
+                                    <>
+                                        <motion.div 
+                                            className={cx('menu-backdrop')}
+                                            variants={backdropVariants}
+                                            initial="hidden"
+                                            animate="visible"
+                                            exit="exit"
+                                            onClick={() => setMenuOpen(false)}
+                                        />
+                                        
+                                        {canDelete && (
+                                            <motion.div 
+                                                ref={menuRef}
+                                                className={cx('custom-menu')}
+                                                variants={menuVariants}
+                                                initial="hidden"
+                                                animate="visible"
+                                                exit="exit"
+                                            >
+                                                <motion.button 
+                                                    className={cx('menu-item', 'delete-item')}
+                                                    onClick={handleDeleteClick}
+                                                    whileHover={{ 
+                                                        backgroundColor: 'rgba(255, 60, 60, 0.15)',
+                                                        x: 3,
+                                                        transition: { type: "spring", stiffness: 300 }
+                                                    }}
+                                                    whileTap={{ 
+                                                        scale: 0.95,
+                                                        backgroundColor: 'rgba(255, 60, 60, 0.25)'
+                                                    }}
+                                                >
+                                                    <motion.div 
+                                                        className={cx('item-icon-wrapper')}
+                                                        whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                                                        transition={{ duration: 0.5 }}
+                                                    >
+                                                        <DeleteIcon className={cx('item-icon')} />
+                                                    </motion.div>
+                                                    <span>Xóa thành viên</span>
+                                                </motion.button>
+                                            </motion.div>
+                                        )}
+                                    </>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     )}
-                    {role === 'Creator' && (
-                        <Box className={cx('role-icon-wrapper')}>
-                            <Typography variant="body2">{role}</Typography>
-                        </Box>
-                    )}
-                    {role === 'Member' && (
-                        <Box className={cx('role-icon-wrapper')}>
-                            <Typography variant="body2">{role}</Typography>
-                        </Box>
-                    )}
-                </Box>
-                {showActions && (
-                    <IconButton size="small" className={cx('more-actions')}>
-                        <MoreHorizIcon />
-                    </IconButton>
-                )}
-            </div>
-        </div>
+                </div>
+            </motion.div>
+
+            <AlertModal 
+                isOpen={isOpen}
+                onClose={closeModal}
+                title={title}
+                content={content}
+                onConfirm={onConfirm}
+                confirmText={confirmText}
+            />
+        </>
     );
 };
 

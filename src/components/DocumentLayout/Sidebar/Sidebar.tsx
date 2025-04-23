@@ -11,7 +11,6 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import AIQuizIcon from '../../../assets/images/icons/AIQuiz.svg';
 
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
-import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
 
 import PersonSearchOutlinedIcon from '@mui/icons-material/PersonSearchOutlined';
 import BookmarkAddedOutlinedIcon from '@mui/icons-material/BookmarkAddedOutlined';
@@ -28,11 +27,11 @@ import Tooltip from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { RootState, useAppSelector } from '../../../redux/store';
+import { useState, useEffect } from 'react';
+import { useAppSelector } from '../../../redux/store';
 import { motion, AnimatePresence } from 'framer-motion';
 import { appear } from '../../../utils/animations';
-import { useSelector } from 'react-redux';
+
 
 const menuItems = [
     { title: 'Trang chủ', icon: HomeOutlinedIcon, pathActive: '/document' },
@@ -113,6 +112,13 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
     const { numberOfNotificationsUnRead } = useAppSelector((state) => state.notication);
     const isOpenAndModal = isModal && isOpen;
     const shouldShowTooltip = !isOpen;
+    
+    // Auto close sidebar on initial render when isModal is true
+    useEffect(() => {
+        if (isModal) {
+            setIsOpen(false);
+        }
+    }, [isModal, setIsOpen]);
 
     const handleClickUpFIle = () => {
         navigate('/document/upload-file');
@@ -144,7 +150,6 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
             )}
         </AnimatePresence>
     );
-    const ilogins = useSelector((state: RootState) => state.authentication.ilogins);
 
     const isMenuItemActive = (pathActive: string) => {
         if (pathActive === '/document' && (pathName === '/document' || pathName === '/document/')) {

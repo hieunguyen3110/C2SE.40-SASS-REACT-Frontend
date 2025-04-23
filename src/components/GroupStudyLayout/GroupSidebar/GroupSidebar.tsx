@@ -1,37 +1,57 @@
 import classNames from 'classnames/bind';
 import styles from './GroupSidebar.module.scss';
-const cx = classNames.bind(styles);
+import { Link, useLocation } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../redux/store';
+import React, { useEffect, useState } from 'react';
+import { getGroupOfUserAction } from '../../../redux/GroupStudySlice/GroupStudySlice';
+import { IGroup } from '../../../types/groupStudy.types';
 
-import {
-    Box,
-    Typography,
-    Avatar,
-    Badge,
-    Divider,
-    IconButton,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-} from '@mui/material';
+// MUI Icons only
 import {
     Search as SearchIcon,
     Add as AddIcon,
     Help as HelpIcon,
     PeopleOutline as GroupIcon,
+    ExpandMore as ExpandMoreIcon,
+    ExpandLess as ExpandLessIcon,
 } from '@mui/icons-material';
-import { Link, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../../../redux/store';
-import React from 'react';
+import ChatIcon from '../../../assets/images/icons/chat-round-line-svgrepo-com.svg';
+
+const cx = classNames.bind(styles);
 
 const GroupSidebar = () => {
     const location = useLocation();
+    const dispatch = useAppDispatch();
+    const [ownedGroups, setOwnedGroups] = useState<IGroup[]>([]);
+    const [joinedGroups, setJoinedGroups] = useState<IGroup[]>([]);
+    const [showAllOwned, setShowAllOwned] = useState(false);
+    const [showAllJoined, setShowAllJoined] = useState(false);
+    
+    const { username, profilePicture, listRoles, accountId } = useAppSelector((state) => state.authentication);
+    const { userGroups, loading, unreadMessages } = useAppSelector((state) => state.groupStudy);
 
-    const chatGroups = [
-        { name: 'Web Development', unread: 3, selected: false },
-        { name: 'Data Structures', unread: 0, selected: false },
-        { name: 'Machine Learning', unread: 12, selected: true },
-    ];
+    // Function to get unread message count for a specific group
+    const getUnreadMessageCount = (groupId: number) => {
+        const unreadInfo = unreadMessages.find(msg => msg.groupId === groupId);
+        return unreadInfo ? unreadInfo.count : 0;
+    };
+
+    useEffect(() => {
+        // Dispatch action to get user groups
+        dispatch(getGroupOfUserAction());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (userGroups && Array.isArray(userGroups)) {
+            // Split groups into owned and joined groups
+            // Note: API returns "userId" which is actually the owner ID
+            const owned = userGroups.filter(group => group.userId === accountId);
+            const joined = userGroups.filter(group => group.userId !== accountId);
+            
+            setOwnedGroups(owned);
+            setJoinedGroups(joined);
+        }
+    }, [userGroups, accountId]);
 
     const navigationItems = [
         {
@@ -56,95 +76,241 @@ const GroupSidebar = () => {
         },
     ];
 
-    const { username, profilePicture, listRoles } = useAppSelector((state) => state.authentication);
+    // Get limited groups to display (3 by default)
+    const displayedOwnedGroups = showAllOwned ? ownedGroups : ownedGroups.slice(0, 3);
+    const displayedJoinedGroups = showAllJoined ? joinedGroups : joinedGroups.slice(0, 3);
+    
+    // Functions to toggle visibility
+    const toggleOwnedGroups = () => setShowAllOwned(!showAllOwned);
+    const toggleJoinedGroups = () => setShowAllJoined(!showAllJoined);
 
     return (
-        <Box className={cx('sidebar')}>
+        <div className={cx('sidebar')}>
             {/* Header */}
-            <Box className={cx('header')}>
-                <Typography variant="h6" component="div">
-                    <span className={cx('groupText')}>GROUP</span>
-                    <span className={cx('studyText')}>STUDY</span>
-                </Typography>
-                <Link to={'/document/group-study/search'}>
-                    <IconButton size="small">
-                        <SearchIcon fontSize="small" />
-                    </IconButton>
+            <div className={cx('header')}>
+                <Link to="/document/group-study" className={cx('headerLink')}>
+                    <h2 className={cx('headerTitle')}>
+                        <span className={cx('groupText')}>GROUP</span>
+                        <span className={cx('studyText')}>STUDY</span>
+                    </h2>
                 </Link>
-            </Box>
+                <Link to={'/document/group-study/search'} className={cx('searchButton')}>
+                    <SearchIcon className={cx('searchIcon')} />
+                </Link>
+            </div>
 
             {/* User Profile */}
-            <Box className={cx('userProfile')}>
-                <Avatar className={cx('avatar')} src={profilePicture || ''}></Avatar>
-                <Box>
-                    <Typography variant="subtitle2">{username}</Typography>
-                    <Typography variant="caption" color="textSecondary">
-                        {listRoles.map((role) => role).join(', ')}
-                    </Typography>
-                </Box>
-            </Box>
+            <div className={cx('userProfile')}>
+                <div className={cx('avatar')}>
+                    {profilePicture ? (
+                        <img src={profilePicture} alt={username} />
+                    ) : (
+                        <span>{username?.charAt(0)?.toUpperCase()}</span>
+                    )}
+                </div>
+                <div className={cx('userInfo')}>
+                    <span className={cx('username')}>{username}</span>
+                    <span className={cx('userRole')}>{listRoles.map((role) => role).join(', ')}</span>
+                </div>
+            </div>
 
-            <Divider />
-
-            {/* Group Chats */}
-            <Box className={cx('section')}>
-                <Box className={cx('sectionHeader')}>
-                    <Typography variant="subtitle2" color="textSecondary">
-                        GROUP CHATS
-                    </Typography>
-                    <Link to={'/document/group-study/create'}>
-                        <IconButton size="small">
-                            <AddIcon fontSize="small" />
-                        </IconButton>
-                    </Link>
-                </Box>
-
-                <List dense className={cx('chatList')}>
-                    {chatGroups.map((group, index) => (
-                        <ListItem key={index} className={cx('chatItem', { selected: group.selected })}>
-                            <ListItemIcon className={cx('chatIcon')}>
-                                <GroupIcon
-                                    sx={{
-                                        color: group.selected ? 'red' : 'inherit',
-                                    }}
-                                />
-                            </ListItemIcon>
-                            <ListItemText primary={group.name} className={cx({ selectedText: group.selected })} />
-                            {group.unread > 0 && (
-                                <Badge badgeContent={group.unread} color="error" className={cx('badge')} />
-                            )}
-                        </ListItem>
-                    ))}
-                </List>
-            </Box>
-
-            <Divider />
+            <hr className={cx('divider')} />
 
             {/* Navigation */}
-            <Box className={cx('section')}>
-                <Typography variant="subtitle2" color="textSecondary" className={cx('sectionTitle')}>
-                    NAVIGATION
-                </Typography>
+            <div className={cx('section')}>
+                <h3 className={cx('sectionTitle')}>NAVIGATION</h3>
 
-                <List dense className={cx('chatList')}>
+                <ul className={cx('navList')}>
                     {navigationItems.map((item, index) => (
-                        <Link to={item.path} key={index} style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <ListItem className={cx('chatItem', { selected: location.pathname === item.path })}>
-                                <ListItemIcon className={cx('chatIcon')}>
+                        <li key={index} className={cx('navItem')}>
+                            <Link 
+                                to={item.path} 
+                                className={cx('navLink', { selected: location.pathname === item.path })}
+                            >
+                                <span className={cx('navIcon')}>
                                     {React.cloneElement(item.icon, {
-                                        sx: { color: location.pathname === item.path ? 'red' : 'inherit' },
+                                        style: { color: location.pathname === item.path ? '#ff3c3c' : 'inherit' },
                                     })}
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={item.label}
-                                    className={cx({ selectedText: location.pathname === item.path })}
-                                />
-                            </ListItem>
-                        </Link>
+                                </span>
+                                <span className={cx('navText', { selectedText: location.pathname === item.path })}>
+                                    {item.label}
+                                </span>
+                            </Link>
+                        </li>
                     ))}
-                </List>
-            </Box>
-        </Box>
+                </ul>
+            </div>
+
+            <hr className={cx('divider')} />
+
+            {/* Group Chats */}
+            <div className={cx('section')}>
+                <div className={cx('sectionHeader')}>
+                    <h3 className={cx('sectionTitle')}>GROUP CHATS</h3>
+                    <Link to={'/document/group-study/create'} className={cx('addButton')}>
+                        <AddIcon className={cx('addIcon')} />
+                    </Link>
+                </div>
+
+                {/* My Groups (Owner) */}
+                <div className={cx('groupCategory')}>
+                    <h4 className={cx('categoryTitle')}>Nhóm của tôi</h4>
+                    {loading && ownedGroups.length === 0 ? (
+                        <p>Đang tải...</p>
+                    ) : (
+                        <>
+                            <ul className={cx('chatList')}>
+                                {ownedGroups.length === 0 ? (
+                                    <li>Chưa có nhóm nào</li>
+                                ) : (
+                                    displayedOwnedGroups.map((group, index) => (
+                                        <li key={index} className={cx('chatItem', { 
+                                            selected: location.pathname === `/document/group-study/${group.groupId}` ||
+                                                    location.pathname === `/document/group-study/${group.groupId}/chat`
+                                        })}>
+                                            <Link
+                                                to={`/document/group-study/${group.groupId}`}
+                                                style={{ 
+                                                    display: 'flex', 
+                                                    alignItems: 'center', 
+                                                    width: 'calc(100% - 30px)', 
+                                                    textDecoration: 'none', 
+                                                    color: 'inherit' 
+                                                }}
+                                            >
+                                                <span className={cx('chatIcon')}>
+                                                    <GroupIcon
+                                                        style={{
+                                                            color: location.pathname === `/document/group-study/${group.groupId}` || 
+                                                                  location.pathname === `/document/group-study/${group.groupId}/chat` ? '#ff3c3c' : 'inherit',
+                                                        }}
+                                                    />
+                                                </span>
+                                                <span className={cx('chatText', { 
+                                                    selectedText: location.pathname === `/document/group-study/${group.groupId}` ||
+                                                                location.pathname === `/document/group-study/${group.groupId}/chat`
+                                                })}>
+                                                    {group.groupName}
+                                                </span>
+                                            </Link>
+                                            <Link
+                                                to={`/document/group-study/${group.groupId}/chat`}
+                                                className={cx('chatButton')}
+                                                title="Open group chat"
+                                            >
+                                                <img src={ChatIcon} alt="Chat" className={cx('chatSvgIcon')} />
+                                                {getUnreadMessageCount(group.groupId) > 0 && (
+                                                    <span className={cx('unreadBadge')}>
+                                                        {getUnreadMessageCount(group.groupId)}
+                                                    </span>
+                                                )}
+                                            </Link>
+                                        </li>
+                                    ))
+                                )}
+                            </ul>
+                            {ownedGroups.length > 3 && (
+                                <button 
+                                    className={cx('showMoreButton')} 
+                                    onClick={toggleOwnedGroups}
+                                >
+                                    {showAllOwned ? (
+                                        <>
+                                            <span>Thu gọn</span>
+                                            <ExpandLessIcon fontSize="small" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span>Xem tất cả ({ownedGroups.length})</span>
+                                            <ExpandMoreIcon fontSize="small" />
+                                        </>
+                                    )}
+                                </button>
+                            )}
+                        </>
+                    )}
+                </div>
+
+                {/* Joined Groups (Member) */}
+                <div className={cx('groupCategory')}>
+                    <h4 className={cx('categoryTitle')}>Nhóm đã tham gia</h4>
+                    {loading && joinedGroups.length === 0 ? (
+                        <p>Đang tải...</p>
+                    ) : (
+                        <>
+                            <ul className={cx('chatList')}>
+                                {joinedGroups.length === 0 ? (
+                                    <li>Chưa tham gia nhóm nào</li>
+                                ) : (
+                                    displayedJoinedGroups.map((group, index) => (
+                                        <li key={index} className={cx('chatItem', { 
+                                            selected: location.pathname === `/document/group-study/${group.groupId}` ||
+                                                    location.pathname === `/document/group-study/${group.groupId}/chat`
+                                        })}>
+                                            <Link
+                                                to={`/document/group-study/${group.groupId}`}
+                                                style={{ 
+                                                    display: 'flex', 
+                                                    alignItems: 'center', 
+                                                    width: 'calc(100% - 30px)', 
+                                                    textDecoration: 'none', 
+                                                    color: 'inherit' 
+                                                }}
+                                            >
+                                                <span className={cx('chatIcon')}>
+                                                    <GroupIcon
+                                                        style={{
+                                                            color: location.pathname === `/document/group-study/${group.groupId}` ||
+                                                                  location.pathname === `/document/group-study/${group.groupId}/chat` ? '#ff3c3c' : 'inherit',
+                                                        }}
+                                                    />
+                                                </span>
+                                                <span className={cx('chatText', { 
+                                                    selectedText: location.pathname === `/document/group-study/${group.groupId}` ||
+                                                                location.pathname === `/document/group-study/${group.groupId}/chat`
+                                                })}>
+                                                    {group.groupName}
+                                                </span>
+                                            </Link>
+                                            <Link
+                                                to={`/document/group-study/${group.groupId}/chat`}
+                                                className={cx('chatButton')}
+                                                title="Open group chat"
+                                            >
+                                                <img src={ChatIcon} alt="Chat" className={cx('chatSvgIcon')} />
+                                                {getUnreadMessageCount(group.groupId) > 0 && (
+                                                    <span className={cx('unreadBadge')}>
+                                                        {getUnreadMessageCount(group.groupId)}
+                                                    </span>
+                                                )}
+                                            </Link>
+                                        </li>
+                                    ))
+                                )}
+                            </ul>
+                            {joinedGroups.length > 3 && (
+                                <button 
+                                    className={cx('showMoreButton')} 
+                                    onClick={toggleJoinedGroups}
+                                >
+                                    {showAllJoined ? (
+                                        <>
+                                            <span>Thu gọn</span>
+                                            <ExpandLessIcon fontSize="small" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span>Xem tất cả ({joinedGroups.length})</span>
+                                            <ExpandMoreIcon fontSize="small" />
+                                        </>
+                                    )}
+                                </button>
+                            )}
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
     );
 };
 

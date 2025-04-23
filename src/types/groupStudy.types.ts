@@ -1,14 +1,38 @@
-export interface StudyGroup {
-    id: number;
+export interface IGroup {
+    groupId: number;
+    userId: number;
+    message: string | null;
+    isPrivate: boolean | null;
     groupName: string;
-    isPrivate: boolean;
-    // Add other properties as needed
+    description: string;
+    subjectName: string;
+    picture: string | null;
+    memberLimited: number;
+    ownerId: number;
+    createdAt: string;
+    joinRequests: JoinRequest[];
+}
+
+export interface SearchGroupResult {
+    groupId: number;
+    groupName: string;
+    description: string;
+    subjectName: string;
+    memberCount: number;
+    picture: string | null;
+    memberIds: number[];
+    memberLimited: number;
 }
 
 export interface Message {
-    id: number;
+    senderId: number;
+    groupId: number;
     content: string;
-    // Add other properties as needed
+    timestamp: string | null;
+    username: string;
+    profilePicture: string | null;
+    messageId: number;
+    createdAt: string;
 }
 
 export interface ChatMessage {
@@ -17,22 +41,47 @@ export interface ChatMessage {
     content: string;
 }
 
- 
-export interface GroupResponse {
-    // Add member properties
-    temp: string;
+export interface MemberResponse {
+    memberId: number;
+    name: string;
+    email: string;
 }
- 
+
+export interface GroupResponse {
+    id: number;
+    name: string;
+    avatar?: string;
+    joinDate: string;
+    role: 'Admin' | 'Member';
+}
 
 export interface CreateGroupRequest {
     groupName: string;
     memberIds: number[];
     description?: string;
     isPrivate: boolean;
+    subjectId?: number;
+    memberLimited?: number;
 }
 
 export interface ShareDocumentRequest {
     userId: number;
     documentId: string;
     shareUrl: string;
+}
+
+export interface SubjectDto {
+    subjectId: number;
+    subjectName: string;
+}
+
+
+export interface JoinRequest {
+    id: number;
+    userId: number;
+    status: string;
+    avatar: string | null;
+    name: string;
+    email: string;
+    createdAt: string;
 }

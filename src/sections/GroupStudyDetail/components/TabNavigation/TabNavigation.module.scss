@@ -1,46 +1,65 @@
 .tab-navigation {
     width: 100%;
-    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 20px;
 
     .tabs {
-        min-height: 48px;
-
-        .tab {
-            min-height: 48px;
-            text-transform: none;
-            font-weight: 500;
-
-            &.Mui-selected {
-                color: var(--main-color) !important;
-            }
-
-            .MuiTouchRipple-child {
-                background-color: rgba(255, 153, 102, 0.3) !important;
-            }
+        position: relative;
+        display: flex;
+        width: 100%;
+        border-bottom: 1px solid #e0e0e0;
+        
+        .tab-indicator {
+            position: absolute;
+            bottom: 0;
+            height: 3px;
+            background-color: #ff3c3c;
+            transition: all 0.3s ease;
         }
 
-        .indicator {
-            background-color: var(--main-color) !important;
-            height: 3px;
+        .tab {
+            flex: 1;
+            padding: 16px 8px;
+            background: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #666;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            &:hover {
+                color: #333;
+            }
+
+            &.active {
+                color: #ff3c3c;
+                font-weight: 600;
+            }
         }
     }
 
     .badge {
-        .MuiBadge-badge {
-            font-size: 0.75rem;
-            height: 18px;
-            min-width: 18px;
-            padding: 0 5px;
-            top: -5px;
-            right: -15px;
-        }
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #ff3c3c;
+        color: white;
+        font-size: 0.75rem;
+        height: 18px;
+        min-width: 18px;
+        padding: 0 5px;
+        border-radius: 10px;
+        font-weight: 600;
     }
 
     .tab-label {
-        font-size: 0.9rem;
-
-        &.active-tab {
-            color: red;
-        }
+        position: relative;
+        display: inline-block;
     }
 }

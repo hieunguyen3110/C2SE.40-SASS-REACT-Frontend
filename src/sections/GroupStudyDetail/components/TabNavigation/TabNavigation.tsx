@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs, Tab, Badge } from '@mui/material';
+import { motion } from 'framer-motion';
 import classNames from 'classnames/bind';
 import styles from './TabNavigation.module.scss';
 
@@ -12,45 +12,59 @@ interface TabNavigationProps {
 }
 
 const TabNavigation: React.FC<TabNavigationProps> = ({ memberCount = 0, pinnedMessagesCount = 0, onChange }) => {
-    const [value, setValue] = useState(0);
+    const [activeTab, setActiveTab] = useState(0);
 
-    const handleChange = (_: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
-        onChange?.(newValue);
+    const handleTabClick = (index: number) => {
+        setActiveTab(index);
+        onChange?.(index);
     };
 
     return (
         <div className={cx('tab-navigation')}>
-            <Tabs
-                value={value}
-                onChange={handleChange}
-                variant="fullWidth"
-                className={cx('tabs')}
-                TabIndicatorProps={{
-                    className: cx('indicator'),
-                }}
-            >
-                <Tab
-                    label={
-                        <Badge badgeContent={memberCount} color="error" className={cx('badge')}>
-                            <span className={cx('tab-label', { 'active-tab': value === 0 })}>Thành viên</span>
-                        </Badge>
-                    }
-                    className={cx('tab')}
+            <div className={cx('tabs')}>
+                <motion.div 
+                    className={cx('tab-indicator')} 
+                    initial={false}
+                    animate={{ 
+                        left: `calc(${activeTab * 33.33}%)`,
+                        right: `calc(${100 - (activeTab + 1) * 33.33}%)`
+                    }}
+                    transition={{ duration: 0.3 }}
                 />
-                <Tab
-                    label={
-                        <Badge badgeContent={pinnedMessagesCount} color="error" className={cx('badge')}>
-                            <span className={cx('tab-label', { 'active-tab': value === 1 })}>Tin nhắn đã gim</span>
-                        </Badge>
-                    }
-                    className={cx('tab')}
-                />
-                <Tab
-                    label={<span className={cx('tab-label', { 'active-tab': value === 2 })}>Cài đặt</span>}
-                    className={cx('tab')}
-                />
-            </Tabs>
+                
+                <motion.button
+                    className={cx('tab', { active: activeTab === 0 })}
+                    onClick={() => handleTabClick(0)}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                >
+                    <span className={cx('tab-label')}>Thành viên</span>
+                    {memberCount > 0 && (
+                        <span className={cx('badge')}>{memberCount}</span>
+                    )}
+                </motion.button>
+                
+                <motion.button
+                    className={cx('tab', { active: activeTab === 1 })}
+                    onClick={() => handleTabClick(1)}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                >
+                    <span className={cx('tab-label')}>Tin nhắn đã gim</span>
+                    {pinnedMessagesCount > 0 && (
+                        <span className={cx('badge')}>{pinnedMessagesCount}</span>
+                    )}
+                </motion.button>
+                
+                <motion.button
+                    className={cx('tab', { active: activeTab === 2 })}
+                    onClick={() => handleTabClick(2)}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                >
+                    <span className={cx('tab-label')}>Cài đặt</span>
+                </motion.button>
+            </div>
         </div>
     );
 };

@@ -1,29 +1,21 @@
 import classNames from 'classnames/bind';
 import { useNavigate } from 'react-router-dom';
+import { useState, useCallback, useRef } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../../redux/store';
+import { createGroupAction, searchSubjectsAction } from '../../../../redux/GroupStudySlice/GroupStudySlice';
+import { motion } from 'framer-motion';
+import { debounce } from '@mui/material';
 
-import styles from './GroupCreationForm.module.scss';
-
-const cx = classNames.bind(styles);
-
-import {
-    Box,
-    Typography,
-    TextField,
-    Button,
-    Switch,
-    FormControlLabel,
-    Paper,
-    InputAdornment,
-    Chip,
-} from '@mui/material';
+// MUI Icons only
 import SearchIcon from '@mui/icons-material/Search';
 import BookIcon from '@mui/icons-material/Book';
 import LockIcon from '@mui/icons-material/Lock';
 import InfoIcon from '@mui/icons-material/Info';
 import PeopleIcon from '@mui/icons-material/People';
-import { useState } from 'react';
-import { useAppDispatch } from '../../../../redux/store';
-import { createGroupAction } from '../../../../redux/GroupStudySlice/GroupStudySlice';
+
+import styles from './GroupCreationForm.module.scss';
+
+const cx = classNames.bind(styles);
 
 // Available categories
 const categories = [
@@ -35,179 +27,334 @@ const categories = [
     { id: 'design', label: 'Thiết kế đồ họa' },
     { id: 'management', label: 'QTKD' },
     { id: 'medicine', label: 'Y khoa' },
-    { id: 'other', label: 'Khác' },
 ];
+
+// Animation variants
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            when: "beforeChildren",
+            staggerChildren: 0.2
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+        y: 0,
+        opacity: 1,
+        transition: {
+            type: "spring",
+            stiffness: 300,
+            damping: 24
+        }
+    }
+};
+
+const buttonVariants = {
+    hover: {
+        scale: 1.05,
+        boxShadow: "0px 5px 10px rgba(255, 60, 60, 0.3)",
+        transition: { duration: 0.3 }
+    },
+    tap: { scale: 0.95 }
+};
+
+const chipVariants = {
+    hover: {
+        scale: 1.1,
+        transition: { duration: 0.2 }
+    },
+    tap: { scale: 0.9 }
+};
 
 const GroupCreationForm = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [groupName, setGroupName] = useState('');
     const [description, setDescription] = useState('');
-    const [memberLimit, setMemberLimit] = useState(10);
-    const [isPublic, setIsPublic] = useState(false);
+    const [memberLimited, setMemberLimited] = useState(10);
+    const [isPrivate, setIsPrivate] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('');
+    
+    // Create a ref for the search input
+    const searchInputRef = useRef<HTMLInputElement>(null);
+    
+    // Subject search state
+    const [subjectSelected, setSubjectSelected] = useState('');
+    const [subjectId, setSubjectId] = useState('');
+    
+    // Get search results from Redux store
+    const searchSubject = useAppSelector((state) => state.groupStudy.subjects) || [];
+    
+    // Debounced search function
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const debounceSearchSubject = useCallback(
+        debounce((value: string) => dispatch(searchSubjectsAction(value)).unwrap(), 1000),
+        [dispatch, searchSubjectsAction],
+    );
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const clearSubjects = useCallback(() => {
+        dispatch({ type: 'groupStudy/searchSubjects/fulfilled', payload: [] });
+    }, [dispatch]);
+    
+    // Search subject handler
+    const handleSearchSubject = async (value: string) => {
+        setSubjectSelected(value);
+        
+        if (!value.trim()) {
+            clearSubjects();
+            return;
+        }
+        try {
+            debounceSearchSubject(value);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            // await dispatch(createGroupAction({
-            //     groupName: groupName,
-            //     description,
-            //     isPrivate: !isPublic,
-            //     memberIds: [],
-            // })).unwrap();
+            const response = await dispatch(createGroupAction({
+                groupName: groupName,
+                description,
+                isPrivate: isPrivate,
+                memberIds: [],
+                subjectId: subjectId ? parseInt(subjectId) : undefined,
+                memberLimited: memberLimited
+            })).unwrap();
 
-            // Chuyển hướng về trang danh sách nhóm sau khi tạo thành công
-            // navigate('/document/group-study');
+            if (response && response.groupId) {
+                navigate(`/document/group-study/${response.groupId}`);
+            }
         } catch (error) {
             console.error('Lỗi khi tạo nhóm:', error);
         }
     };
 
     return (
-        <Box className={cx('container')}>
-            <Paper className={cx('formPaper')}>
-                <Typography variant="h5" className={cx('formTitle')}>
+        <motion.div 
+            className={cx('container')}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
+            <motion.div 
+                className={cx('formPaper')}
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+            >
+                <motion.h2 
+                    className={cx('formTitle')}
+                    initial={{ y: -20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3, duration: 0.5 }}
+                >
                     Tạo nhóm học tập
-                </Typography>
+                </motion.h2>
 
-                <Box component="form" onSubmit={handleSubmit} className={cx('form')}>
+                <motion.form 
+                    onSubmit={handleSubmit} 
+                    className={cx('form')}
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                >
                     {/* Group Information Section */}
-                    <Box className={cx('section')}>
-                        <Box className={cx('sectionHeader')}>
-                            <BookIcon sx={{ color: '#e62e2d' }} />
-                            <Typography variant="h6">Thông tin nhóm</Typography>
-                        </Box>
+                    <motion.section className={cx('section')} variants={itemVariants}>
+                        <div className={cx('sectionHeader')}>
+                            <BookIcon style={{ color: '#ff3c3c' }} />
+                            <h3>Thông tin nhóm</h3>
+                        </div>
 
-                        <Box className={cx('formField')}>
-                            <Typography className={cx('fieldLabel')}>
+                        <div className={cx('formField')}>
+                            <label className={cx('fieldLabel')}>
                                 Tên Nhóm<span className={cx('required')}>*</span>
-                            </Typography>
-                            <TextField
-                                fullWidth
+                            </label>
+                            <motion.input
+                                type="text"
                                 placeholder="Nhập tên nhóm"
                                 value={groupName}
                                 onChange={(e) => setGroupName(e.target.value)}
                                 required
-                                variant="outlined"
                                 className={cx('input')}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px rgba(255, 60, 60, 0.3)" }}
                             />
-                        </Box>
+                        </div>
 
-                        <Box className={cx('formField')}>
-                            <Typography className={cx('fieldLabel')}>
+                        <div className={cx('formField')}>
+                            <label className={cx('fieldLabel')}>
                                 Group Theme/Subject<span className={cx('required')}>*</span>
-                            </Typography>
-                            <TextField
-                                fullWidth
-                                placeholder="Tìm kiếm môn học, ngành học..."
-                                variant="outlined"
-                                className={cx('input')}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <SearchIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Box className={cx('categoryChips')}>
+                            </label>
+                            <div className={cx('searchContainer')}>
+                                <SearchIcon className={cx('searchIcon')} />
+                                <motion.input
+                                    ref={searchInputRef}
+                                    type="text"
+                                    placeholder="Tìm kiếm môn học, ngành học..."
+                                    className={cx('input')}
+                                    value={subjectSelected}
+                                    onChange={(e) => handleSearchSubject(e.target.value)}
+                                    whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px rgba(255, 60, 60, 0.3)" }}
+                                />
+                            </div>
+                            
+                            {/* Subject search results dropdown */}
+                            {subjectSelected.trim() && searchSubject?.length > 0 && (
+                                <motion.div 
+                                    className={cx('searchResults')}
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <ul>
+                                        {searchSubject.map((result, index) => (
+                                            <motion.li
+                                                key={index}
+                                                whileHover={{ backgroundColor: 'rgba(255, 60, 60, 0.1)' }}
+                                                onClick={() => {
+                                                    setSubjectId(String(result.subjectId));
+                                                    setSubjectSelected(result.subjectName);
+                                                    clearSubjects();
+                                                }}
+                                            >
+                                                {result.subjectName}
+                                            </motion.li>
+                                        ))}
+                                    </ul>
+                                </motion.div>
+                            )}
+                            
+                            <div className={cx('categoryChips')}>
                                 {categories.map((category) => (
-                                    <Chip
+                                    <motion.button
                                         key={category.id}
-                                        label={category.label}
-                                        onClick={() => setSelectedCategory(category.id)}
-                                        sx={{
-                                            backgroundColor: selectedCategory === category.id ? '#FFE0E1' : 'default',
-                                            color: selectedCategory === category.id ? '#e62e2d' : 'default',
-                                            border: selectedCategory === category.id ? '1px solid #e62e2d' : 'default',
+                                        type="button"
+                                        onClick={() => {
+                                            setSelectedCategory(category.id);
+                                            setSubjectSelected(category.label);
+                                            debounceSearchSubject(category.label);
+                                            // Focus the input after setting the selection
+                                            if (searchInputRef.current) {
+                                                searchInputRef.current.focus();
+                                            }
                                         }}
-                                        variant={selectedCategory === category.id ? 'filled' : 'outlined'}
-                                        className={cx('categoryChip')}
-                                    />
+                                        className={cx('categoryChip', { 
+                                            selected: selectedCategory === category.id 
+                                        })}
+                                        whileHover="hover"
+                                        whileTap="tap"
+                                        variants={chipVariants}
+                                    >
+                                        {category.label}
+                                    </motion.button>
                                 ))}
-                            </Box>
-                        </Box>
-                    </Box>
+                            </div>
+                        </div>
+                    </motion.section>
 
                     {/* Privacy Settings Section */}
-                    <Box className={cx('section')}>
-                        <Box className={cx('sectionHeader')}>
-                            <LockIcon sx={{ color: '#e62e2d' }} />
-                            <Typography variant="h6">Thiết lập quyền riêng tư</Typography>
-                        </Box>
+                    <motion.section className={cx('section')} variants={itemVariants}>
+                        <div className={cx('sectionHeader')}>
+                            <LockIcon style={{ color: '#ff3c3c' }} />
+                            <h3>Thiết lập quyền riêng tư</h3>
+                        </div>
 
-                        <FormControlLabel
-                            control={
-                                <Switch checked={isPublic} onChange={() => setIsPublic(!isPublic)} color="primary" />
-                            }
-                            label={
-                                <Box className={cx('switchLabel')}>
-                                    <Typography>Công khai nhóm</Typography>
-                                    <Typography variant="caption" color="textSecondary">
-                                        Bất kì ai cũng có thể tham gia
-                                    </Typography>
-                                </Box>
-                            }
-                            className={cx('switchControl')}
-                        />
-                    </Box>
+                        <label className={cx('switchControl')}>
+                            <motion.div 
+                                className={cx('toggleContainer')}
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={!isPrivate}
+                                    onChange={() => setIsPrivate(!isPrivate)}
+                                    className={cx('toggleInput')}
+                                />
+                                <motion.span 
+                                    className={cx('toggleSlider')}
+                                    animate={{ 
+                                        backgroundColor: !isPrivate ? '#ff3c3c' : '#ccc'
+                                    }}
+                                    transition={{ duration: 0.3 }}
+                                />
+                            </motion.div>
+                            <div className={cx('switchLabel')}>
+                                <span>Công khai nhóm</span>
+                                <small>Bất kì ai cũng có thể tham gia</small>
+                            </div>
+                        </label>
+                    </motion.section>
 
                     {/* Group Description Section */}
-                    <Box className={cx('section')}>
-                        <Box className={cx('sectionHeader')}>
-                            <InfoIcon sx={{ color: '#e62e2d' }} />
-                            <Typography variant="h6">Thông tin nhóm</Typography>
-                        </Box>
+                    <motion.section className={cx('section')} variants={itemVariants}>
+                        <div className={cx('sectionHeader')}>
+                            <InfoIcon style={{ color: '#ff3c3c' }} />
+                            <h3>Thông tin nhóm</h3>
+                        </div>
 
-                        <Box className={cx('formField')}>
-                            <Typography className={cx('fieldLabel')}>Mô tả</Typography>
-                            <TextField
-                                fullWidth
-                                multiline
+                        <div className={cx('formField')}>
+                            <label className={cx('fieldLabel')}>Mô tả</label>
+                            <motion.textarea
                                 rows={4}
                                 placeholder="Mô tả về nhóm học tập của bạn về ngành học, mục tiêu,..."
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                variant="outlined"
-                                className={cx('input')}
+                                className={cx('textarea')}
+                                whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px rgba(255, 60, 60, 0.3)" }}
                             />
-                            <Typography variant="caption" className={cx('charCount')}>
+                            <small className={cx('charCount')}>
                                 {description.length}/500 kí tự
-                            </Typography>
-                        </Box>
-                    </Box>
+                            </small>
+                        </div>
+                    </motion.section>
 
                     {/* Members Section */}
-                    <Box className={cx('section')}>
-                        <Box className={cx('sectionHeader')}>
-                            <PeopleIcon sx={{ color: '#e62e2d' }} />
-                            <Typography variant="h6">Thành viên</Typography>
-                        </Box>
+                    <motion.section className={cx('section')} variants={itemVariants}>
+                        <div className={cx('sectionHeader')}>
+                            <PeopleIcon style={{ color: '#ff3c3c' }} />
+                            <h3>Thành viên</h3>
+                        </div>
 
-                        <Box className={cx('formField')}>
-                            <Typography className={cx('fieldLabel')}>Giới hạn thành viên</Typography>
-                            <Box className={cx('memberLimitContainer')}>
-                                <TextField
+                        <div className={cx('formField')}>
+                            <label className={cx('fieldLabel')}>Giới hạn thành viên</label>
+                            <div className={cx('memberLimitContainer')}>
+                                <motion.input
                                     type="number"
-                                    value={memberLimit}
-                                    onChange={(e: any) => setMemberLimit(e.target.value)}
-                                    variant="outlined"
-                                    inputProps={{ min: 1, max: 100 }}
+                                    value={memberLimited}
+                                    onChange={(e) => setMemberLimited(Number(e.target.value))}
+                                    min={1}
+                                    max={100}
                                     className={cx('memberLimitInput')}
+                                    whileFocus={{ scale: 1.05 }}
                                 />
-                                <Typography className={cx('memberLimitLabel')}>thành viên</Typography>
-                            </Box>
-                        </Box>
-                    </Box>
+                                <span className={cx('memberLimitLabel')}>thành viên</span>
+                            </div>
+                        </div>
+                    </motion.section>
 
                     {/* Submit Button */}
-                    <Button type="submit" variant="contained" color="error" fullWidth className={cx('submitButton')}>
+                    <motion.button 
+                        type="submit" 
+                        className={cx('submitButton')}
+                        variants={buttonVariants}
+                        whileHover="hover"
+                        whileTap="tap"
+                    >
                         Tạo nhóm học tập
-                    </Button>
-                </Box>
-            </Paper>
-        </Box>
+                    </motion.button>
+                </motion.form>
+            </motion.div>
+        </motion.div>
     );
 };
 

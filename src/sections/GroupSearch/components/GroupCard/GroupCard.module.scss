@@ -1,15 +1,15 @@
 .groupCard {
-    border-radius: 8px;
+    border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     margin-bottom: 20px;
-    transition:
-        transform 0.2s,
-        box-shadow 0.2s;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: white;
+    border: 1px solid #f0f0f0;
 
     &:hover {
         transform: translateY(-4px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     }
 
     .cardContent {
@@ -18,41 +18,141 @@
 
         .cardImage {
             width: 180px;
-            height: 100%;
             object-fit: cover;
             flex-shrink: 0;
         }
 
         .content {
             flex: 1;
-            padding: 16px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
 
             .header {
                 display: flex;
                 align-items: center;
-                margin-bottom: 12px;
-                gap: 8px;
+                justify-content: space-between;
+                margin-bottom: 16px;
             }
 
             .categoryChip {
                 font-size: 0.75rem;
+                padding: 4px 10px;
+                background-color: #fff0f0;
+                color: #ff3c3c;
+                border: 1px solid #ff3c3c;
+                border-radius: 16px;
+                font-weight: 500;
+            }
+            
+            .memberCount {
+                display: flex;
+                align-items: center;
+                color: #666;
+                font-size: 0.8rem;
+                
+                .icon {
+                    font-size: 16px;
+                    margin-right: 4px;
+                }
+            }
+            
+            .memberCapacity {
+                display: flex;
+                flex-direction: column;
+                min-width: 100px;
+                
+                .memberCapacityInfo {
+                    display: flex;
+                    align-items: center;
+                    color: #666;
+                    font-size: 0.8rem;
+                    margin-bottom: 4px;
+                    
+                    .icon {
+                        font-size: 16px;
+                        margin-right: 4px;
+                    }
+                    
+                    .memberCountText {
+                        font-weight: 500;
+                    }
+                }
+                
+                .progressBarContainer {
+                    width: 100%;
+                    height: 4px;
+                    background-color: #f0f0f0;
+                    border-radius: 2px;
+                    overflow: hidden;
+                    
+                    .progressBar {
+                        height: 100%;
+                        border-radius: 2px;
+                        transition: width 0.3s ease, background-color 0.3s ease;
+                    }
+                }
             }
 
             .title {
-                margin-bottom: 8px;
+                margin: 0 0 12px 0;
                 font-weight: 600;
+                color: #333;
+                font-size: 1.1rem;
             }
 
             .description {
-                margin-bottom: 16px;
+                margin: 0 0 20px 0;
+                color: #666;
+                font-size: 0.9rem;
+                line-height: 1.5;
                 flex-grow: 1;
             }
 
             .joinButton {
                 align-self: flex-start;
                 min-width: 120px;
+                padding: 8px 16px;
+                background-color: #ff3c3c;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-weight: 500;
+                font-size: 0.9rem;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                
+                &:hover {
+                    background-color: #ee2828;
+                }
+                
+                &.memberButton {
+                    background-color: #f0f0f0;
+                    color: #666;
+                    cursor: default;
+                    
+                    &:hover {
+                        background-color: #f0f0f0;
+                    }
+                    
+                    .checkIcon {
+                        margin-right: 8px;
+                        font-size: 16px;
+                    }
+                }
+                
+                &.fullButton {
+                    background-color: #9e9e9e;
+                    color: white;
+                    cursor: not-allowed;
+                    
+                    &:hover {
+                        background-color: #9e9e9e;
+                    }
+                }
             }
         }
     }

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Typography, IconButton } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import { motion } from 'framer-motion';
 import classNames from 'classnames/bind';
 import styles from './JoinRequestItem.module.scss';
 import UserAvatar from '../UserAvatar/UserAvatar';
@@ -9,7 +9,7 @@ import UserAvatar from '../UserAvatar/UserAvatar';
 const cx = classNames.bind(styles);
 
 interface JoinRequestItemProps {
-    avatar?: string;
+    avatar: string | null;
     name: string;
     requestDate: string;
     onAccept: () => void;
@@ -18,30 +18,40 @@ interface JoinRequestItemProps {
 
 const JoinRequestItem: React.FC<JoinRequestItemProps> = ({ avatar, name, requestDate, onAccept, onReject }) => {
     return (
-        <div className={cx('join-request-item')}>
+        <motion.div 
+            className={cx('join-request-item')}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+        >
             <div className={cx('user-info')}>
-                <UserAvatar src={avatar} name={name} className={cx('avatar')} />
+                <UserAvatar src={avatar || undefined} name={name} className={cx('avatar')} />
                 <div className={cx('details')}>
-                    <Typography variant="body1" className={cx('name')}>
-                        {name}
-                    </Typography>
-                    <Typography variant="body2" className={cx('request-type')}>
-                        Yêu cầu
-                    </Typography>
+                    <h4 className={cx('name')}>{name}</h4>
+                    <span className={cx('request-type')}>Yêu cầu</span>
                 </div>
-                <Typography variant="body2" className={cx('date')}>
-                    {requestDate}
-                </Typography>
+                <span className={cx('date')}>{requestDate}</span>
             </div>
             <div className={cx('actions')}>
-                <IconButton className={cx('accept-btn')} onClick={onAccept} size="small">
+                <motion.button 
+                    className={cx('accept-btn')} 
+                    onClick={onAccept}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                >
                     <CheckIcon />
-                </IconButton>
-                <IconButton className={cx('reject-btn')} onClick={onReject} size="small">
+                </motion.button>
+                <motion.button 
+                    className={cx('reject-btn')} 
+                    onClick={onReject}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                >
                     <CloseIcon />
-                </IconButton>
+                </motion.button>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
