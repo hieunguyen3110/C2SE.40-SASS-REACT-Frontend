@@ -19,6 +19,7 @@ import {
     GetDocumentStorage,
     GetPopularDocuments,
 } from '../../services/DocumentAPI/DocumentAPI';
+import { rateDocumentApi } from '../../services/DocumentAPI/RatingAPI';
 import { DocumentByAccountRequest, DocumentResponse, DocumentSearchResponse } from './InterfaceResponse';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
@@ -233,6 +234,18 @@ export const rateForDocumentAction = createAsyncThunk<ApiResponse<string>,Rating
     },
 );
 
+export const rateDocumentAction = createAsyncThunk<string, { documentId: number; rating: number }>(
+    'DocumentSlice/rateDocument',
+    async ({ documentId, rating }) => {
+        try {
+            const response = await rateDocumentApi(documentId, rating);
+            return response.data as string;
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message?: string }>;
+            throw new Error(error.response?.data.message || error.message);
+        }
+    }
+);
 
 const initialState: InitialStateStyles = {
     loading: false,
@@ -403,6 +416,18 @@ export const DocumentSlice = createSlice({
             .addCase(getPopularDocuments.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || 'error when calling api get all documents';
+            })
+            .addCase(rateDocumentAction.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(rateDocumentAction.fulfilled, (state) => {
+                state.loading = false;
+                toast.success('Đã đánh giá tài liệu thành công');
+            })
+            .addCase(rateDocumentAction.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message || 'Đánh giá tài liệu thất bại';
+                toast.error(action.error.message || 'Đánh giá tài liệu thất bại');
             });
     },
 });

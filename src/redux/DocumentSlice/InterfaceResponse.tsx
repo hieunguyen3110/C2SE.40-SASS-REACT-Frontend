@@ -10,6 +10,13 @@ export interface DocumentResponse {
     created_at: string;
     updated_at: string;
     folder_id: number;
+    folderName?: string | null;
+    subjectName?: string;
+    facultyName?: string;
+    authorName?: string;
+    filePath?: string;
+    profilePicture?: string | null;
+    accountRatingDtos?: AccountRatingDto[];
 }
 
 export interface DocumentSearchResponse {
@@ -26,4 +33,9 @@ export interface DocumentByAccountRequest {
     email: string;
     pageSize: number;
     pageNum: number;
+}
+
+export interface AccountRatingDto {
+    accountId: number;
+    rating: number;
 }
