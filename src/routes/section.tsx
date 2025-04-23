@@ -41,6 +41,9 @@ import AIQuizLayout from '../components/AIQuizLayout';
 import TestProcessPage from '../pages/AIQuizPages/TestProcess';
 import AIQuizHome from '../sections/AIQuiz/AIQuizHome';
 import GroupManagementPage from '../pages/GroupStudyPages/GroupManagement';
+import LearningStatisticsPage from '../pages/AIQuizPages/LearningStatistics';
+import TestResultDetailPage from '../pages/AIQuizPages/TestResultDetail';
+
 export default function Router() {
     const routes = useRoutes([
         {
@@ -174,6 +177,14 @@ export default function Router() {
                         {
                             path: 'test-process/:id',
                             element: <TestProcessPage />,
+                        },
+                        {
+                            path: 'test-result/:id',
+                            element: <TestResultDetailPage />,
+                        },
+                        {
+                            path: 'learning-statistics',
+                            element: <LearningStatisticsPage />,
                         }
                     ],
                 },
