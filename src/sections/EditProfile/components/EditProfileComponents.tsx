@@ -24,13 +24,18 @@ const EditProfileComponents = () => {
     const location = useLocation();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [loadingView, setLoadingView] = useState(false);
-    const { useData } = location.state || { useData: null };
+    const [initialLoading, setInitialLoading] = useState(true);
+    
+    // Safe access to useData with fallback to empty object to prevent null errors
+    const { useData = {} } = location.state || {};
     const { success, loading } = useAppSelector((state: RootState) => state.editProfile);
     const { ilogins } = useAppSelector((state) => state.authentication);
 
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(useData.profilePicture);
+    // Use default avatar if profilePicture is undefined
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(useData?.profilePicture || null);
 
     const formatDateToYYYYMMDD = (date: string | Date): string => {
+        if (!date) return '';
         const d = new Date(date);
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -38,19 +43,32 @@ const EditProfileComponents = () => {
         return `${year}-${month}-${day}`;
     };
 
+    // Initialize formData with safe defaults for all fields
     const [formData, setFormData] = useState({
-        firstName: useData.firstName,
-        lastName: useData.lastName,
-        gender: useData.gender,
-        birthDate: useData.birthDate ? formatDateToYYYYMMDD(useData.birthDate) : '',
-        hometown: useData.hometown,
-        phoneNumber: useData.phoneNumber,
-        facultyId: useData.facultyId,
-        major: useData.major,
-        enrollmentYear: new Date().getFullYear(),
-        classNumber: useData.classNumber,
-        profilePicture: useData.profilePicture,
+        firstName: useData?.firstName || '',
+        lastName: useData?.lastName || '',
+        gender: useData?.gender || 'Nam',
+        birthDate: useData?.birthDate ? formatDateToYYYYMMDD(useData.birthDate) : '',
+        hometown: useData?.hometown || '',
+        phoneNumber: useData?.phoneNumber || '',
+        facultyId: useData?.facultyId || 0,
+        major: useData?.major || '',
+        enrollmentYear: useData?.enrollmentYear || new Date().getFullYear(),
+        classNumber: useData?.classNumber || 27,
+        profilePicture: useData?.profilePicture || null,
     });
+
+    // Check if data is ready
+    useEffect(() => {
+        // If we have location state with useData, we can stop loading
+        if (location.state && useData) {
+            setInitialLoading(false);
+        } else {
+            // If no data is available, redirect to profile page
+            // Alternatively, you could fetch the user data here
+            navigate('/document/profile-personal');
+        }
+    }, [useData, location.state, navigate]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -158,6 +176,10 @@ const EditProfileComponents = () => {
         }
     }, [success, navigate, dispatch, formData.firstName, formData.lastName, ilogins, profileData]);
 
+    if (initialLoading) {
+        return <Loader height={20} />;
+    }
+
     return (
         <div className={cx('edit-profile')}>
             {loadingView ? (
@@ -171,7 +193,7 @@ const EditProfileComponents = () => {
                         <div className={cx('main-body-top')}>
                             <div className={cx('main-body-avatar')}>
                                 <h3>Ảnh đại diện</h3>
-                                <img src={avatarPreview || useData.profilePicture || avartar} alt="avatar" />
+                                <img src={avatarPreview || (useData?.profilePicture || avartar)} alt="avatar" />
                                 <div className={cx('file-input')}>
                                     <input
                                         type="file"
@@ -181,7 +203,7 @@ const EditProfileComponents = () => {
                                         style={{ display: 'none' }}
                                     />
                                     <button onClick={handleOpenFileDialog}>
-                                        {formData.profilePicture && formData.profilePicture !== useData.profilePicture
+                                        {formData.profilePicture && formData.profilePicture !== useData?.profilePicture
                                             ? 'Đổi ảnh'
                                             : 'Chọn ảnh'}
                                     </button>
@@ -200,7 +222,7 @@ const EditProfileComponents = () => {
                                                 name="firstName"
                                                 value={formData.firstName}
                                                 onChange={handleInputChange}
-                                                placeholder={useData.firstName}
+                                                placeholder="Họ"
                                             />
                                         </div>
                                         <div className={cx('input-name-lastmame')}>
@@ -210,7 +232,7 @@ const EditProfileComponents = () => {
                                                 name="lastName"
                                                 value={formData.lastName}
                                                 onChange={handleInputChange}
-                                                placeholder={useData.lastName}
+                                                placeholder="Tên"
                                             />
                                         </div>
                                         <div className={cx('input-infor-sex')}>
@@ -234,7 +256,7 @@ const EditProfileComponents = () => {
                                                 name="birthDate"
                                                 value={formData.birthDate}
                                                 onChange={handleInputChange}
-                                                placeholder={useData.birthDate}
+                                                placeholder="Ngày sinh"
                                             />
                                         </div>
 
@@ -245,7 +267,7 @@ const EditProfileComponents = () => {
                                                 name="hometown"
                                                 value={formData.hometown}
                                                 onChange={handleInputChange}
-                                                placeholder={useData.hometown}
+                                                placeholder="Quê quán"
                                             />
                                         </div>
                                     </div>
@@ -267,7 +289,7 @@ const EditProfileComponents = () => {
                                                 name="phoneNumber"
                                                 value={formData.phoneNumber}
                                                 onChange={handleInputChange}
-                                                placeholder={useData.phoneNumber}
+                                                placeholder="Số điện thoại"
                                             />
                                         </div>
                                     </div>
@@ -357,12 +379,7 @@ const EditProfileComponents = () => {
                                             type="text"
                                             name="position"
                                             readOnly
-                                            // value={formData.position}
-                                            // onChange={handleInputChange}
-                                            // min={2000}
-                                            // max={new Date().getFullYear()}
-                                            value={useData.roles}
-                                            // placeholder="Sinh viên"
+                                            value={useData?.roles || "Sinh viên"}
                                         />
                                     </div>
                                     <div className={cx('input-information-year')}>
