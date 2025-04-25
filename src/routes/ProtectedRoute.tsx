@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { AutoLoginAction } from '../redux/AuthenticationSlice/AuthenticationSlice';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { CountNotificationAction } from '../redux/Notication/NoticationSlice';
+import Cookies from 'js-cookie';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -9,6 +10,13 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     const dispatch = useAppDispatch();
     const { isLogined, listRoles } = useAppSelector((state) => state.authentication);
+    useEffect(()=>{
+        const sessionId: string | undefined = Cookies.get('sessionId');
+        if(!sessionId){
+            window.location.href="/login";
+            return;
+        }
+    },[]);
     useEffect(() => {
         if (!isLogined) {
             dispatch(AutoLoginAction());
