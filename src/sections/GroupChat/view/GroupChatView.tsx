@@ -506,7 +506,7 @@ export default function GroupChatView() {
                                         <img src={message.profilePicture} alt={getSenderName(message.senderId)} />
                                     </div>
                                 ) : (
-                                    <div className={cx('avatar')}>{message.username === 'Unknown' ? getSenderName(message.senderId).charAt(0) : message.username}</div>
+                                    <div className={cx('avatar')}>{message.username === 'Unknown' ? getSenderName(message.senderId).charAt(0) : message.username.charAt(0)}</div>
                                 )}
                             </div>
                             <div className={cx('messageContent')}>

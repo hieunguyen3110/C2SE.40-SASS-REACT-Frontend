@@ -61,15 +61,33 @@ const LoginComponents = () => {
                 await GenerateOTP();
             } else {
                 let isCheckError = false;
-                if (values.confirm == '') {
+                
+                // Validate OTP
+                if (values.confirm === '') {
                     formik.errors.confirm = 'OTP Required';
                     isCheckError = true;
+                } else if (values.confirm !== otp) {
+                    formik.errors.confirm = 'Invalid OTP';
+                    isCheckError = true;
+                } else if (otpExpires && new Date() > new Date(otpExpires)) {
+                    formik.errors.confirm = 'OTP has expired';
+                    isCheckError = true;
                 }
-                if (values.captcha != captcha) {
+
+                // Validate Captcha
+                if (values.captcha !== captcha) {
                     formik.errors.captcha = 'Captcha incorrect';
                     isCheckError = true;
                 }
+
                 if (isCheckError) return;
+
+                // Clear OTP data after successful validation
+                dispatch(updateOtpState({ otp: null, otpExpires: null }));
+                setOtp('');
+                setOtpExpires(null);
+                sessionStorage.removeItem('otp');
+                sessionStorage.removeItem('otpExpires');
 
                 setTimeout(() => {
                     navigate('/new-password');

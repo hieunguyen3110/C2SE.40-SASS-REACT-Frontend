@@ -8,6 +8,7 @@ import {
     GetPopularFolders,
     UpdateFolder,
 } from '../../services/FolderAPI/FolderAPI.tsx';
+import { Folder } from '../../types/folder.types.ts';
 
 export const getAllFolders = createAsyncThunk<any>('folder/getAllFolders', async () => {
     const res = await GetAllFolders();
@@ -55,12 +56,13 @@ export const deleteFolder = createAsyncThunk<any, number>('folder/deleteFolder',
     }
 });
 
-export const getPopularFolders = createAsyncThunk<any, { page: number; size: number }>(
+export const getPopularFolders = createAsyncThunk<Folder[], { page: number; size: number }>(
     'folder/getPopularFolders',
     async ({ page, size }: { page: number; size: number }) => {
         try {
             const response = await GetPopularFolders(page, size);
-            return response;
+            console.log(response);
+            return response.data.content;
         } catch (err: any) {
             throw Error(err.message);
         }
@@ -70,7 +72,7 @@ export const getPopularFolders = createAsyncThunk<any, { page: number; size: num
 interface InitialStateStyles {
     loading: boolean;
     error: string | null;
-    data: any;
+    data: Folder[];
     successMessage: string;
 }
 const initialState: InitialStateStyles = {

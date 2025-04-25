@@ -1,5 +1,7 @@
  
+import { ApiResponse, PagedResponse } from '../../types/response.type';
 import { axiosInstance, baseUrl } from '../../utils/AxiosInterceptor';
+import { Folder } from '../../types/folder.types';
 
 export const GetAllFolders = async () => {
     try {
@@ -55,7 +57,7 @@ export const DeleteFolder = async (folderId: number) => {
 export const GetPopularFolders = async (page: number, size: number) => {
     try {
         const res = await axiosInstance.get(`/document/folder/top-folders?page=${page}&size=${size}`);
-        return res.data;
+        return res as unknown as ApiResponse<PagedResponse<Folder>>;
     } catch (err: any) {
         throw Error(err.message);
     }

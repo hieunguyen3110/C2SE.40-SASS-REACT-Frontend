@@ -139,6 +139,7 @@ export const getStompClient = (): Client | undefined => {
 
 // Function to send a message to group chat
 export const sendGroupChatMessage = (groupId: number, content: string): void => {
+    console.log(stompClient)
     if (!stompClient || !stompClient.connected) {
         console.error('WebSocket connection not established');
         toast.error('Không thể gửi tin nhắn. Kết nối WebSocket chưa được thiết lập.');
