@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './Docs.module.scss';
 const cx = classNames.bind(styles);
 import avartar from '../../../../assets/images/Frame 8720.png';
-
+import DocumentIMG from "../../../../assets/images/library.document.png"
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
@@ -139,7 +139,7 @@ export default function Docs({ title, docs }: any) {
                                 </div>
                                 <img
                                     onClick={() => navigate(`/document/${data.docId}`)}
-                                    src={`src/assets/images/library.document.png`}
+                                    src={DocumentIMG}
                                     alt="doc"
                                 />
                                 <h3 onClick={() => navigate(`/document/${data.docId}`)}>

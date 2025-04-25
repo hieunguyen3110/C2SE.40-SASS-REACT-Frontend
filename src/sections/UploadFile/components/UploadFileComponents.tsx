@@ -42,12 +42,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState, useAppSelector } from '../../../redux/store';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from '@mui/material';
-import { updateUpload } from '../../../redux/AuthenticationSlice/AuthenticationSlice';
-
 const cx = classNames.bind(styles);
 
 const UploadFileComponents = () => {
     const wrapperRef = useRef<HTMLDivElement>(null); //use ref để kiểm tra khi kéo file vào
+    const facultySearchRef = useRef<HTMLDivElement>(null); // ref for faculty search dropdown
+    const subjectSearchRef = useRef<HTMLDivElement>(null); // ref for subject search dropdown
     const [fileList, setFileList] = useState<{ name: string; size: number }[]>([]); //use state hiển thị list file
     const [fileSelected, setFileSelected] = useState<File | null>(null); //use state kiểm tra xem file đó đã được chọn chưa
     const [isDragging, setIsDragging] = useState(false); //trạng thái kéo file để hiện component Drop It
@@ -77,7 +77,6 @@ const UploadFileComponents = () => {
     const navigate = useNavigate();
 
     const isUpload = useAppSelector((state) => state.uploadFile.isupload);
-    console.log('isUpload', isUpload);
 
     let isFileAlreadyUploaded = false;
     const { ilogins } = useAppSelector((state) => state.authentication);
@@ -89,6 +88,18 @@ const UploadFileComponents = () => {
             const sizeFile = newFile.size; //lấy kích thước file
             const fileExtension = originalName.split('.').pop()?.toLowerCase(); //lấy đuôi file
             const allowedExtensions = ['pdf']; //đuôi file được phép upload
+            
+            // Nếu đã có file được chọn, thông báo và không cho upload thêm
+            if (fileSelected !== null) {
+                setInformationAlert(`Chỉ được phép tải lên 1 file. Vui lòng xóa file hiện tại trước khi tải lên file mới.`);
+                setAlertFile(true);
+                setTimeout(() => {
+                    setAlertFile(false);
+                }, 3000);
+                e.target.value = '';
+                return;
+            }
+            
             if (!allowedExtensions.includes(fileExtension || '')) {
                 //kiểm tra đuôi file nếu không phải pdf thì báo lỗi
                 setInformationAlert('Chỉ chấp nhận file pdf.');
@@ -120,7 +131,7 @@ const UploadFileComponents = () => {
                 }
 
                 if (isFileAlreadyUploaded) {
-                    setInformationAlert(`File đã được chọn: ${originalName}.`);
+                    setInformationAlert(`Chỉ được phép tải lên 1 file. Vui lòng xóa file hiện tại trước khi tải lên file mới.`);
 
                     setAlertFile(true);
                     setTimeout(() => {
@@ -323,6 +334,22 @@ const UploadFileComponents = () => {
     const isActiveTitle = (step: number) => isColorItemButton === step;
     const isActiveBorder = (step: number) => isColorItemButton >= step;
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (facultySearchRef.current && !facultySearchRef.current.contains(event.target as Node)) {
+                dispatch(clearSearchFaculty());
+            }
+            if (subjectSearchRef.current && !subjectSearchRef.current.contains(event.target as Node)) {
+                dispatch(clearSearchSubject());
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [dispatch]);
+
     return (
         <div className={cx('file-component-main')}>
             <HeaderUploadFile
@@ -356,7 +383,7 @@ const UploadFileComponents = () => {
                 </div>
                 {isDragging ? (
                     <div className={cx('main-body-center')} onDragOver={(e) => e.preventDefault()}>
-                        <input onChange={onFileDrop} type="file" />
+                        <input onChange={onFileDrop} type="file" disabled={fileSelected !== null} />
 
                         <div className={cx('main-body-hover')}>
                             <div>
@@ -394,7 +421,7 @@ const UploadFileComponents = () => {
                                             />
 
                                             {facultyFile.trim() && searchFaculty?.length > 0 && (
-                                                <div className={cx('search-results')}>
+                                                <div className={cx('search-results')} ref={facultySearchRef}>
                                                     <ul>
                                                         {searchFaculty.map((result, index) => (
                                                             <li
@@ -422,7 +449,7 @@ const UploadFileComponents = () => {
                                                 onChange={(e) => handleSearchSubject(e.target.value)}
                                             />
                                             {subjectSelected.trim() && searchSubject?.length > 0 && (
-                                                <div className={cx('search-results')}>
+                                                <div className={cx('search-results')} ref={subjectSearchRef}>
                                                     <ul>
                                                         {searchSubject.map((result, index) => (
                                                             <li
@@ -451,6 +478,28 @@ const UploadFileComponents = () => {
                                                     value={folderFile}
                                                     onChange={(e) => {
                                                         handleSearchFolder(e.target.value);
+                                                    }}
+                                                    MenuProps={{
+                                                        anchorOrigin: {
+                                                            vertical: 'bottom',
+                                                            horizontal: 'left',
+                                                        },
+                                                        transformOrigin: {
+                                                            vertical: 'top',
+                                                            horizontal: 'left',
+                                                        },
+                                                        disablePortal: true,
+                                                        PaperProps: {
+                                                            style: {
+                                                                maxHeight: 300
+                                                            }
+                                                        }
+                                                    }}
+                                                    sx={{
+                                                        '.MuiSelect-select': {
+                                                            textAlign: 'left',
+                                                            paddingLeft: '32px'
+                                                        }
                                                     }}
                                                 >
                                                     {searchFolder.map((result, index) => (
@@ -550,14 +599,14 @@ const UploadFileComponents = () => {
                     </div>
                 ) : (
                     <div ref={wrapperRef} className={cx(`main-body-center`)} onDragOver={(e) => e.preventDefault()}>
-                        <input onChange={onFileDrop} type="file" />
+                        <input onChange={onFileDrop} type="file" disabled={fileSelected !== null} />
                         <div className={cx('body-center-list')}>
                             <div className={cx('center-list-icon')}>
                                 <img src={Vector1} className={cx('icon-1')} />
                                 <img src={Vector2} className={cx('icon-2')} />
-                                <input type="file" />
+                                <input type="file" disabled={fileSelected !== null} />
                                 <div className={cx('list-title')}>
-                                    <p>Kéo tập tin của bạn vào đây</p>
+                                    <p>{fileSelected !== null ? 'Bạn đã chọn 1 file' : 'Kéo tập tin của bạn vào đây'}</p>
                                 </div>
                             </div>
                             <div className={cx('center-list-buton')}>
@@ -567,11 +616,15 @@ const UploadFileComponents = () => {
                                     <div className={cx('list-item-border')}></div>
                                 </div>
                                 <div className={cx('list-button-drop')}>
-                                    <input type="file" onChange={onFileDrop} placeholder="Chọn tệp tài liệu" />
+                                    <input type="file" onChange={onFileDrop} placeholder="Chọn tệp tài liệu" disabled={fileSelected !== null} />
                                 </div>
                                 <div className={cx('list-button-information')}>
                                     <p>Hỗ trợ tài liệu pdf</p>
                                     <p>Dung lượng file tải lên không quá xx mb</p>
+                                    <p className={cx('upload-notice')}>
+                                        <Info style={{ fontSize: '14px', marginRight: '4px' }} />
+                                        Lưu ý: Bạn chỉ được phép tải lên 1 tài liệu mỗi lần
+                                    </p>
                                 </div>
                             </div>
                         </div>

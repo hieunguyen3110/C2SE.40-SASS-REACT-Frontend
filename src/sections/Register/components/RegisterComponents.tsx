@@ -1,7 +1,7 @@
 import styles from './RegisterComponents.module.scss';
 import classnames from 'classnames/bind';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     RegisterAction,
@@ -84,6 +84,23 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
     const dispatch = useAppDispatch(); //dispatch register
     const { clickRegister } = useGlobalContextLoin(); //hiện ứng animation register
     const loading = useSelector((state: RootState) => state.authentication.loading); //loading register
+    const roleDropdownRef = useRef<HTMLDivElement>(null); // Ref for the role dropdown container
+
+    // Handle click outside to close dropdown
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (roleDropdownRef.current && !roleDropdownRef.current.contains(event.target as Node)) {
+                setRowRegister(false);
+            }
+        };
+
+        if (rowRegister) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [rowRegister]);
 
     const refreshString = () => {
         //hàm refresh mã captcha
@@ -181,9 +198,9 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
                                                 />
                                             </div>
                                         </div>
-                                        <div className={cx('body-list')}>
+                                        <div className={cx('body-list')} ref={roleDropdownRef}>
                                             <div className={cx('list-item', 'list-row')}>
-                                                <div className={cx('list-row-item')}>
+                                                <div className={cx('list-row-item')} onClick={handleRowItem}>
                                                     <SensorOccupied />
                                                     <Field
                                                         type="text"
@@ -191,6 +208,7 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
                                                         value={valueRow}
                                                         readOnly
                                                         placeholder={pop.titleRow}
+                                                        onClick={() => setRowRegister(true)}
                                                     />
                                                 </div>
                                                 <ErrorMessage
@@ -213,7 +231,7 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
                                                                 setFieldValue('roleName', selectedValue);
                                                                 setFieldTouched('roleName', true, false);
                                                                 setValueRow(selectedValue);
-                                                                validateField('roleName'); // Kiểm tra lại trường "row"
+                                                                validateField('roleName'); 
                                                                 setRowRegister(false);
                                                             }}
                                                         >
@@ -225,7 +243,7 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
                                                                 setFieldValue('roleName', selectedValue);
                                                                 setFieldTouched('roleName', true, false);
                                                                 setValueRow(selectedValue);
-                                                                validateField('roleName'); // Kiểm tra lại trường "row"
+                                                                validateField('roleName');
                                                                 setRowRegister(false);
                                                             }}
                                                         >
