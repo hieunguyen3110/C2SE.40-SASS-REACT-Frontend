@@ -23,7 +23,7 @@ const callRefreshToken = async (): Promise<void> => {
         isRefreshingToken = true;
         await axiosInstance.get<void, response>('/identity/auth/refresh-token');
         isRefreshingToken = false;
-        // store.dispatch(updateStateLoading(false));
+        store.dispatch(updateStateLoading(false));
     }
 };
 axiosInstance.interceptors.request.use(
