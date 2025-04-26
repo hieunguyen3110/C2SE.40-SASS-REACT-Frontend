@@ -40,18 +40,18 @@ let stompClient: Client;
 const websocketUrl = import.meta.env.VITE_APP_WEBSOCKET_URL;
 export const WebsocketConnection: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { accountId } = useAppSelector((state) => state.authentication);
+    const { accountId,isLogined } = useAppSelector((state) => state.authentication);
     const { currentGroup, userGroups } = useAppSelector((state) => state.groupStudy);
     const { numberOfNotificationsUnRead, numberOfNotifications } = useAppSelector((state) => state.notication);
     const token = JsCookie.get('accessToken');
     useEffect(() => {
-        if (!token || accountId === null) {
+        if (!token || accountId === null || !isLogined) {
             console.error('No access token found');
             return;
         }
 
         stompClient = new Client({
-            webSocketFactory: () => new SockJS(`${websocketUrl}`),
+            webSocketFactory: () => new SockJS(websocketUrl, null, { transports: ['websocket'] }),
             connectHeaders: {
                 token: token,
             },
@@ -128,7 +128,7 @@ export const WebsocketConnection: React.FC = () => {
         return () => {
             stompClient?.deactivate();
         };
-    }, [dispatch, accountId, token, numberOfNotificationsUnRead, numberOfNotifications, currentGroup]);
+    }, [dispatch, accountId, token, numberOfNotificationsUnRead, numberOfNotifications, currentGroup, userGroups, isLogined]);
     return null;
 };
 
