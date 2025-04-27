@@ -43,8 +43,9 @@ export const WebsocketConnection: React.FC = () => {
     const { accountId,isLogined } = useAppSelector((state) => state.authentication);
     const { currentGroup, userGroups } = useAppSelector((state) => state.groupStudy);
     const { numberOfNotificationsUnRead, numberOfNotifications } = useAppSelector((state) => state.notication);
-    const token = JsCookie.get('accessToken');
+    // const token = JsCookie.get('accessToken');
     useEffect(() => {
+        const token = JsCookie.get('accessToken');
         if (!token || accountId === null || !isLogined) {
             console.error('No access token found');
             return;
@@ -128,7 +129,7 @@ export const WebsocketConnection: React.FC = () => {
         return () => {
             stompClient?.deactivate();
         };
-    }, [dispatch, accountId, token, numberOfNotificationsUnRead, numberOfNotifications, currentGroup, userGroups, isLogined]);
+    }, [dispatch, accountId, numberOfNotificationsUnRead, numberOfNotifications, currentGroup, userGroups, isLogined]);
     return null;
 };
 
