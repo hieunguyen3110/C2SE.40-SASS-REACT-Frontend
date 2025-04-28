@@ -16,6 +16,7 @@ import {
 } from '../redux/GroupStudySlice/GroupStudySlice';
 import store from '../redux/store';
 import { toast } from 'react-toastify';
+import { AutoLoginAction } from '../redux/AuthenticationSlice/AuthenticationSlice';
 
 type NotificationResponse = {
     notificationId: number;
@@ -40,18 +41,20 @@ let stompClient: Client;
 const websocketUrl = import.meta.env.VITE_APP_WEBSOCKET_URL;
 export const WebsocketConnection: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { accountId } = useAppSelector((state) => state.authentication);
+    const { accountId,isLogined } = useAppSelector((state) => state.authentication);
     const { currentGroup, userGroups } = useAppSelector((state) => state.groupStudy);
     const { numberOfNotificationsUnRead, numberOfNotifications } = useAppSelector((state) => state.notication);
-    const token = JsCookie.get('accessToken');
+    // const token = JsCookie.get('accessToken');
     useEffect(() => {
-        if (!token || accountId === null) {
+        const token = JsCookie.get('accessToken');
+        if (!token || accountId === null || !isLogined) {
             console.error('No access token found');
+            dispatch(AutoLoginAction());
             return;
         }
 
         stompClient = new Client({
-            webSocketFactory: () => new SockJS(`${websocketUrl}`),
+            webSocketFactory: () => new SockJS(websocketUrl, null, { transports: ['websocket'] }),
             connectHeaders: {
                 token: token,
             },
@@ -128,7 +131,7 @@ export const WebsocketConnection: React.FC = () => {
         return () => {
             stompClient?.deactivate();
         };
-    }, [dispatch, accountId, token, numberOfNotificationsUnRead, numberOfNotifications, currentGroup]);
+    }, [dispatch, accountId, numberOfNotificationsUnRead, numberOfNotifications, currentGroup, userGroups, isLogined]);
     return null;
 };
 
@@ -149,7 +152,7 @@ export const sendGroupChatMessage = (groupId: number, content: string): void => 
     const state = store.getState();
     const accountId = state.authentication.accountId;
     // Get username and profilePicture from Redux store
-    const username = state.authentication.username || '';
+    const username = state.authentication.username || `Student ${accountId}`;
     const profilePicture = state.authentication.profilePicture || '';
 
     if (!accountId) {
