@@ -16,6 +16,7 @@ import {
 } from '../redux/GroupStudySlice/GroupStudySlice';
 import store from '../redux/store';
 import { toast } from 'react-toastify';
+import { AutoLoginAction } from '../redux/AuthenticationSlice/AuthenticationSlice';
 
 type NotificationResponse = {
     notificationId: number;
@@ -48,6 +49,7 @@ export const WebsocketConnection: React.FC = () => {
         const token = JsCookie.get('accessToken');
         if (!token || accountId === null || !isLogined) {
             console.error('No access token found');
+            dispatch(AutoLoginAction());
             return;
         }
 
@@ -150,7 +152,7 @@ export const sendGroupChatMessage = (groupId: number, content: string): void => 
     const state = store.getState();
     const accountId = state.authentication.accountId;
     // Get username and profilePicture from Redux store
-    const username = state.authentication.username || '';
+    const username = state.authentication.username || `Student ${accountId}`;
     const profilePicture = state.authentication.profilePicture || '';
 
     if (!accountId) {

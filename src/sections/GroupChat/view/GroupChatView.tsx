@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import classNames from 'classnames/bind';
 import styles from './GroupChatView.module.scss';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -187,7 +187,7 @@ export default function GroupChatView() {
     // Get display name for message sender (placeholder implementation)
     const getSenderName = (senderId: number) => {
         const member = memberList.find(m => m.memberId === senderId);
-        return member ? member.name : `User ${senderId}`;
+        return member ? member.name : `Student ${senderId}`;
     };
 
     // Format time for display from timestamp
@@ -198,7 +198,7 @@ export default function GroupChatView() {
     };
 
     // Get messages array safely from the API response
-    const getMessagesArray = () => {
+    const getMessagesArray = useCallback(() => {
         if (!messages) return [];
         
         // Convert messages to a consistent format
@@ -215,10 +215,10 @@ export default function GroupChatView() {
         
         // Không sắp xếp lại vì đã được sắp xếp trong Redux
         return messageArray;
-    };
+    },[messages]);
 
     // Get pinned messages array safely
-    const getPinnedMessagesArray = () => {
+    const getPinnedMessagesArray = useCallback(() => {
         if (!pinnedMessages) return [];
         // Check if pinnedMessages is a paginated response with content property
         if ('content' in pinnedMessages && Array.isArray(pinnedMessages.content)) {
@@ -229,7 +229,7 @@ export default function GroupChatView() {
             return pinnedMessages;
         }
         return [];
-    };
+    },[pinnedMessages]);
 
     // Get the messages array
     const messagesArray = getMessagesArray();
@@ -244,7 +244,7 @@ export default function GroupChatView() {
             setMostRecentMessageId(latestMessage.messageId);
             scrollToBottom();
         }
-    }, [messages]); // Track changes to the messages array
+    }, [getMessagesArray, messages]); // Track changes to the messages array
 
     // Extract pinned message IDs from pinnedMessages when it changes
     useEffect(() => {
@@ -253,7 +253,7 @@ export default function GroupChatView() {
             const ids = pinnedMsgs.map((msg: Message) => msg.messageId);
             setPinnedMessageIds(ids);
         }
-    }, [pinnedMessages]);
+    }, [getPinnedMessagesArray, pinnedMessages]);
 
     // Handler for pinning a message
     const handlePinMessage = async (messageId: number) => {
@@ -274,7 +274,7 @@ export default function GroupChatView() {
     };
 
     // Xử lý sự kiện scroll để hiển thị nút "Load more" khi người dùng cuộn đến đầu
-    const handleScroll = () => {
+    const handleScroll = useCallback(() => {
         const container = messagesContainerRef.current;
         if (container) {
             // Hiển thị nút "Load more" khi cuộn gần đến đầu container (30px)
@@ -292,7 +292,7 @@ export default function GroupChatView() {
                 setUnreadMessagesCount(0);
             }
         }
-    };
+    },[hasMoreMessages]);
 
     // Thêm sự kiện lắng nghe scroll trên container tin nhắn
     useEffect(() => {
@@ -303,7 +303,7 @@ export default function GroupChatView() {
                 container.removeEventListener('scroll', handleScroll);
             };
         }
-    }, []);
+    }, [handleScroll]);
 
     // Thêm hiệu ứng cho nội dung tin nhắn mới
     useEffect(() => {

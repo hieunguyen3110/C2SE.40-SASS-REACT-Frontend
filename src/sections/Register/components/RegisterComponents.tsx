@@ -26,6 +26,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { ApiResponse } from '../../../types/response.type';
 
 const cx = classnames.bind(styles);
 
@@ -134,11 +135,11 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
         try {
             dispatch(registerStart()); //dispatch registerStart
             const result = await dispatch(RegisterAction(values)); //dispatch RegisterAction
-            const message = result.payload as string; //payload register
+            const response = result.payload as ApiResponse<string>; //payload register
 
-            if (message === 'Register account is successful') {
+            if (response.code==201) {
                 dispatch(registerSuccess()); //dispatch registerSuccess
-                toast.success('Đăng kí thành công'); //toast success
+                toast.success(response.data); //toast success
                 setTimeout(() => {
                     navigate('/login');
                 }, 1500);
