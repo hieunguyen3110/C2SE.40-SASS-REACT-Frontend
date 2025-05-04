@@ -32,14 +32,14 @@
         .titleArea {
             display: flex;
             flex-direction: column;
-            
+
             .title {
                 font-size: 18px;
                 font-weight: 600;
                 margin: 0 0 4px 0;
                 color: #333;
             }
-            
+
             .subtitle {
                 font-size: 13px;
                 color: #666;
@@ -49,10 +49,10 @@
         .actions {
             display: flex;
             gap: 8px;
-            
+
             .iconButton {
                 color: #666;
-                
+
                 &:hover {
                     color: #ff3c3c;
                     background-color: rgba(255, 60, 60, 0.08);
@@ -76,12 +76,12 @@
                 display: flex;
                 gap: 8px;
                 align-items: center;
-                
+
                 .pinIcon {
                     width: 18px;
                     height: 18px;
                 }
-                
+
                 .pinnedTitle {
                     font-size: 14px;
                     font-weight: 600;
@@ -89,16 +89,16 @@
                     color: #ff3c3c;
                 }
             }
-            
+
             .toggleButton {
                 color: #ff3c3c;
-                
+
                 &:hover {
                     background-color: rgba(255, 60, 60, 0.08);
                 }
             }
         }
-        
+
         .pinnedMessagesContent {
             overflow: hidden;
         }
@@ -112,19 +112,19 @@
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 4px;
-                
+
                 .authorName {
                     font-size: 14px;
                     font-weight: 500;
                     color: #333;
                 }
-                
+
                 .messageTime {
                     font-size: 12px;
                     color: #888;
                 }
             }
-            
+
             .messageText {
                 font-size: 13px;
                 line-height: 1.5;
@@ -154,39 +154,39 @@
         &::-webkit-scrollbar {
             width: 8px;
         }
-        
+
         &::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.02);
             border-radius: 4px;
         }
-        
+
         &::-webkit-scrollbar-thumb {
             background: rgba(0, 0, 0, 0.1);
             border-radius: 4px;
-            
+
             &:hover {
                 background: rgba(0, 0, 0, 0.2);
             }
         }
-        
+
         /* Sửa lại phần này - dùng visibility thay vì opacity */
         &::-webkit-scrollbar-thumb {
             visibility: visible;
             transition: background 0.3s;
         }
-        
+
         /* Xóa phần này hoặc thay bằng cách viết dưới đây */
         /* 
         &:hover::-webkit-scrollbar {
             opacity: 1;
         }
         */
-        
+
         /* Tùy chọn: Nếu muốn thanh cuộn chỉ hiện khi hover */
         &::-webkit-scrollbar-thumb {
             background: rgba(0, 0, 0, 0.05);
         }
-        
+
         &:hover::-webkit-scrollbar-thumb {
             background: rgba(0, 0, 0, 0.1);
         }
@@ -222,25 +222,25 @@
                 min-width: 180px;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
                 transition: all 0.2s ease;
-                
+
                 &:hover:not(:disabled) {
                     background-color: #f0f0f0;
                     border-color: #d0d0d0;
                     color: #ff3c3c;
                 }
-                
+
                 &:disabled {
                     cursor: not-allowed;
                     opacity: 0.7;
                     background-color: #f9f9f9;
                 }
-                
+
                 .loadingSpinner {
                     display: inline-block;
                     position: relative;
                     width: 20px;
                     height: 20px;
-                    
+
                     div {
                         box-sizing: border-box;
                         display: block;
@@ -252,21 +252,21 @@
                         border-radius: 50%;
                         animation: loadingSpinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
                         border-color: #ff3c3c transparent transparent transparent;
-                        
+
                         &:nth-child(1) {
                             animation-delay: -0.45s;
                         }
-                        
+
                         &:nth-child(2) {
                             animation-delay: -0.3s;
                         }
-                        
+
                         &:nth-child(3) {
                             animation-delay: -0.15s;
                         }
                     }
                 }
-                
+
                 .loadingText {
                     margin-left: 10px;
                 }
@@ -277,7 +277,7 @@
             text-align: center;
             position: relative;
             margin: 16px 0;
-            
+
             span {
                 display: inline-block;
                 padding: 0 12px;
@@ -309,7 +309,7 @@
 
             .avatarContainer {
                 flex-shrink: 0;
-                
+
                 .avatar {
                     width: 40px;
                     height: 40px;
@@ -322,7 +322,7 @@
                     font-weight: 600;
                     font-size: 16px;
                     overflow: hidden;
-                    
+
                     img {
                         width: 100%;
                         height: 100%;
@@ -348,13 +348,13 @@
                     align-items: center;
                     gap: 8px;
                     margin-bottom: 6px;
-                    
+
                     .authorName {
                         font-size: 14px;
                         font-weight: 600;
                         color: #333;
                     }
-                    
+
                     .roleTag {
                         background-color: #fff0f0;
                         padding: 2px 8px;
@@ -363,29 +363,29 @@
                         color: #ff3c3c;
                         font-weight: 500;
                     }
-                    
+
                     .messageTime {
                         font-size: 12px;
                         color: #888;
                         margin-left: auto;
                     }
                 }
-                
+
                 .messageText {
                     font-size: 14px;
                     line-height: 1.5;
                     color: #444;
                     margin: 0;
-                    
+
                     .documentLink {
                         display: inline-block;
                         margin-left: 4px;
-                        
+
                         a {
                             color: #3498db;
                             text-decoration: none;
                             font-weight: 500;
-                            
+
                             &:hover {
                                 text-decoration: underline;
                             }
@@ -403,21 +403,21 @@
                 align-items: center;
                 gap: 4px;
                 margin-top: 4px;
-                
+
                 .actionButton {
                     color: #888;
-                    
+
                     &:hover {
                         color: #ff3c3c;
                         background-color: rgba(255, 60, 60, 0.08);
                     }
-                    
+
                     .pinned-icon {
                         filter: invert(37%) sepia(93%) saturate(7471%) hue-rotate(353deg) brightness(98%) contrast(139%);
                         transform: scale(1.1);
                         transition: transform 0.3s ease;
                     }
-                    
+
                     .pinning-icon {
                         animation: spin 1s linear infinite;
                     }
@@ -430,28 +430,28 @@
                     opacity: 1;
                 }
             }
-            
+
             &.self-message {
                 flex-direction: row-reverse;
-                
+
                 .messageContent {
                     border-radius: 16px 0 16px 16px;
                     background-color: #f0f7ff;
-                    
+
                     .messageHeader {
                         flex-direction: row-reverse;
-                        
+
                         .messageTime {
                             margin-left: 0;
                             margin-right: auto;
                         }
                     }
                 }
-                
+
                 .messageActions {
                     flex-direction: column;
                 }
-                
+
                 .avatarContainer {
                     .avatar {
                         background-color: #3498db;
@@ -461,7 +461,7 @@
 
             &.new-message {
                 animation: newMessagePulse 2s ease;
-                
+
                 .messageContent {
                     box-shadow: 0 0 0 2px rgba(255, 60, 60, 0.2);
                 }
@@ -483,12 +483,12 @@
             z-index: 10;
             border: 1px solid rgba(255, 60, 60, 0.2);
             transition: all 0.2s ease;
-            
+
             &:hover {
                 background-color: #fff0f0;
                 transform: translateY(-2px);
             }
-            
+
             .newMessagesCount {
                 background-color: #ff3c3c;
                 color: white;
@@ -501,13 +501,13 @@
                 font-size: 12px;
                 font-weight: bold;
             }
-            
+
             span {
                 font-size: 13px;
                 font-weight: 500;
                 color: #333;
             }
-            
+
             svg {
                 color: #ff3c3c;
                 font-size: 20px;
@@ -532,24 +532,24 @@
             font-size: 14px;
             outline: none;
             transition: all 0.2s ease;
-            
+
             &:focus {
                 background-color: #f0f0f0;
                 box-shadow: 0 0 0 2px rgba(255, 60, 60, 0.1);
             }
-            
+
             &::placeholder {
                 color: #999;
             }
         }
-        
+
         .inputActions {
             display: flex;
             gap: 8px;
-            
+
             .emojiPickerContainer {
                 position: relative;
-                
+
                 .emojiPicker {
                     position: absolute;
                     bottom: 45px;
@@ -559,34 +559,34 @@
                     border-radius: 8px;
                 }
             }
-            
+
             .actionButton {
                 color: #888;
-                
+
                 &:hover {
                     color: #ff3c3c;
                     background-color: rgba(255, 60, 60, 0.08);
                 }
             }
-            
+
             .sendButton {
                 color: #ff3c3c;
                 background-color: #fff0f0;
-                
+
                 &:hover {
                     background-color: rgba(255, 60, 60, 0.15);
                 }
-                
+
                 &:disabled {
                     color: #ccc;
                     background-color: #f5f5f5;
                 }
-                
+
                 .sendIcon {
                     width: 20px;
                     height: 20px;
                     filter: invert(42%) sepia(81%) saturate(6208%) hue-rotate(343deg) brightness(97%) contrast(110%);
-                    
+
                     :global(.Mui-disabled) & {
                         filter: invert(91%) sepia(0%) saturate(0%) hue-rotate(246deg) brightness(96%) contrast(91%);
                     }

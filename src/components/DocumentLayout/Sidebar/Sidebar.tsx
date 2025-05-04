@@ -220,6 +220,7 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
                     alt="avatar"
                     whileHover={{ scale: 1.1 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                    style={{transform: "rotate(90deg)"}}
                 />
                 <AnimatePresence>
                     {isOpen && (
@@ -229,7 +230,7 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
                             exit={{ opacity: 0, x: -20 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <h3 onClick={handleClickProfile}>{username !== 'null null' ? username : 'N/A'}</h3>
+                            <h3 onClick={handleClickProfile}>{username !== null ? username : 'N/A'}</h3>
                             <a href="/document/edit-profile">+ Add information</a>
                         </motion.div>
                     )}
