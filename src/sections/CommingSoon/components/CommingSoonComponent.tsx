@@ -11,8 +11,8 @@ const CommingSoonComponent = () => {
 
     useEffect(() => {
         const currentTime = () => {
-            const endDate = new Date(2025, 0, 1);
             const now = new Date();
+            const endDate = new Date(now.getFullYear()+1, 0, 1);
             const timeDifference = endDate.getTime() - now.getTime();
             const day = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
             const hour = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
