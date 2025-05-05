@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 .env
 public/pspdfkit-lib
+dtuforyou.crt
+dtuforyou.key
+nginx.conf
+Dockerfile

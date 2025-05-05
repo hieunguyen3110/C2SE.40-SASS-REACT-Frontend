@@ -26,6 +26,7 @@ import { GetDocument } from '../../../services/DocumentAPI/DocumentAPI';
 import { GetProfileRequest } from '../../../services/ProfilePersonalAPI/ProfilePersonalAPI';
 import Loader from '../../../components/Loader/Loader';
 import { useSharingModal } from '../../../contexts/SharingModalContext';
+import LearningAnalyticsDashboard from './LearningAnalyticsDashboard';
 const cx = classnames.bind(styles);
 // interface Subject {
 //   id: number;
@@ -365,6 +366,7 @@ const ProfileAuthorComponent = () => {
                     </div>
                 </div>
             )}
+            <LearningAnalyticsDashboard />
         </div>
     );
 };
