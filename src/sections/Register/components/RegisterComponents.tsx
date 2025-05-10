@@ -144,11 +144,14 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
                     navigate('/login');
                 }, 1500);
             } else {
-                toast.error('Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.'); //toast error
+                const errorMessage = result.payload as string;
+                toast.error(errorMessage || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.'); //toast error
+                dispatch(registerFailure()); //dispatch registerFailure
             }
         } catch (error) {
             console.log(error); //log error
             dispatch(registerFailure()); //dispatch registerFailure
+            toast.error('Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.');
         } finally {
             setSubmitting(false);
         }

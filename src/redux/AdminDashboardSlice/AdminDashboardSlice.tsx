@@ -1,4 +1,3 @@
- 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
     ApproveDocuments,
@@ -10,6 +9,8 @@ import {
     GetStatsForAdmin,
     GetUsersForAdmin,
 } from '../../services/AdminDashboardAPI/AdminDashboardAPI';
+import { AdminUser } from '../../types/admin.types';
+import { PagedResponse } from '../../types/response.type';
 
 interface Params {
     page: number;
@@ -94,8 +95,8 @@ export const checkDocument = createAsyncThunk<any, number>('adminDashboard/check
 interface InitialStateStyles {
     loading: boolean;
     error: string;
-    users: any[];
-    documents: any[];
+    users: PagedResponse<AdminUser> | null;
+    documents: PagedResponse<Document> | null;
     data: any;
     successMessage: string;
 }
@@ -103,8 +104,8 @@ interface InitialStateStyles {
 const initialState: InitialStateStyles = {
     loading: false,
     error: '',
-    users: [],
-    documents: [],
+    users: null,
+    documents: null,
     data: [],
     successMessage: '',
 };
