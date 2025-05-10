@@ -230,7 +230,7 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
                             exit={{ opacity: 0, x: -20 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <h3 onClick={handleClickProfile}>{username !== null ? username : 'N/A'}</h3>
+                            <h3 onClick={handleClickProfile}>{username ? username : 'Student'}</h3>
                             <a href="/document/edit-profile">+ Add information</a>
                         </motion.div>
                     )}

@@ -165,7 +165,7 @@ export default function Router() {
                         {
                             path: 'support',
                             element: <GroupSupport />,
-                        }
+                        },
                     ],
                 },
                 {
@@ -185,7 +185,7 @@ export default function Router() {
                             element: <KnowledgeTestPage />,
                         },
                         {
-                            path: 'test-process/:id',
+                            path: 'test-process',
                             element: <TestProcessPage />,
                         },
                         {
@@ -195,11 +195,11 @@ export default function Router() {
                         {
                             path: 'learning-statistics',
                             element: <LearningStatisticsPage />,
-                        }
+                        },
                     ],
                 },
             ],
-        }, 
+        },
         {
             path: '/admin',
             element: (
