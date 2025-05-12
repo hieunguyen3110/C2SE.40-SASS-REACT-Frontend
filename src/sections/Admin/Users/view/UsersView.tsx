@@ -2,9 +2,8 @@ import classNames from 'classnames/bind';
 import styles from './UsersView.module.scss';
 const cx = classNames.bind(styles);
 import { useEffect, useState } from 'react';
-import CensorDropdown from '../../Documents/components/CensorDropdown';
 import SearchIcon from '@mui/icons-material/Search';
-import DataTable from '../../Documents/components/DataTable';
+import { motion } from 'framer-motion';
 import { useAppDispatch, useAppSelector } from '../../../../redux/store';
 import {
     approveUsers,
@@ -17,73 +16,20 @@ import AlertDialog from '../components/AlertDialog';
 import { toast } from 'react-toastify';
 import Loader from '../../../../components/Loader/Loader';
 import ApproveDialog from '../components/ApproveDialog';
-
-const columns: any[] = [
-    { id: 'accountId', label: 'ID', width: 50 },
-    { id: 'firstName', label: 'Họ', minWidth: 100 },
-    {
-        id: 'lastName',
-        label: 'Tên',
-        minWidth: 100,
-        align: 'center',
-    },
-    {
-        id: 'email',
-        label: 'Email',
-        minWidth: 100,
-        align: 'center',
-    },
-    {
-        id: 'birthDate',
-        label: 'Ngày sinh',
-        minWidth: 120,
-        align: 'center',
-    },
-    {
-        id: 'gender',
-        label: 'Giới tính',
-        minWidth: 90,
-        align: 'center',
-    },
-    // {
-    //     id: "hometown",
-    //     label: "Quê quán",
-    //     minWidth: 100,
-    //     align: "center",
-    // },
-    {
-        id: 'role',
-        label: 'Chức vụ',
-        minWidth: 50,
-        align: 'center',
-    },
-    {
-        id: 'isActive',
-        label: 'Phê duyệt',
-        minWidth: 100,
-        align: 'center',
-    },
-];
-
-const censorValues: any = [
-    { code: 'accountId', title: 'ID' },
-    { code: 'firstName', title: 'Họ' },
-    { code: 'lastName', title: 'Tên' },
-    { code: 'email', title: 'Email' },
-    { code: 'role', title: 'Chức vụ' },
-    { code: 'isActive', title: 'Phê duyệt' },
-];
+import { AdminUser } from '../../../../types/admin.types';
 
 export default function UsersView() {
-    const [censor, setCensor] = useState<string>('');
     const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(1);
-    const [data, setData] = useState<any>([]);
+    const [data, setData] = useState<AdminUser[]>([]);
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const dispatch = useAppDispatch();
-    const users: any[] = useAppSelector((state: any) => state.adminDashboard.users?.content);
+    const usersResponse = useAppSelector((state: any) => state.adminDashboard.users);
+    const users = usersResponse?.content || [];
+    const totalPages = usersResponse?.totalPages || 1;
 
     const { loading, successMessage, error } = useAppSelector((state) => state.adminDashboard);
+    const statsData = useAppSelector((state) => state.adminDashboard.data);
 
     useEffect(() => {
         if (users && users.length !== 0) {
@@ -91,29 +37,10 @@ export default function UsersView() {
         }
     }, [users]);
 
-    const handleClassifyChange = (value: string) => {
-        setCensor(value);
-    };
-
-    const statsData = useAppSelector((state) => {
-        return state.adminDashboard.data;
-    });
-
     useEffect(() => {
         dispatch(getUsersForAdmin({ page, size: 10 }));
         dispatch(getStatsForAdmin());
     }, [dispatch, page]);
-
-    const activeFilter = (
-        <div className={cx('search-container')}>
-            <select value={searchValue} onChange={(e) => setSearchValue(e.target.value)}>
-                <option defaultChecked value="unchecked">
-                    Chưa phê duyệt
-                </option>
-                <option value="checked">Đã phê duyệt</option>
-            </select>
-        </div>
-    );
 
     const [openAlertDialog, setOpenAlertDialog] = useState(false);
     const [openApproveDialog, setOpenApproveDialog] = useState(false);
@@ -125,6 +52,7 @@ export default function UsersView() {
             toast.error('Phải chọn ít nhất 1 tài khoản');
         }
     };
+    
     const handleOpenApproveDialog = () => {
         if (selectedIds.length !== 0) {
             setOpenApproveDialog(true);
@@ -132,6 +60,7 @@ export default function UsersView() {
             toast.error('Phải chọn ít nhất 1 tài khoản');
         }
     };
+    
     const handleCloseAlertDialog = () => setOpenAlertDialog(false);
     const handleCloseApproveDialog = () => setOpenApproveDialog(false);
 
@@ -150,6 +79,27 @@ export default function UsersView() {
             console.log(error);
             toast.error('Xảy ra lỗi, vui lòng thử lại sau');
         }
+    };
+    
+    const handleToggleSelectUser = (id: number) => {
+        if (selectedIds.includes(id)) {
+            setSelectedIds(selectedIds.filter(item => item !== id));
+        } else {
+            setSelectedIds([...selectedIds, id]);
+        }
+    };
+
+    const handleSelectAllUsers = () => {
+        if (selectedIds.length === data.length) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(data.map((item: any) => item.accountId));
+        }
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
+        setSelectedIds([]);
     };
 
     useEffect(() => {
@@ -181,61 +131,141 @@ export default function UsersView() {
     }, [error]);
 
     return (
-        <div className={cx('admin-users-view')}>
-            <span>DTUDASHBOARD / Người dùng</span>
-            <div className={cx('actions')}>
-                <CensorDropdown censor={censor} onDropdownChange={handleClassifyChange} values={censorValues} />
-                {censor === 'isActive' ? (
-                    activeFilter
-                ) : (
-                    <div className={cx('search-container')}>
-                        <input
-                            onChange={(e) => {
-                                setSearchValue(e.target.value);
-                            }}
-                            value={searchValue}
-                            placeholder={`Lọc dữ liệu...`}
-                            disabled={censor === ''}
-                            type="text"
-                        />
-                        <SearchIcon
-                            style={{
-                                color: '#757575',
-                                position: 'absolute',
-                                top: '50%',
-                                right: '15px',
-                                transform: 'translateY(-50%)',
-                                pointerEvents: 'none',
-                            }}
-                        />
-                    </div>
-                )}
-                <div className={cx('rightActions')}>
-                    <button onClick={handleReloadTable} className={cx('reload-btn')}>
-                        Tải lại
-                    </button>
-                    <button onClick={handleOpenAlertDialog} className={cx('delete-btn')}>
-                        Xoá
-                    </button>
-                    <button onClick={handleOpenApproveDialog} className={cx('censor-btn')}>
-                        Duyệt người dùng mới
-                    </button>
+        <motion.div 
+            className={cx('admin-users-view')}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+        >
+            <div className={cx('header')}>
+                <h2 className={cx('title')}>DTUDASHBOARD / Quản lý người dùng</h2>
+                <div className={cx('search-container')}>
+                    <input
+                        onChange={(e) => setSearchValue(e.target.value)}
+                        value={searchValue}
+                        placeholder="Tìm kiếm người dùng..."
+                        type="text"
+                    />
+                    <SearchIcon className={cx('search-icon')} />
                 </div>
             </div>
+
+            <div className={cx('actions-bar')}>
+                <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={cx('action-btn', 'reload-btn')}
+                    onClick={handleReloadTable}
+                >
+                    Tải lại
+                </motion.button>
+                <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={cx('action-btn', 'delete-btn')}
+                    onClick={handleOpenAlertDialog}
+                >
+                    Xoá
+                </motion.button>
+                <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={cx('action-btn', 'approve-btn')}
+                    onClick={handleOpenApproveDialog}
+                >
+                    Duyệt người dùng
+                </motion.button>
+            </div>
+
             {loading ? (
                 <Loader height={1} />
             ) : (
-                <DataTable
-                    page={page}
-                    setPage={setPage}
-                    columns={columns}
-                    rows={data}
-                    topic="user"
-                    selectedDocuments={selectedIds}
-                    setSelectedDocuments={setSelectedIds}
-                    count={Math.ceil(((statsData?.totalStudents || 0) + (statsData?.totalLecturers || 0)) / 10)}
-                />
+                <div className={cx('table-container')}>
+                    <table className={cx('users-table')}>
+                        <thead>
+                            <tr>
+                                <th className={cx('checkbox-column')}>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={selectedIds.length === data.length && data.length > 0}
+                                        onChange={handleSelectAllUsers}
+                                    />
+                                </th>
+                                <th>ID</th>
+                                <th>Họ</th>
+                                <th>Tên</th>
+                                <th>Email</th>
+                                <th>Ngày sinh</th>
+                                <th>Giới tính</th>
+                                <th>Chức vụ</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.length > 0 ? (
+                                data.map((row: any) => (
+                                    <motion.tr 
+                                        key={row.accountId}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className={cx({ 'selected-row': selectedIds.includes(row.accountId) })}
+                                    >
+                                        <td className={cx('checkbox-column')}>
+                                            <input 
+                                                type="checkbox" 
+                                                checked={selectedIds.includes(row.accountId)}
+                                                onChange={() => handleToggleSelectUser(row.accountId)}
+                                            />
+                                        </td>
+                                        <td>{row.accountId}</td>
+                                        <td>{row.firstName}</td>
+                                        <td>{row.lastName}</td>
+                                        <td className={cx('email-cell')}>{row.email}</td>
+                                        <td>{row.birthDate}</td>
+                                        <td>{row.gender}</td>
+                                        <td className={cx('role-cell')}>
+                                            <span className={cx('role-badge', row.role?.toLowerCase() || 'unknown')}>
+                                                {row.role || 'Không xác định'}
+                                            </span>
+                                        </td>
+                                        <td className={cx('status-cell')}>
+                                            <span className={cx('status-badge', { 'approved': row.isActive })}>
+                                                {row.isActive ? 'Đã duyệt' : 'Chưa duyệt'}
+                                            </span>
+                                        </td>
+                                    </motion.tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={9} className={cx('empty-table')}>Không có dữ liệu</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                    
+                    <div className={cx('pagination')}>
+                        <button 
+                            disabled={page === 1} 
+                            onClick={() => handlePageChange(page - 1)}
+                            className={cx('pagination-btn')}
+                        >
+                            Trang trước
+                        </button>
+                        <span className={cx('page-indicator')}>
+                            Trang {page} / {totalPages || 1}
+                        </span>
+                        <button 
+                            disabled={page >= totalPages} 
+                            onClick={() => handlePageChange(page + 1)}
+                            className={cx('pagination-btn')}
+                        >
+                            Trang sau
+                        </button>
+                    </div>
+                </div>
             )}
+            
             <AlertDialog
                 open={openAlertDialog}
                 onClose={handleCloseAlertDialog}
@@ -250,6 +280,6 @@ export default function UsersView() {
                 ids={selectedIds}
                 title="tài khoản"
             />
-        </div>
+        </motion.div>
     );
 }

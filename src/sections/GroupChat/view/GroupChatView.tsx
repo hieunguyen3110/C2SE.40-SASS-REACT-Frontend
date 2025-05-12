@@ -18,19 +18,19 @@ import PinIcon from '@/assets/images/icons/pin.red.svg';
 import PinIconDefault from '@/assets/images/icons/pin.default.svg';
 import EmojiPicker from 'emoji-picker-react';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
-import { 
-    listMembersAction, 
-    getGroupDetailsAction, 
+import {
+    listMembersAction,
+    getGroupDetailsAction,
     getGroupMessagesAction,
     getPinnedMessagesAction,
     pinMessageAction,
-    clearUnreadMessages
+    unpinMessageAction,
+    clearUnreadMessages,
 } from '../../../redux/GroupStudySlice/GroupStudySlice';
 import { useLocation } from 'react-router-dom';
 import { Message } from '../../../types/groupStudy.types';
 import { sendGroupChatMessage } from '../../../utils/Websocket';
-import { toast } from 'react-toastify';
-import SendIcon from "../../../assets/images/icons/send-alt-1-svgrepo-com.svg";
+import SendIcon from '../../../assets/images/icons/send-alt-1-svgrepo-com.svg';
 
 const cx = classNames.bind(styles);
 
@@ -46,30 +46,31 @@ export default function GroupChatView() {
     const [currentPage, setCurrentPage] = useState(0);
     const [hasMoreMessages, setHasMoreMessages] = useState(true);
     const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
+    const MAX_CHAR_LIMIT = 300;
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
-    
+
     // Extract groupId from URL path /document/group-study/:groupId/chat
     const location = useLocation();
     const getGroupIdFromPath = () => {
         const pathSegments = location.pathname.split('/');
-        const groupStudyIndex = pathSegments.findIndex(segment => segment === 'group-study');
+        const groupStudyIndex = pathSegments.findIndex((segment) => segment === 'group-study');
         if (groupStudyIndex !== -1 && pathSegments.length > groupStudyIndex + 1) {
             return pathSegments[groupStudyIndex + 1];
         }
         return null;
     };
-    
+
     const groupId = getGroupIdFromPath();
-    
+
     // Get group details and messages from Redux store
     const { currentGroup, memberList, messages, pinnedMessages } = useAppSelector((state) => state.groupStudy);
     const { accountId } = useAppSelector((state) => state.authentication);
-    
+
     // Add state for member count
     const [memberCount, setMemberCount] = useState(8);
-    
+
     // Create a ref for the latest message to add animation
     const latestMessageRef = useRef<HTMLDivElement>(null);
 
@@ -78,6 +79,8 @@ export default function GroupChatView() {
 
     // Add a ref to track if we're loading older messages
     const isLoadingOlderMessages = useRef(false);
+
+    const [unpinningMessage, setUnpinningMessage] = useState<number | null>(null);
 
     const toggleMembersSidebar = () => {
         setIsMembersSidebarOpen(!isMembersSidebarOpen);
@@ -88,11 +91,13 @@ export default function GroupChatView() {
     };
 
     const onEmojiClick = (emojiObject: any) => {
-        setMessage((prevMessage) => prevMessage + emojiObject.emoji);
+        if (message.length + emojiObject.emoji.length <= MAX_CHAR_LIMIT) {
+            setMessage((prevMessage) => prevMessage + emojiObject.emoji);
+        }
     };
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
     };
 
     useEffect(() => {
@@ -150,18 +155,16 @@ export default function GroupChatView() {
 
     // Handle sending a message
     const handleSendMessage = async () => {
-        if (!message.trim() || !groupId || !accountId) return;
-        
+        if (!message.trim() || !groupId || !accountId || message.length > MAX_CHAR_LIMIT) return;
+
         try {
             // Thêm tin nhắn tạm thời vào state local
             setMessage('');
-            
             // Gửi tin nhắn qua WebSocket
             sendGroupChatMessage(Number(groupId), message);
         } catch (error) {
             console.error('Failed to send message:', error);
-            toast.error('Không thể gửi tin nhắn. Vui lòng thử lại sau.');
-            
+
             // Khôi phục tin nhắn trong input field nếu gửi thất bại
             setMessage(message);
         }
@@ -176,7 +179,7 @@ export default function GroupChatView() {
             fetchPinnedMessages(Number(groupId));
         }
     }, [groupId]);
-    
+
     // Update local state when member list changes
     useEffect(() => {
         if (memberList) {
@@ -200,10 +203,10 @@ export default function GroupChatView() {
     // Get messages array safely from the API response
     const getMessagesArray = useCallback(() => {
         if (!messages) return [];
-        
+
         // Convert messages to a consistent format
         let messageArray = [];
-        
+
         // Check if messages is a paginated response with content property
         if ('content' in messages && Array.isArray(messages.content)) {
             messageArray = messages.content;
@@ -212,7 +215,7 @@ export default function GroupChatView() {
         else if (Array.isArray(messages)) {
             messageArray = messages;
         }
-        
+
         // Không sắp xếp lại vì đã được sắp xếp trong Redux
         return messageArray;
     },[messages]);
@@ -261,7 +264,7 @@ export default function GroupChatView() {
             setPinningMessage(messageId);
             await dispatch(pinMessageAction({ messageId })).unwrap();
             // After successful pin, update local state
-            setPinnedMessageIds(prev => [...prev, messageId]);
+            setPinnedMessageIds((prev) => [...prev, messageId]);
             // Refresh pinned messages list
             if (groupId) {
                 fetchPinnedMessages(Number(groupId));
@@ -270,6 +273,24 @@ export default function GroupChatView() {
             console.error('Failed to pin message:', error);
         } finally {
             setPinningMessage(null);
+        }
+    };
+
+    // Handler for unpinning a message
+    const handleUnpinMessage = async (messageId: number) => {
+        try {
+            setUnpinningMessage(messageId);
+            await dispatch(unpinMessageAction({ messageId })).unwrap();
+            // After successful unpin, update local state
+            setPinnedMessageIds((prev) => prev.filter((id) => id !== messageId));
+            // Refresh pinned messages list
+            if (groupId) {
+                fetchPinnedMessages(Number(groupId));
+            }
+        } catch (error) {
+            console.error('Failed to unpin message:', error);
+        } finally {
+            setUnpinningMessage(null);
         }
     };
 
@@ -283,10 +304,10 @@ export default function GroupChatView() {
             } else {
                 setShowLoadMoreButton(false);
             }
-            
+
             // Kiểm tra nếu người dùng đã cuộn đến cuối container
             const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 20;
-            
+
             // Nếu đã cuộn đến cuối, đánh dấu đã đọc tất cả tin nhắn
             if (isAtBottom) {
                 setUnreadMessagesCount(0);
@@ -311,10 +332,10 @@ export default function GroupChatView() {
         const container = messagesContainerRef.current;
         if (container) {
             const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 20;
-            
+
             // Nếu không ở cuối, tăng số lượng tin nhắn chưa đọc
             if (!isAtBottom && messagesArray.length > 0) {
-                setUnreadMessagesCount(prev => prev + 1);
+                setUnreadMessagesCount((prev) => prev + 1);
             }
         }
     }, [messagesArray.length]);
@@ -322,11 +343,11 @@ export default function GroupChatView() {
     // Xử lý khi click nút "Load more"
     const handleLoadMoreMessages = async () => {
         if (isLoadingMoreMessages || !hasMoreMessages || !groupId) return;
-        
+
         setIsLoadingMoreMessages(true);
         // Set flag to prevent auto-scrolling
         isLoadingOlderMessages.current = true;
-        
+
         // Save current scroll height and position before loading
         const container = messagesContainerRef.current;
         if (!container) {
@@ -334,18 +355,18 @@ export default function GroupChatView() {
             isLoadingOlderMessages.current = false;
             return;
         }
-        
+
         const previousScrollHeight = container.scrollHeight;
         const previousScrollTop = container.scrollTop;
-        
+
         // Increment page number and fetch older messages
         const nextPage = currentPage + 1;
         await fetchMessages(Number(groupId), nextPage, 10, true);
-        
+
         // Update current page after successful fetch
         setCurrentPage(nextPage);
         setIsLoadingMoreMessages(false);
-        
+
         // Maintain exact scroll position
         setTimeout(() => {
             if (container) {
@@ -370,6 +391,13 @@ export default function GroupChatView() {
             dispatch(clearUnreadMessages(Number(groupId)));
         }
     }, [groupId, dispatch]);
+
+    const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newMessage = e.target.value;
+        if (newMessage.length <= MAX_CHAR_LIMIT) {
+            setMessage(newMessage);
+        }
+    };
 
     return (
         <div className={cx('groupStudyView', { 'with-drawer': isMembersSidebarOpen })}>
@@ -407,17 +435,13 @@ export default function GroupChatView() {
                             </h3>
                         </div>
                         <IconButton className={cx('toggleButton')} size="small" onClick={togglePinnedMessages}>
-                            {isPinnedMessagesOpen ? (
-                                <Close fontSize="small" />
-                            ) : (
-                                <KeyboardArrowDown fontSize="small" />
-                            )}
+                            {isPinnedMessagesOpen ? <Close fontSize="small" /> : <KeyboardArrowDown fontSize="small" />}
                         </IconButton>
                     </div>
-                    
+
                     <AnimatePresence>
                         {isPinnedMessagesOpen && (
-                            <motion.div 
+                            <motion.div
                                 className={cx('pinnedMessagesContent')}
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: 'auto' }}
@@ -425,8 +449,8 @@ export default function GroupChatView() {
                                 transition={{ duration: 0.3 }}
                             >
                                 {pinnedMessagesArray.map((message: Message, index: number) => (
-                                    <motion.div 
-                                        key={message.messageId || `temp-${index}`   } 
+                                    <motion.div
+                                        key={message.messageId || `temp-${index}`}
                                         className={cx('pinnedMessage')}
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
@@ -434,9 +458,48 @@ export default function GroupChatView() {
                                     >
                                         <div className={cx('pinnedMessageHeader')}>
                                             <span className={cx('authorName')}>{getSenderName(message.senderId)}</span>
-                                            <span className={cx('messageTime')}>{formatTime(message.timestamp || message.createdAt)}</span>
+                                            <span className={cx('messageTime')}>
+                                                {formatTime(message.timestamp || message.createdAt)}
+                                            </span>
+                                            <IconButton
+                                                className={cx('unpinButton')}
+                                                size="small"
+                                                onClick={() => handleUnpinMessage(message.messageId)}
+                                                disabled={unpinningMessage === message.messageId}
+                                                sx={{
+                                                    padding: '2px',
+                                                    marginLeft: '4px',
+                                                    animation:
+                                                        unpinningMessage === message.messageId
+                                                            ? 'spin 1s linear infinite'
+                                                            : 'none',
+                                                    '@keyframes spin': {
+                                                        '0%': { transform: 'rotate(0deg)' },
+                                                        '100%': { transform: 'rotate(360deg)' },
+                                                    },
+                                                }}
+                                            >
+                                                <img
+                                                    src={PinIcon}
+                                                    alt="Unpin"
+                                                    width={14}
+                                                    height={14}
+                                                    className={cx({
+                                                        'unpinning-icon': unpinningMessage === message.messageId,
+                                                    })}
+                                                />
+                                            </IconButton>
                                         </div>
-                                        <p className={cx('messageText')}>{message.content}</p>
+                                        <p className={cx('messageText')} 
+                                           style={{ 
+                                               wordBreak: 'break-word', 
+                                               overflowWrap: 'break-word',
+                                               maxWidth: '100%',
+                                               overflow: 'hidden'
+                                           }}
+                                        >
+                                            {message.content}
+                                        </p>
                                     </motion.div>
                                 ))}
                             </motion.div>
@@ -445,15 +508,11 @@ export default function GroupChatView() {
                 </div>
 
                 {/* Chat Messages */}
-                <div 
-                    className={cx('messagesContainer')} 
-                    ref={messagesContainerRef}
-                    onScroll={handleScroll}
-                >
+                <div className={cx('messagesContainer')} ref={messagesContainerRef} onScroll={handleScroll}>
                     {/* Load More Button */}
                     <AnimatePresence>
                         {showLoadMoreButton && (
-                            <motion.div 
+                            <motion.div
                                 className={cx('loadMoreContainer')}
                                 initial={{ opacity: 0, y: -20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -470,7 +529,10 @@ export default function GroupChatView() {
                                     {isLoadingMoreMessages ? (
                                         <>
                                             <div className={cx('loadingSpinner')}>
-                                                <div></div><div></div><div></div><div></div>
+                                                <div></div>
+                                                <div></div>
+                                                <div></div>
+                                                <div></div>
                                             </div>
                                             <span className={cx('loadingText')}>Đang tải tin nhắn...</span>
                                         </>
@@ -489,11 +551,11 @@ export default function GroupChatView() {
                     </div>
 
                     {messagesArray.map((message: Message, index) => (
-                        <motion.div 
+                        <motion.div
                             key={message.messageId || `temp-${index}`}
-                            className={cx('messageItem', { 
+                            className={cx('messageItem', {
                                 'self-message': message.senderId === accountId,
-                                'new-message': message.messageId === mostRecentMessageId
+                                'new-message': message.messageId === mostRecentMessageId,
                             })}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -506,46 +568,56 @@ export default function GroupChatView() {
                                         <img src={message.profilePicture} alt={getSenderName(message.senderId)} />
                                     </div>
                                 ) : (
-                                    <div className={cx('avatar')}>{message.username === 'Unknown' ? getSenderName(message.senderId).charAt(0) : message.username.charAt(0)}</div>
+                                    <div className={cx('avatar')}>
+                                        {message.username === 'Unknown'
+                                            ? getSenderName(message.senderId).charAt(0)
+                                            : message.username.charAt(0)}
+                                    </div>
                                 )}
                             </div>
                             <div className={cx('messageContent')}>
                                 <div className={cx('messageHeader')}>
                                     <span className={cx('authorName')}>
-                                        {message.username === 'Unknown' ? getSenderName(message.senderId) : message.username}
+                                        {message.username === 'Unknown'
+                                            ? getSenderName(message.senderId)
+                                            : message.username}
                                     </span>
                                     {message.senderId === currentGroup?.ownerId && (
                                         <span className={cx('roleTag')}>Admin</span>
                                     )}
-                                    <span className={cx('messageTime')}>{formatTime(message.timestamp || message.createdAt)}</span>
+                                    <span className={cx('messageTime')}>
+                                        {formatTime(message.timestamp || message.createdAt)}
+                                    </span>
                                 </div>
-                                <p className={cx('messageText')}>
-                                    {message.content}
-                                </p>
+                                <p className={cx('messageText')}>{message.content}</p>
                             </div>
                             <div className={cx('messageActions')}>
-                                <IconButton 
-                                    className={cx('actionButton')} 
+                                <IconButton
+                                    className={cx('actionButton')}
                                     size="small"
                                     onClick={() => handlePinMessage(message.messageId)}
-                                    disabled={pinningMessage === message.messageId || pinnedMessageIds.includes(message.messageId)}
-                                    sx={{ 
+                                    disabled={
+                                        pinningMessage === message.messageId ||
+                                        pinnedMessageIds.includes(message.messageId)
+                                    }
+                                    sx={{
                                         color: pinnedMessageIds.includes(message.messageId) ? '#ff3c3c' : 'inherit',
-                                        animation: pinningMessage === message.messageId ? 'spin 1s linear infinite' : 'none',
+                                        animation:
+                                            pinningMessage === message.messageId ? 'spin 1s linear infinite' : 'none',
                                         '@keyframes spin': {
                                             '0%': { transform: 'rotate(0deg)' },
-                                            '100%': { transform: 'rotate(360deg)' }
-                                        }
+                                            '100%': { transform: 'rotate(360deg)' },
+                                        },
                                     }}
                                 >
-                                    <img 
-                                        src={pinnedMessageIds.includes(message.messageId) ? PinIcon : PinIconDefault} 
-                                        alt="Pin" 
-                                        width={20} 
-                                        height={20} 
+                                    <img
+                                        src={pinnedMessageIds.includes(message.messageId) ? PinIcon : PinIconDefault}
+                                        alt="Pin"
+                                        width={20}
+                                        height={20}
                                         className={cx({
                                             'pinned-icon': pinnedMessageIds.includes(message.messageId),
-                                            'pinning-icon': pinningMessage === message.messageId
+                                            'pinning-icon': pinningMessage === message.messageId,
                                         })}
                                     />
                                 </IconButton>
@@ -553,20 +625,18 @@ export default function GroupChatView() {
                         </motion.div>
                     ))}
                     <div ref={messagesEndRef} />
-                    
+
                     {/* Unread Messages Indicator */}
                     <AnimatePresence>
                         {unreadMessagesCount > 0 && (
-                            <motion.div 
+                            <motion.div
                                 className={cx('newMessagesIndicator')}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: 20 }}
                                 onClick={scrollToNewestMessages}
                             >
-                                <div className={cx('newMessagesCount')}>
-                                    {unreadMessagesCount}
-                                </div>
+                                <div className={cx('newMessagesCount')}>{unreadMessagesCount}</div>
                                 <span>Tin nhắn mới</span>
                                 <KeyboardArrowDown />
                             </motion.div>
@@ -581,7 +651,7 @@ export default function GroupChatView() {
                         className={cx('messageInput')}
                         placeholder="Type a message..."
                         value={message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        onChange={handleMessageChange}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' && !e.shiftKey) {
                                 e.preventDefault();
@@ -591,7 +661,7 @@ export default function GroupChatView() {
                     />
                     <div className={cx('inputActions')}>
                         <div className={cx('emojiPickerContainer')}>
-                            <IconButton 
+                            <IconButton
                                 className={cx('actionButton')}
                                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                             >
@@ -606,13 +676,10 @@ export default function GroupChatView() {
                         <IconButton className={cx('actionButton')}>
                             <AttachFile />
                         </IconButton>
-                        <motion.div 
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            <IconButton 
+                        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                            <IconButton
                                 className={cx('sendButton')}
-                                disabled={!message.trim()}
+                                disabled={!message.trim() || message.length > MAX_CHAR_LIMIT}
                                 onClick={handleSendMessage}
                             >
                                 <img src={SendIcon} alt="Send" className={cx('sendIcon')} />
@@ -623,7 +690,12 @@ export default function GroupChatView() {
             </div>
 
             {/* Members Sidebar */}
-            <MembersDrawer isOpen={isMembersSidebarOpen} onClose={toggleMembersSidebar} members={memberList} ownerId={currentGroup?.userId} />
+            <MembersDrawer
+                isOpen={isMembersSidebarOpen}
+                onClose={toggleMembersSidebar}
+                members={memberList}
+                ownerId={currentGroup?.userId}
+            />
         </div>
     );
 }

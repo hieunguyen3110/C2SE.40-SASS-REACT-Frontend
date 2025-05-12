@@ -17,12 +17,12 @@ export default function CreateFolder() {
     const navigate = useNavigate();
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        if (folderName !== '' && description !== '') {
+        if (folderName.trim() !== '' && description.trim() !== '') {
             dispatch(createFolder({ folderName, description }));
             setIsSuccess(true);
         } else {
-            if (folderName === '') toast.error('Tên thư mục không được để trống!');
-            if (description === '') toast.error('Mô tả thư mục không được để trống!');
+            if (folderName.trim() === '') toast.error('Tên thư mục không được để trống!');
+            if (description.trim() === '') toast.error('Mô tả thư mục không được để trống!');
         }
     };
 

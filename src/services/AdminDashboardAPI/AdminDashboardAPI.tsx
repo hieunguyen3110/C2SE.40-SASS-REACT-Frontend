@@ -1,5 +1,6 @@
- 
 import { axiosInstance } from '../../utils/AxiosInterceptor';
+import { ApiResponse, PagedResponse } from '../../types/response.type';
+import { AdminUser } from '../../types/admin.types';
 
 export const GetDocumentsForAdmin = async (page: number, size: number) => {
     try {
@@ -10,9 +11,9 @@ export const GetDocumentsForAdmin = async (page: number, size: number) => {
     }
 };
 
-export const GetUsersForAdmin = async (page: number, size: number) => {
+export const GetUsersForAdmin = async (page: number, size: number): Promise<ApiResponse<PagedResponse<AdminUser>>> => {
     try {
-        const res = await axiosInstance.get(`/identity/admin/account/users?page=${page}&size=${size}`);
+        const res = await axiosInstance.get<ApiResponse<PagedResponse<AdminUser>>>(`/identity/admin/account/users?page=${page}&size=${size}`);
         return res.data;
     } catch (err: any) {
         throw new Error(err.message);

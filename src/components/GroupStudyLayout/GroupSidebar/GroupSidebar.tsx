@@ -14,9 +14,8 @@ import {
     PeopleOutline as GroupIcon,
     ExpandMore as ExpandMoreIcon,
     ExpandLess as ExpandLessIcon,
+    InfoOutlined as InfoIcon,
 } from '@mui/icons-material';
-import ChatIcon from '../../../assets/images/icons/chat-round-line-svgrepo-com.svg';
-
 const cx = classNames.bind(styles);
 
 const GroupSidebar = () => {
@@ -26,13 +25,13 @@ const GroupSidebar = () => {
     const [joinedGroups, setJoinedGroups] = useState<IGroup[]>([]);
     const [showAllOwned, setShowAllOwned] = useState(false);
     const [showAllJoined, setShowAllJoined] = useState(false);
-    
+
     const { username, profilePicture, listRoles, accountId } = useAppSelector((state) => state.authentication);
     const { userGroups, loading, unreadMessages } = useAppSelector((state) => state.groupStudy);
 
     // Function to get unread message count for a specific group
     const getUnreadMessageCount = (groupId: number) => {
-        const unreadInfo = unreadMessages.find(msg => msg.groupId === groupId);
+        const unreadInfo = unreadMessages.find((msg) => msg.groupId === groupId);
         return unreadInfo ? unreadInfo.count : 0;
     };
 
@@ -45,13 +44,14 @@ const GroupSidebar = () => {
         if (userGroups && Array.isArray(userGroups)) {
             // Split groups into owned and joined groups
             // Note: API returns "userId" which is actually the owner ID
-            const owned = userGroups.filter(group => group.userId === accountId);
-            const joined = userGroups.filter(group => group.userId !== accountId);
-            
+            const owned = userGroups.filter((group) => group.userId === accountId);
+            const joined = userGroups.filter((group) => group.userId !== accountId);
+
             setOwnedGroups(owned);
             setJoinedGroups(joined);
         }
     }, [userGroups, accountId]);
+
 
     const navigationItems = [
         {
@@ -79,7 +79,7 @@ const GroupSidebar = () => {
     // Get limited groups to display (3 by default)
     const displayedOwnedGroups = showAllOwned ? ownedGroups : ownedGroups.slice(0, 3);
     const displayedJoinedGroups = showAllJoined ? joinedGroups : joinedGroups.slice(0, 3);
-    
+
     // Functions to toggle visibility
     const toggleOwnedGroups = () => setShowAllOwned(!showAllOwned);
     const toggleJoinedGroups = () => setShowAllJoined(!showAllJoined);
@@ -123,8 +123,8 @@ const GroupSidebar = () => {
                 <ul className={cx('navList')}>
                     {navigationItems.map((item, index) => (
                         <li key={index} className={cx('navItem')}>
-                            <Link 
-                                to={item.path} 
+                            <Link
+                                to={item.path}
                                 className={cx('navLink', { selected: location.pathname === item.path })}
                             >
                                 <span className={cx('navIcon')}>
@@ -164,56 +164,67 @@ const GroupSidebar = () => {
                                     <li>Chưa có nhóm nào</li>
                                 ) : (
                                     displayedOwnedGroups.map((group, index) => (
-                                        <li key={index} className={cx('chatItem', { 
-                                            selected: location.pathname === `/document/group-study/${group.groupId}` ||
-                                                    location.pathname === `/document/group-study/${group.groupId}/chat`
-                                        })}>
+                                        <li
+                                            key={index}
+                                            className={cx('chatItem', {
+                                                selected:
+                                                    location.pathname === `/document/group-study/${group.groupId}` ||
+                                                    location.pathname === `/document/group-study/${group.groupId}/chat`,
+                                            })}
+                                        >
                                             <Link
-                                                to={`/document/group-study/${group.groupId}`}
-                                                style={{ 
-                                                    display: 'flex', 
-                                                    alignItems: 'center', 
-                                                    width: 'calc(100% - 30px)', 
-                                                    textDecoration: 'none', 
-                                                    color: 'inherit' 
+                                                to={`/document/group-study/${group.groupId}/chat`}
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    width: 'calc(100% - 30px)',
+                                                    textDecoration: 'none',
+                                                    color: 'inherit',
                                                 }}
                                             >
                                                 <span className={cx('chatIcon')}>
                                                     <GroupIcon
                                                         style={{
-                                                            color: location.pathname === `/document/group-study/${group.groupId}` || 
-                                                                  location.pathname === `/document/group-study/${group.groupId}/chat` ? '#ff3c3c' : 'inherit',
+                                                            color:
+                                                                location.pathname ===
+                                                                    `/document/group-study/${group.groupId}` ||
+                                                                location.pathname ===
+                                                                    `/document/group-study/${group.groupId}/chat`
+                                                                    ? '#ff3c3c'
+                                                                    : 'inherit',
                                                         }}
                                                     />
+                                                    {getUnreadMessageCount(group.groupId) > 0 && (
+                                                        <span className={cx('unreadBadge')}>
+                                                            {getUnreadMessageCount(group.groupId)}
+                                                        </span>
+                                                    )}
                                                 </span>
-                                                <span className={cx('chatText', { 
-                                                    selectedText: location.pathname === `/document/group-study/${group.groupId}` ||
-                                                                location.pathname === `/document/group-study/${group.groupId}/chat`
-                                                })}>
+                                                <span
+                                                    className={cx('chatText', {
+                                                        selectedText:
+                                                            location.pathname ===
+                                                                `/document/group-study/${group.groupId}` ||
+                                                            location.pathname ===
+                                                                `/document/group-study/${group.groupId}/chat`,
+                                                    })}
+                                                >
                                                     {group.groupName}
                                                 </span>
                                             </Link>
                                             <Link
-                                                to={`/document/group-study/${group.groupId}/chat`}
+                                                to={`/document/group-study/${group.groupId}`}
                                                 className={cx('chatButton')}
-                                                title="Open group chat"
+                                                title="Group information"
                                             >
-                                                <img src={ChatIcon} alt="Chat" className={cx('chatSvgIcon')} />
-                                                {getUnreadMessageCount(group.groupId) > 0 && (
-                                                    <span className={cx('unreadBadge')}>
-                                                        {getUnreadMessageCount(group.groupId)}
-                                                    </span>
-                                                )}
+                                                <InfoIcon className={cx('chatSvgIcon')} />
                                             </Link>
                                         </li>
                                     ))
                                 )}
                             </ul>
                             {ownedGroups.length > 3 && (
-                                <button 
-                                    className={cx('showMoreButton')} 
-                                    onClick={toggleOwnedGroups}
-                                >
+                                <button className={cx('showMoreButton')} onClick={toggleOwnedGroups}>
                                     {showAllOwned ? (
                                         <>
                                             <span>Thu gọn</span>
@@ -243,56 +254,67 @@ const GroupSidebar = () => {
                                     <li>Chưa tham gia nhóm nào</li>
                                 ) : (
                                     displayedJoinedGroups.map((group, index) => (
-                                        <li key={index} className={cx('chatItem', { 
-                                            selected: location.pathname === `/document/group-study/${group.groupId}` ||
-                                                    location.pathname === `/document/group-study/${group.groupId}/chat`
-                                        })}>
+                                        <li
+                                            key={index}
+                                            className={cx('chatItem', {
+                                                selected:
+                                                    location.pathname === `/document/group-study/${group.groupId}` ||
+                                                    location.pathname === `/document/group-study/${group.groupId}/chat`,
+                                            })}
+                                        >
                                             <Link
-                                                to={`/document/group-study/${group.groupId}`}
-                                                style={{ 
-                                                    display: 'flex', 
-                                                    alignItems: 'center', 
-                                                    width: 'calc(100% - 30px)', 
-                                                    textDecoration: 'none', 
-                                                    color: 'inherit' 
+                                                to={`/document/group-study/${group.groupId}/chat`}
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    width: 'calc(100% - 30px)',
+                                                    textDecoration: 'none',
+                                                    color: 'inherit',
                                                 }}
                                             >
                                                 <span className={cx('chatIcon')}>
                                                     <GroupIcon
                                                         style={{
-                                                            color: location.pathname === `/document/group-study/${group.groupId}` ||
-                                                                  location.pathname === `/document/group-study/${group.groupId}/chat` ? '#ff3c3c' : 'inherit',
+                                                            color:
+                                                                location.pathname ===
+                                                                    `/document/group-study/${group.groupId}` ||
+                                                                location.pathname ===
+                                                                    `/document/group-study/${group.groupId}/chat`
+                                                                    ? '#ff3c3c'
+                                                                    : 'inherit',
                                                         }}
                                                     />
+                                                    {getUnreadMessageCount(group.groupId) > 0 && (
+                                                        <span className={cx('unreadBadge')}>
+                                                            {getUnreadMessageCount(group.groupId)}
+                                                        </span>
+                                                    )}
                                                 </span>
-                                                <span className={cx('chatText', { 
-                                                    selectedText: location.pathname === `/document/group-study/${group.groupId}` ||
-                                                                location.pathname === `/document/group-study/${group.groupId}/chat`
-                                                })}>
+                                                <span
+                                                    className={cx('chatText', {
+                                                        selectedText:
+                                                            location.pathname ===
+                                                                `/document/group-study/${group.groupId}` ||
+                                                            location.pathname ===
+                                                                `/document/group-study/${group.groupId}/chat`,
+                                                    })}
+                                                >
                                                     {group.groupName}
                                                 </span>
                                             </Link>
                                             <Link
-                                                to={`/document/group-study/${group.groupId}/chat`}
+                                                to={`/document/group-study/${group.groupId}`}
                                                 className={cx('chatButton')}
-                                                title="Open group chat"
+                                                title="Group information"
                                             >
-                                                <img src={ChatIcon} alt="Chat" className={cx('chatSvgIcon')} />
-                                                {getUnreadMessageCount(group.groupId) > 0 && (
-                                                    <span className={cx('unreadBadge')}>
-                                                        {getUnreadMessageCount(group.groupId)}
-                                                    </span>
-                                                )}
+                                                <InfoIcon className={cx('chatSvgIcon')} />
                                             </Link>
                                         </li>
                                     ))
                                 )}
                             </ul>
                             {joinedGroups.length > 3 && (
-                                <button 
-                                    className={cx('showMoreButton')} 
-                                    onClick={toggleJoinedGroups}
-                                >
+                                <button className={cx('showMoreButton')} onClick={toggleJoinedGroups}>
                                     {showAllJoined ? (
                                         <>
                                             <span>Thu gọn</span>

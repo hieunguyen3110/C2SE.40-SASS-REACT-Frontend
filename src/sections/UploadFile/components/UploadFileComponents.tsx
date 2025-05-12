@@ -21,8 +21,6 @@ import {
     Description,
     Info,
     InsertDriveFile,
-    KeyboardArrowDown,
-    KeyboardArrowUp,
     RestoreFromTrash,
     TextSnippet,
 } from '@mui/icons-material';
@@ -59,8 +57,6 @@ const UploadFileComponents = () => {
     const [isColorItemButton, setIsColorItemButton] = useState(1); //use state  xem đang ở trạng thái tải tài liệu,chi tiết,hay hoàn thành
 
     const [fileDetailLoad, setFileDetailLoad] = useState(false); //use state hiển thị mục 2 của phần chi tiết default upload file
-
-    const [menuCheckItemRow, setmenuCheckItemRow] = useState(false); //trạng thải ẩn và hiện của nút button tn hay tl
 
     const [uploadFileSuccess, setUploadFileSuccess] = useState(false); //use state hiển thị component hoàn thành
 
@@ -236,11 +232,6 @@ const UploadFileComponents = () => {
 
     const handleChangeItemRow = (value: string) => {
         setTypeFile(value);
-        setmenuCheckItemRow(false);
-    };
-
-    const handleMenuCheckItemRow = () => {
-        setmenuCheckItemRow(!menuCheckItemRow);
     };
 
     const searchFaculty = useSelector((state: RootState) => state.uploadFile.searchFaculty) || []; //use selector hiển thị kết quả tìm kiếm chuyên ngành
@@ -318,7 +309,6 @@ const UploadFileComponents = () => {
         setSubjectSelected('');
         setFacultyFile('');
         setFileDetailLoad(false);
-        setmenuCheckItemRow(false);
     };
     const handleClickDefaultUpload = () => {
         handleResetUpload();
@@ -519,30 +509,40 @@ const UploadFileComponents = () => {
                                         <div className={cx('detail-upload-body')}>
                                             <div className={cx('upload-body-list')}>
                                                 <p>Loại tài liệu</p>
-                                                <div className={cx('body-list-item')}>
-                                                    <input
-                                                        type="text"
-                                                        readOnly
-                                                        placeholder="Trắc nghiệm hoặc tự luận"
-                                                        value={typeFile}
-                                                        name="row"
-                                                    />
-                                                    <p onClick={handleMenuCheckItemRow}>
-                                                        {menuCheckItemRow ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                                                    </p>
+                                                <div className={cx('list-item-search')}>
+                                                    <FormControl>
+                                                        <Select
+                                                            value={typeFile}
+                                                            onChange={(e) => handleChangeItemRow(e.target.value)}
+                                                            displayEmpty
+                                                            MenuProps={{
+                                                                anchorOrigin: {
+                                                                    vertical: 'bottom',
+                                                                    horizontal: 'left',
+                                                                },
+                                                                transformOrigin: {
+                                                                    vertical: 'top',
+                                                                    horizontal: 'left',
+                                                                },
+                                                                disablePortal: true,
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: 300
+                                                                    }
+                                                                }
+                                                            }}
+                                                            sx={{
+                                                                '.MuiSelect-select': {
+                                                                    textAlign: 'left',
+                                                                    paddingLeft: '32px'
+                                                                }
+                                                            }}
+                                                        >
+                                                            <MenuItem value="Trắc nghiệm">Trắc nghiệm</MenuItem>
+                                                            <MenuItem value="Tự luận">Tự luận</MenuItem>
+                                                        </Select>
+                                                    </FormControl>
                                                 </div>
-                                                {menuCheckItemRow && (
-                                                    <div className={cx('list-item-row')}>
-                                                        <ul>
-                                                            <li onClick={() => handleChangeItemRow('Trắc nghiệm')}>
-                                                                Trắc nghiệm
-                                                            </li>
-                                                            <li onClick={() => handleChangeItemRow('Tự luận')}>
-                                                                Tự luận
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                )}
                                             </div>
                                             <div className={cx('upload-body-list')}>
                                                 <p>Tiêu đề</p>

@@ -187,7 +187,6 @@ export const pinMessageAction = createAsyncThunk<void, { messageId: number }>(
     async ({ messageId }) => {
         try {
             await pinMessageApi(messageId);
-            toast.success('Đã ghim tin nhắn thành công');
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
             toast.error('Không thể ghim tin nhắn. Vui lòng thử lại sau.');
@@ -201,7 +200,6 @@ export const unpinMessageAction = createAsyncThunk<void, { messageId: number }>(
     async ({ messageId }) => {
         try {
             await unpinMessageApi(messageId);
-            toast.success('Đã bỏ ghim tin nhắn thành công');
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
             toast.error('Không thể bỏ ghim tin nhắn. Vui lòng thử lại sau.');

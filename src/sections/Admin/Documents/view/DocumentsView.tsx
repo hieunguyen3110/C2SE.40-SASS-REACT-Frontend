@@ -1,12 +1,9 @@
- 
- 
 import classNames from 'classnames/bind';
 import styles from './DocumentsView.module.scss';
 const cx = classNames.bind(styles);
 import { useEffect, useState } from 'react';
-import CensorDropdown from '../components/CensorDropdown';
 import SearchIcon from '@mui/icons-material/Search';
-import DataTable from '../components/DataTable';
+import { motion } from 'framer-motion';
 import { useAppDispatch, useAppSelector } from '../../../../redux/store';
 import {
     approveDocuments,
@@ -22,52 +19,7 @@ import ApproveDialog from '../../Users/components/ApproveDialog';
 import Loader from '../../../../components/Loader/Loader';
 import { toast } from 'react-toastify';
 
-const columns: any[] = [
-    {
-        id: 'docId',
-        label: 'ID',
-        minWidth: 50,
-        align: 'center',
-    },
-    { id: 'title', label: 'Tên tài liệu', minWidth: 170 },
-    { id: 'subjectName', label: 'Môn học', minWidth: 100 },
-    {
-        id: 'folderName',
-        label: 'Thư mục',
-        minWidth: 100,
-        align: 'center',
-    },
-    {
-        id: 'createdAt',
-        label: 'Ngày tạo',
-        minWidth: 120,
-        align: 'center',
-    },
-    {
-        id: 'authorName',
-        label: 'Tác giả',
-        minWidth: 100,
-        align: 'center',
-    },
-    {
-        id: 'isActive',
-        label: 'Phê duyệt',
-        minWidth: 100,
-        align: 'center',
-    },
-];
-
-const censorValues: any = [
-    { code: 'docId', title: 'ID' },
-    { code: 'title', title: 'Tên tài liệu' },
-    { code: 'subjectName', title: 'Môn học' },
-    { code: 'folderName', title: 'Thư mục' },
-    { code: 'authorName', title: 'Tác giả' },
-    { code: 'isActive', title: 'Phê duyệt' },
-];
-
 export default function DocumentsView() {
-    const [censor, setCensor] = useState<string>('');
     const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(1);
     const [data, setData] = useState<any>([]);
@@ -75,9 +27,7 @@ export default function DocumentsView() {
     const dispatch = useAppDispatch();
 
     const documents: any[] = useAppSelector((state: any) => state.adminDashboard.documents?.content);
-
     const { loading, successMessage, error } = useAppSelector((state) => state.adminDashboard);
-
     const { data: statsData, loading: statsLoading } = useAppSelector((state) => state.adminDashboard);
 
     useEffect(() => {
@@ -87,15 +37,9 @@ export default function DocumentsView() {
     }, [documents]);
 
     useEffect(() => {
-        // get total of Documents (documentCount)
         dispatch(getStatsForAdmin());
-
         dispatch(getDocumentsForAdmin({ page, size: 10 }));
     }, [dispatch, page]);
-
-    const handleClassifyChange = (value: string) => {
-        setCensor(value);
-    };
 
     const [openAlertDialog, setOpenAlertDialog] = useState(false);
     const [openApproveDialog, setOpenApproveDialog] = useState(false);
@@ -107,6 +51,7 @@ export default function DocumentsView() {
             toast.error('Phải chọn ít nhất 1 tài liệu');
         }
     };
+    
     const handleOpenApproveDialog = () => {
         if (selectedIds.length !== 0) {
             setOpenApproveDialog(true);
@@ -114,6 +59,7 @@ export default function DocumentsView() {
             toast.error('Phải chọn ít nhất 1 tài liệu');
         }
     };
+    
     const handleCloseAlertDialog = () => setOpenAlertDialog(false);
     const handleCloseApproveDialog = () => setOpenApproveDialog(false);
 
@@ -155,6 +101,27 @@ export default function DocumentsView() {
         }
     };
 
+    const handleToggleSelectDocument = (id: number) => {
+        if (selectedIds.includes(id)) {
+            setSelectedIds(selectedIds.filter(item => item !== id));
+        } else {
+            setSelectedIds([...selectedIds, id]);
+        }
+    };
+
+    const handleSelectAllDocuments = () => {
+        if (selectedIds.length === data.length) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(data.map((item: any) => item.docId));
+        }
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
+        setSelectedIds([]);
+    };
+
     useEffect(() => {
         if (successMessage !== '') {
             if (openAlertDialog) {
@@ -183,74 +150,136 @@ export default function DocumentsView() {
         }
     }, [error]);
 
-    const activeFilter = (
-        <div className={cx('search-container')}>
-            <select value={searchValue} onChange={(e) => setSearchValue(e.target.value)}>
-                <option defaultChecked value="unchecked">
-                    Chưa phê duyệt
-                </option>
-                <option value="checked">Đã phê duyệt</option>
-            </select>
-        </div>
-    );
-
     return (
-        <div className={cx('admin-documents-view')}>
-            <span>DTUDASHBOARD / Tài liệu</span>
-            <div className={cx('actions')}>
-                <CensorDropdown censor={censor} onDropdownChange={handleClassifyChange} values={censorValues} />
-                {censor === 'isActive' ? (
-                    activeFilter
-                ) : (
-                    <div className={cx('search-container')}>
-                        <input
-                            onChange={(e) => {
-                                setSearchValue(e.target.value);
-                            }}
-                            value={searchValue}
-                            placeholder={`Lọc dữ liệu...`}
-                            disabled={censor === ''}
-                            type="text"
-                        />
-                        <SearchIcon
-                            style={{
-                                color: '#757575',
-                                position: 'absolute',
-                                top: '50%',
-                                right: '15px',
-                                transform: 'translateY(-50%)',
-                                pointerEvents: 'none',
-                            }}
-                        />
-                    </div>
-                )}
-                <div className={cx('rightActions')}>
-                    <button onClick={handleCheckDocument} className={cx('reload-btn')}>
-                        Kiểm tra
-                    </button>
-                    <button onClick={handleOpenAlertDialog} className={cx('delete-btn')}>
-                        Xoá
-                    </button>
-                    <button onClick={handleOpenApproveDialog} className={cx('censor-btn')}>
-                        Duyệt tài liệu mới
-                    </button>
+        <motion.div 
+            className={cx('admin-documents-view')}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+        >
+            <div className={cx('header')}>
+                <h2 className={cx('title')}>DTUDASHBOARD / Quản lý tài liệu</h2>
+                <div className={cx('search-container')}>
+                    <input
+                        onChange={(e) => setSearchValue(e.target.value)}
+                        value={searchValue}
+                        placeholder="Tìm kiếm tài liệu..."
+                        type="text"
+                    />
+                    <SearchIcon className={cx('search-icon')} />
                 </div>
+            </div>
+
+            <div className={cx('actions-bar')}>
+                <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={cx('action-btn', 'check-btn')}
+                    onClick={handleCheckDocument}
+                >
+                    Kiểm tra
+                </motion.button>
+                <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={cx('action-btn', 'delete-btn')}
+                    onClick={handleOpenAlertDialog}
+                >
+                    Xoá
+                </motion.button>
+                <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={cx('action-btn', 'approve-btn')}
+                    onClick={handleOpenApproveDialog}
+                >
+                    Duyệt tài liệu
+                </motion.button>
             </div>
 
             {loading || statsLoading ? (
                 <Loader height={1} />
             ) : (
-                <DataTable
-                    page={page}
-                    setPage={setPage}
-                    columns={columns}
-                    rows={data}
-                    topic="document"
-                    selectedDocuments={selectedIds}
-                    setSelectedDocuments={setSelectedIds}
-                    count={Math.ceil(statsData?.totalDocuments / 10)}
-                />
+                <div className={cx('table-container')}>
+                    <table className={cx('documents-table')}>
+                        <thead>
+                            <tr>
+                                <th className={cx('checkbox-column')}>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={selectedIds.length === data.length && data.length > 0}
+                                        onChange={handleSelectAllDocuments}
+                                    />
+                                </th>
+                                <th>ID</th>
+                                <th>Tên tài liệu</th>
+                                <th>Môn học</th>
+                                <th>Thư mục</th>
+                                <th>Ngày tạo</th>
+                                <th>Tác giả</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.length > 0 ? (
+                                data.map((row: any) => (
+                                    <motion.tr 
+                                        key={row.docId}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className={cx({ 'selected-row': selectedIds.includes(row.docId) })}
+                                    >
+                                        <td className={cx('checkbox-column')}>
+                                            <input 
+                                                type="checkbox" 
+                                                checked={selectedIds.includes(row.docId)}
+                                                onChange={() => handleToggleSelectDocument(row.docId)}
+                                            />
+                                        </td>
+                                        <td>{row.docId}</td>
+                                        <td className={cx('title-cell')}>{row.title}</td>
+                                        <td>{row.subjectName}</td>
+                                        <td>{row.folderName}</td>
+                                        <td>{row.createdAt}</td>
+                                        <td>{row.authorName}</td>
+                                        <td className={cx('status-cell')}>
+                                            <span className={cx('status-badge', { 'approved': row.isActive })}>
+                                                {row.isActive ? 'Đã duyệt' : 'Chưa duyệt'}
+                                            </span>
+                                        </td>
+                                    </motion.tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={8} className={cx('empty-table')}>Không có dữ liệu</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                    
+                    <div className={cx('pagination')}>
+                        <button 
+                            disabled={page === 1} 
+                            onClick={() => handlePageChange(page - 1)}
+                            className={cx('pagination-btn')}
+                        >
+                            Trang trước
+                        </button>
+                        <span className={cx('page-indicator')}>
+                            Trang {page} / {Math.ceil(statsData?.totalDocuments / 10)}
+                        </span>
+                        <button 
+                            disabled={page >= Math.ceil(statsData?.totalDocuments / 10)} 
+                            onClick={() => handlePageChange(page + 1)}
+                            className={cx('pagination-btn')}
+                        >
+                            Trang sau
+                        </button>
+                    </div>
+                </div>
             )}
+            
             <AlertDialog
                 open={openAlertDialog}
                 onClose={handleCloseAlertDialog}
@@ -265,6 +294,6 @@ export default function DocumentsView() {
                 ids={selectedIds}
                 title="tài liệu"
             />
-        </div>
+        </motion.div>
     );
 }

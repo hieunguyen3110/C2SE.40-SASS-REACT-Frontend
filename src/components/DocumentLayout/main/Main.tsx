@@ -56,8 +56,8 @@ export default function Main(props: PropsType) {
                 ) : (
                     <div
                         style={{
-                            width: '100%',
-                            ...(hasOverlay ? { marginLeft: '80px' } : {}),
+                            width: regex.test(location.pathname) ? 'calc(100% - 80px)' : '100%',
+                            ...(hasOverlay ? { width: 'calc(100% - 80px)' } : {}),
                         }}
                         className="main"
                     >

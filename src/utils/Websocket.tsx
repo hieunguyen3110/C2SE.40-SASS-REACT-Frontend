@@ -182,7 +182,6 @@ export const sendGroupChatMessage = (groupId: number, content: string): void => 
             username,
             profilePicture,
         };
-        console.log('Sending message:', messageRequest);
         stompClient.publish({
             destination: `/app/chat.private`,
             body: JSON.stringify(messageRequest),
