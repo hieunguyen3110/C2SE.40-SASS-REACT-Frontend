@@ -35,7 +35,7 @@ interface Person {
     roleName: string;
     password: string;
     confirmPassword: string;
-    captcha: string;
+    // captcha: string;
 }
 
 const validationSchema: Yup.ObjectSchema<Person> = Yup.object({
@@ -55,7 +55,7 @@ const validationSchema: Yup.ObjectSchema<Person> = Yup.object({
     confirmPassword: Yup.string()
         .required('Vui lòng nhập lại password')
         .oneOf([Yup.ref('password')], 'Password nhập lại không khớp'),
-    captcha: Yup.string().required('Vui lòng nhập mã xác nhận'),
+    // captcha: Yup.string().required('Vui lòng nhập mã xác nhận'),
 });
 
 interface informationLogin {
@@ -103,10 +103,10 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
         };
     }, [rowRegister]);
 
-    const refreshString = () => {
-        //hàm refresh mã captcha
-        setCaptcha(Math.random().toString(36).slice(2, 6));
-    };
+    // const refreshString = () => {
+    //     //hàm refresh mã captcha
+    //     setCaptcha(Math.random().toString(36).slice(2, 6));
+    // };
 
     const handleOnClickLogin = () => {
         //hàm onclick để chuyển đến trang login
@@ -157,7 +157,7 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
         }
         setValueRow('');
         resetForm(); //reset form
-        refreshString(); // Reset lại form sau khi submit thành công
+        // refreshString(); // Reset lại form sau khi submit thành công
     };
 
     const handleRowItem = () => {
@@ -179,7 +179,7 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
                                 roleName: valueRow,
                                 password: '',
                                 confirmPassword: '',
-                                captcha: '',
+                                // captcha: '',
                             }}
                             validationSchema={validationSchema}
                             onSubmit={handleSubmit}
@@ -243,7 +243,7 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
                                                         </li>
                                                         <li
                                                             onClick={() => {
-                                                                const selectedValue = 'LECTURER';
+                                                                const selectedValue = 'LECTURE';
                                                                 setFieldValue('roleName', selectedValue);
                                                                 setFieldTouched('roleName', true, false);
                                                                 setValueRow(selectedValue);
@@ -251,7 +251,7 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
                                                                 setRowRegister(false);
                                                             }}
                                                         >
-                                                            LECTURER
+                                                            LECTURE
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -300,7 +300,7 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
                                                 {typeconfirmPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                                             </div>
                                         </div>
-                                        <div className={cx('body-list', 'body-list-check')}>
+                                        {/* <div className={cx('body-list', 'body-list-check')}>
                                             <div className={cx('list-item', 'list-check')}>
                                                 <div className={cx('list-check-item')}>
                                                     <img src={check} alt="check" />
@@ -319,7 +319,7 @@ const REgisterComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation
                                                 </div>
                                                 <img src={image4} alt="image4" onClick={refreshString} />
                                             </div>
-                                        </div>
+                                        </div> */}
                                         <div className={cx('body-button')}>
                                             <ButtonSubmit
                                                 titleButton={pop.titleButton}

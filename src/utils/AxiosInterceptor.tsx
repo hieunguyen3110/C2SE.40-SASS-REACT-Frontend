@@ -54,7 +54,7 @@ axiosInstance.interceptors.response.use(
             try {
                 await refreshTokePromise;
                 refreshTokePromise = null;
-                // store.dispatch(updateStateLoading(false));
+                store.dispatch(updateStateLoading(false));
                 return axiosInstance(originalRequest);
             } catch (err) {
                 refreshTokePromise = null;
