@@ -17,6 +17,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
             return;
         }
     },[]);
+
     useEffect(() => {
         if (!isLogined) {
             dispatch(AutoLoginAction());

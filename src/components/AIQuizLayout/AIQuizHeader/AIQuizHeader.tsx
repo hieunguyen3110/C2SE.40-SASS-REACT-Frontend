@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './AIQuizHeader.module.scss';
-import { AutoStories, History, TaskAlt } from '@mui/icons-material';
+import { AutoStories, TaskAlt } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -12,13 +12,13 @@ export default function AIQuizHeader() {
     const currentPath = location.pathname;
 
     const buttonVariants = {
-        hover: { 
+        hover: {
             scale: 1.05,
-            transition: { duration: 0.2 }
+            transition: { duration: 0.2 },
         },
-        tap: { 
-            scale: 0.95 
-        }
+        tap: {
+            scale: 0.95,
+        },
     };
 
     return (
@@ -28,8 +28,10 @@ export default function AIQuizHeader() {
                 <span className={cx('document')}>QUIZ</span>
             </div>
             <div className={cx('actions')}>
-                <motion.div 
-                    className={cx('action-btn', { active: currentPath.includes('/ai-quiz/knowledge-test') || currentPath === '/document/ai-quiz' })}
+                <motion.div
+                    className={cx('action-btn', {
+                        active: currentPath.includes('/ai-quiz/knowledge-test') || currentPath === '/document/ai-quiz',
+                    })}
                     onClick={() => navigate('/document/ai-quiz/knowledge-test')}
                     whileHover="hover"
                     whileTap="tap"
@@ -38,7 +40,7 @@ export default function AIQuizHeader() {
                     <AutoStories />
                     <span>Knowledge Test</span>
                 </motion.div>
-                <motion.div 
+                <motion.div
                     className={cx('action-btn', { active: currentPath.includes('/ai-quiz/learning-statistics') })}
                     onClick={() => navigate('/document/ai-quiz/learning-statistics')}
                     whileHover="hover"
@@ -46,19 +48,10 @@ export default function AIQuizHeader() {
                     variants={buttonVariants}
                     initial={{ y: -20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 >
                     <TaskAlt />
                     <span>Learning Statistics</span>
-                </motion.div>
-                <motion.div 
-                    className={cx('action-btn', { active: false })}
-                    whileHover="hover"
-                    whileTap="tap"
-                    variants={buttonVariants}
-                >
-                    <History />
-                    <span>Subjects History</span>
                 </motion.div>
             </div>
         </header>
