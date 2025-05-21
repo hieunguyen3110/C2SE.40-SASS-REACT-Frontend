@@ -11,6 +11,12 @@ import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { DocumentByAccountRequest } from '../DocumentSlice/InterfaceResponse';
 import { AllDocumentPersonalByEmailAPI } from '../../services/DocumentAPI/DocumentAPI';
+import { SubjectDto } from '../../types/learningAnalytics.types';
+import {
+    saveCoursePeriod,
+    enableLearningAnalytics,
+    disableLearningAnalytics,
+} from '../../services/LearningAnalyticsAPI/LearningAnalyticsAPI';
 
 export interface SearchDoc {
     loading: boolean;
@@ -60,6 +66,45 @@ export const GetProFilePageAction = createAsyncThunk<DocumentPersonalDtos[], Doc
         try {
             const response = await AllDocumentPersonalByEmailAPI(data);
             return response as unknown as DocumentPersonalDtos[];
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message?: string }>;
+            throw new Error(error.response?.data.message || error.message);
+        }
+    },
+);
+
+export const enableLearningAnalyticsAction = createAsyncThunk<string, void>(
+    'ProfilePersonalSlice/enableLearningAnalyticsAction',
+    async () => {
+        try {
+            const res = await enableLearningAnalytics();
+            return res.data as unknown as string;
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message?: string }>;
+            throw new Error(error.response?.data.message || error.message);
+        }
+    },
+);
+
+export const disableLearningAnalyticsAction = createAsyncThunk<string, void>(
+    'ProfilePersonalSlice/disableLearningAnalyticsAction',
+    async () => {
+        try {
+            const res = await disableLearningAnalytics();
+            return res.data as unknown as string;
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message?: string }>;
+            throw new Error(error.response?.data.message || error.message);
+        }
+    },
+);
+
+export const saveCoursePeriodAction = createAsyncThunk<string, SubjectDto[]>(
+    'ProfilePersonalSlice/saveCoursePeriodAction',
+    async (subjects: SubjectDto[]) => {
+        try {
+            const res = await saveCoursePeriod(subjects);
+            return res.data as unknown as string;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
             throw new Error(error.response?.data.message || error.message);
@@ -128,6 +173,10 @@ const ProfilePersonalSlice = createSlice({
             .addCase(ViewProfilePersonalByEmailAction.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || 'Failed to get user';
+            })
+            .addCase(saveCoursePeriodAction.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message || 'Lỗi khi lưu kỳ học';
             });
     },
 });

@@ -1,19 +1,19 @@
 import Avatar from '../../../assets/images/avatar.png';
 import { Button } from '../../../components/Button';
-import { 
-    HomeOutlined as HomeOutlinedIcon, 
-    InsertDriveFileOutlined as InsertDriveFileOutlinedIcon, 
-    NotificationsOutlined as NotificationsOutlinedIcon, 
-    PeopleOutline as PeopleOutlineIcon, 
-    PersonSearchOutlined as PersonSearchOutlinedIcon, 
-    BookmarkAddedOutlined as BookmarkAddedOutlinedIcon, 
-    SmartToyOutlined as SmartToyOutlinedIcon, 
-    ChevronLeft as CloseIcon, 
-    ChevronRight as OpenIcon, 
-    CreateNewFolderOutlined as CreateNewFolderOutlinedIcon, 
-    UploadFile as UploadFileIcon, 
-    ContactSupportOutlined as ContactSupportOutlinedIcon, 
-    AssessmentOutlined as AssessmentOutlinedIcon 
+import {
+    HomeOutlined as HomeOutlinedIcon,
+    InsertDriveFileOutlined as InsertDriveFileOutlinedIcon,
+    NotificationsOutlined as NotificationsOutlinedIcon,
+    PeopleOutline as PeopleOutlineIcon,
+    PersonSearchOutlined as PersonSearchOutlinedIcon,
+    BookmarkAddedOutlined as BookmarkAddedOutlinedIcon,
+    SmartToyOutlined as SmartToyOutlinedIcon,
+    ChevronLeft as CloseIcon,
+    ChevronRight as OpenIcon,
+    CreateNewFolderOutlined as CreateNewFolderOutlinedIcon,
+    UploadFile as UploadFileIcon,
+    ContactSupportOutlined as ContactSupportOutlinedIcon,
+    AssessmentOutlined as AssessmentOutlinedIcon,
 } from '@mui/icons-material';
 import { Badge, Tooltip, styled } from '@mui/material';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -102,7 +102,7 @@ const hoverVariants = {
 // Custom styled tooltip
 const CustomTooltip = styled(({ className, ...props }: any) => (
     <Tooltip {...props} arrow classes={{ popper: className }} />
-))(({  }) => ({
+))(({}) => ({
     [`& .MuiTooltip-tooltip`]: {
         backgroundColor: '#fff1f1',
         color: '#ff3c3c',
@@ -220,7 +220,6 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
                     alt="avatar"
                     whileHover={{ scale: 1.1 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                    style={{transform: "rotate(90deg)"}}
                 />
                 <AnimatePresence>
                     {isOpen && (
@@ -240,13 +239,13 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
             <div className={cx('statistics')}>
                 <AnimatePresence>
                     {showToggle && (
-                        <motion.div 
-                            className={cx('toggle-container')} 
+                        <motion.div
+                            className={cx('toggle-container')}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            whileHover={{ scale: 1.1 }} 
+                            whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                         >
                             {isOpen ? (
