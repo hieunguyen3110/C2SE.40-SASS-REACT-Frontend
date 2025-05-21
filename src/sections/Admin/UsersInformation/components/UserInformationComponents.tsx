@@ -7,7 +7,7 @@ import classNames from 'classnames/bind';
 import { RootState, useAppDispatch, useAppSelector } from '../../../../redux/store';
 import { DelectProfilePictureAction, GetProFileDashAction } from '../../../../redux/DashBoardSlice/DashBoardSlice';
 import { useSelector } from 'react-redux';
-import avartar from '../../../../assets/images/Frame 8720.png';
+import avartar from '../../../../assets/images/icons/student-avatar.svg';
 import { useParams } from 'react-router-dom';
 import Loader from '../../../../components/Loader/Loader';
 import { toast } from 'react-toastify';

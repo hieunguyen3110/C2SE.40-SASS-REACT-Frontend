@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch, useAppSelector } from '../../../redux/store';
 
 import Edit from '../../../assets/images/edit-06.png';
-import avartar from '../../../assets/images/Frame 8720.png';
+import avartar from '../../../assets/images/icons/student-avatar.svg';
 
 // Redux Actions
 import { GetProFileAction, GetProFilePageAction } from '../../../redux/ProfilePersonalSlice/ProfilePersonalSlice';

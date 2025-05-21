@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './HeaderUploadFile.module.scss';
 
-import Avatar from '../../../assets/images/avatar.png';
+import Avatar from '../../../assets/images/icons/student-avatar.svg';
 
 const cx = classNames.bind(styles);
 type AvatarType = {

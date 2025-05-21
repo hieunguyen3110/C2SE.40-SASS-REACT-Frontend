@@ -23,7 +23,7 @@ import { toast } from 'react-toastify';
 import Loader from '../../../components/Loader/Loader';
 import { downloadFile } from '../../../utils/downloadFile';
 import { useSharingModal } from '../../../contexts/SharingModalContext';
-
+import avatar from '../../../assets/images/icons/student-avatar.svg';
 const filterDocuments = (docs: any[] | undefined, searchValue: string) => {
     if (!docs) return [];
     return docs.filter((doc) => {
@@ -230,7 +230,7 @@ export default function FolderDetailView() {
                                                             facultyName: data.documents[index].facultyName,
                                                         };
                                                         navigate('/document/edit-document-file', {
-                                                            state: { fileData, avatar: profilePicture },
+                                                            state: { fileData, avatar: profilePicture || avatar },
                                                         });
                                                     }}
                                                 >

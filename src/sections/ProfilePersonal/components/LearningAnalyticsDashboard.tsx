@@ -28,12 +28,9 @@ import {
     enableLearningAnalyticsAction,
     disableLearningAnalyticsAction,
     saveCoursePeriodAction,
+    getAnalyzeAction,
 } from '../../../redux/ProfilePersonalSlice/ProfilePersonalSlice';
 import { AppDispatch } from '../../../redux/store';
-
-// Import sample analytics data (will be replaced with API call later)
-import sampleAnalyticsData from './samleAnalyzeData.json';
-import { AnalyticsData } from '../../../types/learningAnalytics.types';
 
 const cx = classnames.bind(styles);
 
@@ -57,8 +54,6 @@ const LearningAnalyticsDashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<number>(0);
     const [isAnalyticsEnabled, setIsAnalyticsEnabled] = useState<boolean>(false);
     const [showSubjectModal, setShowSubjectModal] = useState<boolean>(false);
-    const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
     // Expanded state for collapsible sections
     const [expandedSections, setExpandedSections] = useState({
         overview: true,
@@ -69,8 +64,12 @@ const LearningAnalyticsDashboard: React.FC = () => {
         adjustments: true,
     });
 
-    const { getUserProfile, error } = useSelector((state: RootState) => state.profilePersonal);
+    const { getUserProfile, error, analyzeData, loading } = useSelector((state: RootState) => state.profilePersonal);
     const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+        dispatch(getAnalyzeAction());
+    }, []);
 
     const handleTabChange = (tabIndex: number) => {
         setActiveTab(tabIndex);
@@ -83,22 +82,6 @@ const LearningAnalyticsDashboard: React.FC = () => {
         });
     };
 
-    // Fetch analytics data (mock implementation using sample data)
-    const fetchAnalyticsData = async () => {
-        setIsLoading(true);
-        try {
-            // This will be replaced with an actual API call in the future
-            setTimeout(() => {
-                setAnalyticsData(sampleAnalyticsData as unknown as AnalyticsData);
-                setIsLoading(false);
-            }, 500);
-        } catch (error) {
-            console.error('Error fetching analytics data:', error);
-            toast.error('Không thể tải dữ liệu phân tích. Vui lòng thử lại sau.');
-            setIsLoading(false);
-        }
-    };
-
     const handleStatusChange = () => {
         if (!isAnalyticsEnabled) {
             // Dispatch enable action right away when showing the modal
@@ -106,8 +89,6 @@ const LearningAnalyticsDashboard: React.FC = () => {
             if (!getUserProfile?.coursePeriodDto) {
                 setShowSubjectModal(true);
             } else {
-                fetchAnalyticsData();
-
                 setIsAnalyticsEnabled(true);
                 toast.success('Phân tích học tập đã được bật');
             }
@@ -124,8 +105,6 @@ const LearningAnalyticsDashboard: React.FC = () => {
             dispatch(saveCoursePeriodAction(subjects));
             setIsAnalyticsEnabled(true);
             toast.success('Phân tích học tập đã được bật');
-            // Fetch analytics data after enabling
-            fetchAnalyticsData();
         }
     };
 
@@ -139,20 +118,19 @@ const LearningAnalyticsDashboard: React.FC = () => {
         if (getUserProfile?.isEnableAnalyze) {
             setIsAnalyticsEnabled(getUserProfile.isEnableAnalyze);
             // Fetch analytics data if analytics is enabled
-            fetchAnalyticsData();
         }
     }, [getUserProfile?.isEnableAnalyze]);
 
     // Get weak subjects from analytics data
     const getWeakSubjects = () => {
-        if (!analyticsData || !analyticsData.subject_weakens) return [];
-        return analyticsData.subject_weakens;
+        if (!analyzeData || !analyzeData.subject_weakens) return [];
+        return analyzeData.subject_weakens;
     };
 
     // Get recommended documents from analytics data
     const getRecommendedDocuments = () => {
-        if (!analyticsData || !analyticsData.document_recommend) return [];
-        return analyticsData.document_recommend;
+        if (!analyzeData || !analyzeData.document_recommend) return [];
+        return analyzeData.document_recommend;
     };
 
     // Get number of documents and average score
@@ -160,7 +138,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
         const documents = getRecommendedDocuments();
         return {
             count: documents.length,
-            avgScore: analyticsData?.subject_weakens?.[0]?.avg_score || 0,
+            avgScore: analyzeData?.subject_weakens?.[0]?.avg_score || 0,
         };
     };
 
@@ -209,7 +187,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                 </button>
             </div>
 
-            {isLoading ? (
+            {loading ? (
                 <div className={cx('loading-state')}>
                     <p>Đang tải dữ liệu phân tích...</p>
                 </div>
@@ -257,9 +235,9 @@ const LearningAnalyticsDashboard: React.FC = () => {
                             </div>
                             <div className={cx('card-content')}>
                                 <div className={cx('card-title')}>Trạng thái học tập</div>
-                                {isAnalyticsEnabled && analyticsData ? (
+                                {isAnalyticsEnabled && analyzeData ? (
                                     <div className={cx('card-alert-important')}>
-                                        <p>{analyticsData.general_assessment.risk_assessment.substring(0, 100)}...</p>
+                                        <p>{analyzeData.general_assessment.risk_assessment.substring(0, 100)}...</p>
                                     </div>
                                 ) : (
                                     <div className={cx('card-alert')}>
@@ -301,7 +279,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                         <div className={cx('tab-content')}>
                             {activeTab === 0 && (
                                 <div className={cx('tab-panel')}>
-                                    {!isAnalyticsEnabled || !analyticsData ? (
+                                    {!isAnalyticsEnabled || !analyzeData ? (
                                         <div className={cx('info-alert')}>
                                             <h5>Thông tin phân tích</h5>
                                             <p>
@@ -320,7 +298,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                                 iconColor="#5c6bc0"
                                             >
                                                 <div className={cx('overview-content')}>
-                                                    <p>{analyticsData.general_assessment.overall_status}</p>
+                                                    <p>{analyzeData.general_assessment.overall_status}</p>
                                                 </div>
                                             </CollapsibleSection>
 
@@ -333,7 +311,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                                     >
                                                         <div className={cx('analysis-item', 'strength')}>
                                                             <ul>
-                                                                {analyticsData.general_assessment.strengths.map(
+                                                                {analyzeData.general_assessment.strengths.map(
                                                                     (strength, index) => (
                                                                         <li key={index}>{strength}</li>
                                                                     ),
@@ -350,7 +328,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                                     >
                                                         <div className={cx('analysis-item', 'weakness')}>
                                                             <ul>
-                                                                {analyticsData.general_assessment.weaknesses.map(
+                                                                {analyzeData.general_assessment.weaknesses.map(
                                                                     (weakness, index) => (
                                                                         <li key={index}>{weakness}</li>
                                                                     ),
@@ -367,7 +345,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                                 iconColor="#5c6bc0"
                                             >
                                                 <ul className={cx('metrics-list')}>
-                                                    {analyticsData.progress_tracking.metrics_to_monitor.map(
+                                                    {analyzeData.progress_tracking.metrics_to_monitor.map(
                                                         (metric, index) => (
                                                             <li key={index}>{metric}</li>
                                                         ),
@@ -381,7 +359,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
 
                             {activeTab === 1 && (
                                 <div className={cx('tab-panel')}>
-                                    {!isAnalyticsEnabled || !analyticsData ? (
+                                    {!isAnalyticsEnabled || !analyzeData ? (
                                         <div className={cx('info-alert')}>
                                             <h5>Phương pháp học tập</h5>
                                             <p>
@@ -397,7 +375,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                                 iconColor="#5c6bc0"
                                             >
                                                 <div className={cx('suggestions-container')}>
-                                                    {analyticsData.improvement_suggestions.map((suggestion, index) => (
+                                                    {analyzeData.improvement_suggestions.map((suggestion, index) => (
                                                         <div className={cx('suggestion-card')} key={index}>
                                                             <div className={cx('suggestion-header')}>
                                                                 <Lightbulb className={cx('suggestion-icon')} />
@@ -421,7 +399,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                                 iconColor="#5c6bc0"
                                             >
                                                 <ul className={cx('adjustment-list')}>
-                                                    {analyticsData.progress_tracking.adjustment_strategies.map(
+                                                    {analyzeData.progress_tracking.adjustment_strategies.map(
                                                         (strategy, index) => (
                                                             <li key={index}>
                                                                 <Check className={cx('check-icon')} />
@@ -458,7 +436,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                 <div className={cx('tab-panel')}>
                                     <h5>Tài liệu tham khảo được đề xuất dựa trên quá trình học tập của bạn:</h5>
                                     <div className={cx('resources-grid')}>
-                                        {!isAnalyticsEnabled || !analyticsData ? (
+                                        {!isAnalyticsEnabled || !analyzeData ? (
                                             <>
                                                 <div className={cx('resource-card')}>
                                                     <div className={cx('resource-icon')}>
@@ -476,7 +454,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                                 </div>
                                             </>
                                         ) : (
-                                            analyticsData.document_recommend.map((doc, index) => (
+                                            analyzeData.document_recommend.map((doc, index) => (
                                                 <div className={cx('resource-card')} key={index}>
                                                     <div className={cx('resource-icon')}>
                                                         <Book className={cx('book-icon')} />
@@ -500,7 +478,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
 
                             {activeTab === 3 && (
                                 <div className={cx('tab-panel')}>
-                                    {!isAnalyticsEnabled || !analyticsData ? (
+                                    {!isAnalyticsEnabled || !analyzeData ? (
                                         <div className={cx('info-alert')}>
                                             <h5>Kế hoạch học tập</h5>
                                             <p>
@@ -514,7 +492,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                                 <div className={cx('goals-column')}>
                                                     <h5>Mục tiêu ngắn hạn</h5>
                                                     <ul>
-                                                        {analyticsData.weekly_study_plan.short_term_goals.map(
+                                                        {analyzeData.weekly_study_plan.short_term_goals.map(
                                                             (goal, index) => (
                                                                 <li key={index}>{goal}</li>
                                                             ),
@@ -524,7 +502,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                                 <div className={cx('goals-column')}>
                                                     <h5>Mục tiêu dài hạn</h5>
                                                     <ul>
-                                                        {analyticsData.weekly_study_plan.long_term_goals.map(
+                                                        {analyzeData.weekly_study_plan.long_term_goals.map(
                                                             (goal, index) => (
                                                                 <li key={index}>{goal}</li>
                                                             ),
@@ -535,7 +513,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
 
                                             <h5>Lịch học hàng tuần</h5>
                                             <div className={cx('schedule-grid')}>
-                                                {Object.entries(analyticsData.weekly_study_plan.daily_schedule).map(
+                                                {Object.entries(analyzeData.weekly_study_plan.daily_schedule).map(
                                                     ([day, schedule]) => (
                                                         <div className={cx('schedule-card')} key={day}>
                                                             <div className={cx('schedule-day')}>

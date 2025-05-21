@@ -4,7 +4,7 @@ const cx = classNames.bind(styles);
 import FolderIcon from '@mui/icons-material/Folder';
 import SchoolIcon from '@mui/icons-material/School';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import Avatar from '../../../../assets/images/Frame 8720.png';
+import Avatar from '../../../../assets/images/icons/student-avatar.svg';
 import FlagIcon from '@mui/icons-material/Flag';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';

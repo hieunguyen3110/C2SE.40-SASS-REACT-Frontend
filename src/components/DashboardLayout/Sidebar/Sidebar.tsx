@@ -1,4 +1,4 @@
-import Avatar from '../../../assets/images/avatar.png';
+import Avatar from '../../../assets/images/icons/student-avatar.svg';
 import { 
     HomeOutlined as HomeOutlinedIcon, 
     InsertDriveFileOutlined as InsertDriveFileOutlinedIcon, 

@@ -1,4 +1,4 @@
-import Avatar from '../../../assets/images/avatar.png';
+import Avatar from '../../../assets/images/icons/student-avatar.svg';
 import { Button } from '../../../components/Button';
 import {
     HomeOutlined as HomeOutlinedIcon,

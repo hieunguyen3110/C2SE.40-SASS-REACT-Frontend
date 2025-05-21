@@ -11,11 +11,12 @@ import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { DocumentByAccountRequest } from '../DocumentSlice/InterfaceResponse';
 import { AllDocumentPersonalByEmailAPI } from '../../services/DocumentAPI/DocumentAPI';
-import { SubjectDto } from '../../types/learningAnalytics.types';
+import { AnalyticsData, SubjectDto } from '../../types/learningAnalytics.types';
 import {
     saveCoursePeriod,
     enableLearningAnalytics,
     disableLearningAnalytics,
+    getAnalyze,
 } from '../../services/LearningAnalyticsAPI/LearningAnalyticsAPI';
 
 export interface SearchDoc {
@@ -23,6 +24,7 @@ export interface SearchDoc {
     error: string;
     listSearch: listSearch[];
     getUserProfile: GetProfileRequest | null;
+    analyzeData: AnalyticsData | null;
 }
 
 export const SearchDocPersonalAction = createAsyncThunk<listSearch[], string>(
@@ -112,11 +114,20 @@ export const saveCoursePeriodAction = createAsyncThunk<string, SubjectDto[]>(
     },
 );
 
+export const getAnalyzeAction = createAsyncThunk<AnalyticsData, void>(
+    'ProfilePersonalSlice/getAnalyzeAction',
+    async () => {
+        const res = await getAnalyze();
+        return res.data as unknown as AnalyticsData;
+    },
+);
+
 const initialState: SearchDoc = {
     loading: false,
     error: '',
     listSearch: [],
     getUserProfile: null,
+    analyzeData: null,
 };
 const ProfilePersonalSlice = createSlice({
     name: 'ProfilePersonalSlice',
@@ -177,6 +188,14 @@ const ProfilePersonalSlice = createSlice({
             .addCase(saveCoursePeriodAction.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || 'Lỗi khi lưu kỳ học';
+            })
+            .addCase(getAnalyzeAction.fulfilled, (state, action: PayloadAction<AnalyticsData>) => {
+                state.loading = false;
+                state.analyzeData = action.payload;
+            })
+            .addCase(getAnalyzeAction.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message || 'Lỗi khi lấy dữ liệu phân tích';
             });
     },
 });

@@ -1,6 +1,6 @@
 import classnames from 'classnames/bind';
 import styles from './PersonalTeacherComponents.module.scss';
-import Avatar from '../../../assets/images/avatar.png';
+import Avatar from '../../../assets/images/icons/student-avatar.svg';
 import File from '../../../assets/images/File_dock.svg';
 import EditIcon from '../../../assets/images/edit-05.png';
 import ImportLight from '../../../assets/images/Import_light.png';

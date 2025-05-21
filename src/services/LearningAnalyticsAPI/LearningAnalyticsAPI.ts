@@ -1,4 +1,4 @@
-import { SubjectDto } from '../../types/learningAnalytics.types';
+import { AnalyticsData, SubjectDto } from '../../types/learningAnalytics.types';
 import { ApiResponse } from '../../types/response.type';
 import { axiosInstance } from '../../utils/AxiosInterceptor';
 
@@ -24,6 +24,15 @@ export const saveCoursePeriod = async (subjects: SubjectDto[]) => {
     try {
         const res = await axiosInstance.post('/identity/account/save-course-period', subjects);
         return res as unknown as ApiResponse<string>;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getAnalyze = async () => {
+    try {
+        const res = await axiosInstance.get('/identity/account/get-analyze');
+        return res as unknown as ApiResponse<AnalyticsData>;
     } catch (error) {
         throw error;
     }
