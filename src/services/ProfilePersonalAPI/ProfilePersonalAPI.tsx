@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import { axiosInstance } from '../../utils/AxiosInterceptor';
+import { CoursePeriodDto } from '../../types/learningAnalytics.types';
 
 export interface listSearch {
     id: number;
@@ -37,6 +38,8 @@ export interface GetProfileRequest {
     documentDtos: DocumentPersonalDtos[];
     totalPage: number;
     totalDocument: number;
+    isEnableAnalyze: boolean;
+    coursePeriodDto: CoursePeriodDto[] | null;
 
     //thêm
     facultyName: string;

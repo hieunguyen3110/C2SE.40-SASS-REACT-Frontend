@@ -2,7 +2,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { sendMessageService, TrainChatbotRequest, trainChatbotService } from '../../services/ChatBotAPI/ChatBotAPI';
-import Avatar from '../../assets/images/avatar.png';
+import Avatar from '../../assets/images/icons/student-avatar.svg';
 import { toast } from 'react-toastify';
 
 type MessagesUser = {

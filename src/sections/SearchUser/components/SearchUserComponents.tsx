@@ -2,7 +2,7 @@ import classnames from 'classnames/bind';
 import styles from './SearchUserComponents.module.scss';
 import SearchIcon from '@mui/icons-material/Search';
 import { debounce } from 'lodash';
-import UserAvatar from '../../../assets/images/avatar.png';
+import UserAvatar from '../../../assets/images/icons/student-avatar.svg';
 import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import { clearSearchUser, SearchUserAction, setActiveLoadMore } from '../../../redux/SearchUserSlice/SearchUserSlice';

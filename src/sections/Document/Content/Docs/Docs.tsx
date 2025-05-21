@@ -2,7 +2,7 @@
 import classNames from 'classnames/bind';
 import styles from './Docs.module.scss';
 const cx = classNames.bind(styles);
-import avartar from '../../../../assets/images/Frame 8720.png';
+import avartar from '../../../../assets/images/icons/student-avatar.svg';
 import DocumentIMG from "../../../../assets/images/library.document.png"
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -14,12 +14,10 @@ import MenuItem from '@mui/material/MenuItem';
 import { useSharingModal } from '../../../../contexts/SharingModalContext';
 import { useNavigate } from 'react-router-dom';
 import { truncateTextWithLength } from '../../../../utils/truncateText';
-// import { downloadFile } from "../../../../utils/downloadFile";
 import { useAppDispatch } from '../../../../redux/store';
 import { DownloadDocumentAction, SaveDocumentStogeAction } from '../../../../redux/DocumentSlice/documentSlice';
 import { useAppSelector } from '../../../../redux/store';
 import Loader from '../../../../components/Loader/Loader';
-// import { SharingModal } from "../../../../components/SharingModal"
 
 const options = ['Lưu tài liệu', 'Tải xuống', 'Chia sẻ'];
 

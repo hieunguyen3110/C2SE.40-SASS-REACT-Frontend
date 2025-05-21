@@ -1,6 +1,6 @@
 import styles from './HeaderTop.module.scss';
 import classnames from 'classnames/bind';
-import Avatar from '../../../assets/images/Frame 8720.png';
+import Avatar from '../../../assets/images/icons/student-avatar.svg';
 import logoLogin from '../../../assets/images/user-single-neutral-male--close-geometric-human-person-single-up-user-male.png';
 import logoRegister from '../../../assets/images/waving-hand.png';
 

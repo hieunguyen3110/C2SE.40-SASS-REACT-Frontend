@@ -11,7 +11,7 @@ import SendICON from '../../../assets/images/icons/SendICON.png';
 // import AttachICON from "../../../assets/images/icons/attach-square.png";
 // import MicroICON from "../../../assets/images/icons/microphone-2.png";
 import { Button } from '../../../components/Button';
-import Avatar from '../../../assets/images/avatar.png';
+import Avatar from '../../../assets/images/icons/student-avatar.svg';
 import MicIcon from '@mui/icons-material/Mic';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import { resetMessages, sendMessageAction, setMessagesUser } from '../../../redux/ChatBotSlice/ChatBotSlice';
