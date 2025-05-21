@@ -45,9 +45,9 @@ export default function Sidebar({ doc }: IDoc) {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [feedback, setFeedback] = useState('');
     const [isSending, setIsSending] = useState(false);
-    
+
     // Check if user has already rated this document
-    const userExistingRating = doc?.accountRatingDtos?.find(rating => rating.accountId === accountId);
+    const userExistingRating = doc?.accountRatingDtos?.find((rating) => rating.accountId === accountId);
     const hasRated = !!userExistingRating;
 
     // Set user's existing rating if they've already rated
@@ -76,7 +76,7 @@ export default function Sidebar({ doc }: IDoc) {
         if (userRating <= 3 && userRating > 0) {
             setShowFeedbackModal(true);
         } else if (userRating > 3) {
-            dispatch(rateDocumentAction({ documentId: doc.docId, rating: userRating }));
+            dispatch(rateDocumentAction({ documentId: doc.docId, rating: userRating, accountId }));
             setShowSuccessModal(true);
             setTimeout(() => {
                 setShowSuccessModal(false);
@@ -127,7 +127,7 @@ export default function Sidebar({ doc }: IDoc) {
     };
 
     const handleSubmitFeedback = () => {
-        dispatch(rateDocumentAction({ documentId: doc.docId, rating: userRating }));
+        dispatch(rateDocumentAction({ documentId: doc.docId, rating: userRating, accountId }));
 
         // Send email notification with feedback
         if (feedback.trim() !== '') {
@@ -228,8 +228,8 @@ export default function Sidebar({ doc }: IDoc) {
                     {hasRated && <p className={cx('already-rated-message')}>Bạn đã đánh giá tài liệu này</p>}
                 </div>
 
-                <button 
-                    className={cx('rating-button')} 
+                <button
+                    className={cx('rating-button')}
                     onClick={handleRatingClick}
                     disabled={hasRated}
                     style={{ opacity: hasRated ? 0.5 : 1, cursor: hasRated ? 'not-allowed' : 'pointer' }}

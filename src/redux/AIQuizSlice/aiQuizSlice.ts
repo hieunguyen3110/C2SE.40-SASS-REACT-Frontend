@@ -43,16 +43,34 @@ export const startQuizAction = createAsyncThunk<
 
 export const startAssignmentAction = createAsyncThunk<
     QuizSessionDTO,
-    { subjectId: number; numberOfQuestions: number; duration: number }
->('aiQuiz/startAssignment', async ({ subjectId, numberOfQuestions, duration }) => {
-    try {
-        const response = await startAssignmentApi(subjectId, numberOfQuestions, duration);
-        return response.data;
-    } catch (err: unknown) {
-        const error = err as AxiosError<{ message?: string }>;
-        throw Error(error.message);
+    {
+        docId: number;
+        subjectId: number;
+        numberOfQuestions: number;
+        duration: number;
+        sessionId?: string;
+        startTime?: string;
+        endTime?: string;
+        isCompleted?: boolean;
     }
-});
+>(
+    'aiQuiz/startAssignment',
+    async ({ docId, subjectId, numberOfQuestions, duration, sessionId, startTime, endTime, isCompleted }) => {
+        try {
+            const response = await startAssignmentApi(docId, subjectId, numberOfQuestions, duration);
+            return {
+                ...response.data,
+                sessionId,
+                startTime,
+                endTime,
+                isCompleted,
+            };
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message?: string }>;
+            throw Error(error.message);
+        }
+    },
+);
 
 export const restoreSessionAction = createAsyncThunk<
     QuizSessionDTO,
@@ -157,6 +175,7 @@ const AIQuizSlice = createSlice({
                 state.loading = false;
                 state.currentSession = action.payload;
                 state.isAssignment = false;
+                state.result = null;
             })
             .addCase(startQuizAction.rejected, (state, action) => {
                 state.loading = false;
@@ -167,9 +186,10 @@ const AIQuizSlice = createSlice({
             .addCase(startAssignmentAction.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(startAssignmentAction.fulfilled, (state) => {
+            .addCase(startAssignmentAction.fulfilled, (state, action) => {
                 state.loading = false;
-                state.isAssignment = false;
+                state.currentSession = action.payload;
+                state.isAssignment = true;
                 state.result = null;
             })
             .addCase(startAssignmentAction.rejected, (state, action) => {
