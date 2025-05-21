@@ -12,21 +12,26 @@
         & > button {
             display: flex;
             align-items: center;
-            gap: 6px;
-            background-color: #62d07a;
+            gap: 8px;
+            background-color: var(--primary-color);
             border: none;
-            border-radius: 20px;
-            padding: 10px 20px;
+            border-radius: 24px;
+            padding: 10px 24px;
             font-size: 16px;
             font-weight: 600;
-            line-height: 19.5px;
+            line-height: 1.2;
             color: white;
             cursor: pointer;
-            transition: 0.3s ease;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 5px rgba(98, 208, 122, 0.2);
         }
         & > button:hover {
-            scale: 1.1;
-            box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2509803922);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(98, 208, 122, 0.4);
+        }
+        & > button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 3px rgba(98, 208, 122, 0.3);
         }
         & > .right-actions {
             display: flex;
@@ -34,22 +39,78 @@
             & > button {
                 display: flex;
                 align-items: center;
-                gap: 6px;
-                border: 1px solid #000000;
-                border-radius: 20px;
-                padding: 10px 20px;
+                gap: 8px;
+                border: 1.5px solid #333;
+                border-radius: 24px;
+                padding: 10px 24px;
                 font-size: 16px;
                 font-weight: 600;
-                line-height: 19.5px;
-                color: black;
+                line-height: 1.2;
+                color: #333;
                 cursor: pointer;
-                transition: 0.3s ease;
+                transition: all 0.25s ease;
                 background-color: white;
             }
             & > button:hover {
-                scale: 1.1;
-                box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2509803922);
+                background-color: #f8f8f8;
+                border-color: #000;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            }
+            & > button:active {
+                transform: translateY(0);
+                box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
             }
         }
     }
+}
+
+/* Media query for better responsiveness */
+@media (max-width: 920px) {
+    .content > .actions {
+        width: 95%;
+        flex-direction: column;
+        gap: 16px;
+        & > .right-actions {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+}
+
+.exam-form {
+  padding: 10px 0;
+  
+  .form-group {
+    margin-bottom: 16px;
+    
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    input {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      
+      &:focus {
+        outline: none;
+        border-color: #4a6cf7;
+        box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.2);
+      }
+    }
+    
+    .form-hint {
+      display: block;
+      margin-top: 5px;
+      font-size: 12px;
+      color: #666;
+      font-style: italic;
+    }
+  }
 }

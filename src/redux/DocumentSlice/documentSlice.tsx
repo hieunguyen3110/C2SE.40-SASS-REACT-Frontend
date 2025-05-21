@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
- 
+
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import {
@@ -20,7 +20,12 @@ import {
     GetPopularDocuments,
 } from '../../services/DocumentAPI/DocumentAPI';
 import { rateDocumentApi } from '../../services/DocumentAPI/RatingAPI';
-import { DocumentByAccountRequest, DocumentResponse, DocumentSearchResponse } from './InterfaceResponse';
+import {
+    AccountRatingDto,
+    DocumentByAccountRequest,
+    DocumentResponse,
+    DocumentSearchResponse,
+} from './InterfaceResponse';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { ApiResponse } from '../../types/response.type';
@@ -210,19 +215,16 @@ export const getDocumentByFalcuty = createAsyncThunk<DocumentResponse, string>(
     },
 );
 
-export const getPopularDocuments = createAsyncThunk<any>(
-    'documents/getPopularDocuments',
-    async () => {
-        try {
-            const response = await GetPopularDocuments();
-            return response;
-        } catch (err: any) {
-            throw Error(err.message);
-        }
-    },
-);
+export const getPopularDocuments = createAsyncThunk<any>('documents/getPopularDocuments', async () => {
+    try {
+        const response = await GetPopularDocuments();
+        return response;
+    } catch (err: any) {
+        throw Error(err.message);
+    }
+});
 
-export const rateForDocumentAction = createAsyncThunk<ApiResponse<string>,RatingRequest>(
+export const rateForDocumentAction = createAsyncThunk<ApiResponse<string>, RatingRequest>(
     'documents/rateForDocument',
     async (data: RatingRequest) => {
         try {
@@ -234,18 +236,21 @@ export const rateForDocumentAction = createAsyncThunk<ApiResponse<string>,Rating
     },
 );
 
-export const rateDocumentAction = createAsyncThunk<string, { documentId: number; rating: number }>(
-    'DocumentSlice/rateDocument',
-    async ({ documentId, rating }) => {
-        try {
-            const response = await rateDocumentApi(documentId, rating);
-            return response.data as string;
-        } catch (err: unknown) {
-            const error = err as AxiosError<{ message?: string }>;
-            throw new Error(error.response?.data.message || error.message);
-        }
+export const rateDocumentAction = createAsyncThunk<
+    AccountRatingDto,
+    { documentId: number; rating: number; accountId: number }
+>('DocumentSlice/rateDocument', async ({ documentId, rating, accountId }) => {
+    try {
+        await rateDocumentApi(documentId, rating);
+        return {
+            accountId,
+            rating,
+        } as unknown as AccountRatingDto;
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        throw new Error(error.response?.data.message || error.message);
     }
-);
+});
 
 const initialState: InitialStateStyles = {
     loading: false,
@@ -296,15 +301,15 @@ export const DocumentSlice = createSlice({
                 state.isSearching = true;
             })
             .addCase(rateForDocumentAction.pending, (state) => {
-                state.loading= true;
+                state.loading = true;
             })
             .addCase(rateForDocumentAction.fulfilled, (state) => {
-                state.loading= false;
+                state.loading = false;
             })
             .addCase(rateForDocumentAction.rejected, (state, action) => {
-                state.loading= false;
-                state.Error= (action.error && action.error.message)?action.error.message : "Something went wrong!";
-                toast.error("Rating is failed!");
+                state.loading = false;
+                state.Error = action.error && action.error.message ? action.error.message : 'Something went wrong!';
+                toast.error('Rating is failed!');
             })
             .addCase(getDocumentByTitle.fulfilled, (state, action) => {
                 state.isSearching = false;
@@ -420,8 +425,15 @@ export const DocumentSlice = createSlice({
             .addCase(rateDocumentAction.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(rateDocumentAction.fulfilled, (state) => {
+            .addCase(rateDocumentAction.fulfilled, (state, action) => {
                 state.loading = false;
+                const document = state.DocumentDetail;
+                if (document) {
+                    state.DocumentDetail = {
+                        ...document,
+                        accountRatingDtos: [...(document.accountRatingDtos || []), action.payload],
+                    };
+                }
                 toast.success('Đã đánh giá tài liệu thành công');
             })
             .addCase(rateDocumentAction.rejected, (state, action) => {
