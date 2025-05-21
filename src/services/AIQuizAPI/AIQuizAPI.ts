@@ -31,9 +31,15 @@ export const startQuizApi = async (
     }
 };
 
-export const startAssignmentApi = async (subjectId: number, numberOfQuestions: number, duration: number) => {
+export const startAssignmentApi = async (
+    docId: number,
+    subjectId: number,
+    numberOfQuestions: number,
+    duration: number,
+) => {
     try {
         const res = await axiosInstance.post('/e-learning/assignment/start', {
+            docId,
             subjectId,
             numberOfQuestions,
             duration,

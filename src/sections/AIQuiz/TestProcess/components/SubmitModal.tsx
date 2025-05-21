@@ -115,14 +115,10 @@ export default function SubmitModal({
                         >
                             <Warning className={cx('warning-icon')} />
                             <Typography>
-                                Bạn còn <strong>{unansweredQuestions}</strong> câu hỏi chưa trả lời.
+                                Hãy hoàn thành <strong>{unansweredQuestions}</strong> câu hỏi còn lại trước khi nộp bài.
                             </Typography>
                         </motion.div>
                     )}
-
-                    <Typography id="submit-modal-description" className={cx('confirmation-text')}>
-                        Bạn có chắc chắn muốn nộp bài kiểm tra này?
-                    </Typography>
                 </motion.div>
 
                 <motion.div
@@ -143,9 +139,10 @@ export default function SubmitModal({
                     <motion.button
                         className={cx('modal-button', 'confirm', { submitting: isSubmitting })}
                         onClick={handleSubmit}
+
                         whileHover={isSubmitting ? {} : { scale: 1.05 }}
                         whileTap={isSubmitting ? {} : { scale: 0.95 }}
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || unansweredQuestions > 0}
                     >
                         {isSubmitting ? (
                             <>

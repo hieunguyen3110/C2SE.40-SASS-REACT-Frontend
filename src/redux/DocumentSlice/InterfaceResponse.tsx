@@ -1,22 +1,25 @@
 export interface DocumentResponse {
-    doc_id: number;
+    docId: number;
     title: string;
-    description: string;
-    content: string;
-    type: string;
-    account_id: number;
-    file_path: string;
-    file_size: number;
-    created_at: string;
-    updated_at: string;
-    folder_id: number;
-    folderName?: string | null;
-    subjectName?: string;
-    facultyName?: string;
-    authorName?: string;
-    filePath?: string;
-    profilePicture?: string | null;
-    accountRatingDtos?: AccountRatingDto[];
+    folderName: string;
+    subjectId: number;
+    subjectName: string;
+    facultyName: string;
+    createdAt: string;
+    authorName: string;
+    filePath: string;
+    fileSize: number;
+    profilePicture: string | null;
+    accountRatingDtos: AccountRatingDto[];
+
+    // Các trường có thể vẫn cần trong ứng dụng nhưng không có trong response mới
+    // Đánh dấu là optional
+    description?: string;
+    content?: string;
+    type?: string;
+    account_id?: number;
+    updated_at?: string;
+    folder_id?: number;
 }
 
 export interface DocumentSearchResponse {

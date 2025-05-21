@@ -19,7 +19,7 @@ export interface QuizSessionDTO {
     questions: QuestionDTO[];
     userAnswers: string[];
     assignment: boolean;
-
+    docId?: number;
     sessionId?: string;
     startTime?: string;
     endTime?: string;
