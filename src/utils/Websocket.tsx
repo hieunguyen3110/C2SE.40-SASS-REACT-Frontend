@@ -17,7 +17,7 @@ import {
 import store from '../redux/store';
 import { toast } from 'react-toastify';
 import { AutoLoginAction } from '../redux/AuthenticationSlice/AuthenticationSlice';
-
+import { getGroupDetailsAction } from '../redux/GroupStudySlice/GroupStudySlice';
 type NotificationResponse = {
     notificationId: number;
     message: string;
@@ -41,7 +41,7 @@ let stompClient: Client;
 const websocketUrl = import.meta.env.VITE_APP_WEBSOCKET_URL;
 export const WebsocketConnection: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { accountId,isLogined } = useAppSelector((state) => state.authentication);
+    const { accountId, isLogined } = useAppSelector((state) => state.authentication);
     const { currentGroup, userGroups } = useAppSelector((state) => state.groupStudy);
     const { numberOfNotificationsUnRead, numberOfNotifications } = useAppSelector((state) => state.notication);
     // const token = JsCookie.get('accessToken');
@@ -78,16 +78,23 @@ export const WebsocketConnection: React.FC = () => {
                 dispatch(updateNumberOfNotificationsAll(numberOfNotifications + 1));
             });
 
+            stompClient?.subscribe(`/user/${accountId}/queue/notifications-with-e-learning`, (message) => {
+                const data: NotificationResponse = JSON.parse(message.body);
+                dispatch(updateNotification(data));
+                dispatch(updateNumberOfNotificationsUnRead(numberOfNotificationsUnRead + 1));
+                dispatch(updateNumberOfNotificationsAll(numberOfNotifications + 1));
+            });
+
             // Kiểm tra và đăng ký lắng nghe tin nhắn nhóm nếu currentGroup có giá trị
             if (currentGroup?.groupId) {
                 stompClient?.subscribe(`/user/${currentGroup.groupId}/queue/messages`, (message) => {
                     try {
                         // Parse the message data
                         const data = JSON.parse(message.body);
-
+                        console.log('data', data);
                         // Create a message in the format expected by Redux
                         const chatMessage: WebSocketChatMessage = {
-                            messageId: Date.now(),
+                            messageId: data.messageId,
                             senderId: data.senderId || 0,
                             groupId: data.groupId,
                             content: data.content,
@@ -113,8 +120,11 @@ export const WebsocketConnection: React.FC = () => {
                     }
                 });
             }
-            stompClient?.subscribe(`/user/${accountId}/queue/notifications-with-join-request`, (message) => {
+            stompClient?.subscribe(`/user/${accountId}/queue/notifications-with-group`, (message) => {
                 const data: JoinRequestNotification = JSON.parse(message.body);
+                if (currentGroup) {
+                    dispatch(getGroupDetailsAction(currentGroup.groupId));
+                }
                 dispatch(updateNotification(data));
                 dispatch(updateNumberOfNotificationsUnRead(numberOfNotificationsUnRead + 1));
                 dispatch(updateNumberOfNotificationsAll(numberOfNotifications + 1));
@@ -142,7 +152,6 @@ export const getStompClient = (): Client | undefined => {
 
 // Function to send a message to group chat
 export const sendGroupChatMessage = (groupId: number, content: string): void => {
-    console.log(stompClient)
     if (!stompClient || !stompClient.connected) {
         console.error('WebSocket connection not established');
         toast.error('Không thể gửi tin nhắn. Kết nối WebSocket chưa được thiết lập.');

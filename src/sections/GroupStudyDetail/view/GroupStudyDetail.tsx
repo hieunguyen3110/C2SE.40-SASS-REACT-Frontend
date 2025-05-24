@@ -26,9 +26,9 @@ import {
     listMembersAction,
     deleteGroupAction,
     removeMemberAction,
-    updateMemberList,
     approveJoinRequestAction,
     rejectJoinRequestAction,
+    updateJoinRequest,
 } from '../../../redux/GroupStudySlice/GroupStudySlice';
 import GroupEditForm from '../components/GroupEditForm/GroupEditForm';
 import AlertModal from '../../../components/AlertModal/AlertModal';
@@ -36,7 +36,6 @@ import { useAlertModal } from '../../../hooks/useAlertModal';
 import { JoinRequest } from '../../../types/groupStudy.types';
 import GroupSetting from '../components/GroupSetting/GroupSetting';
 import PinnedMessages from '../components/PinnedMessages/PinnedMessages';
-import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -49,7 +48,7 @@ export default function GroupStudyDetail() {
     const { isOpen, title, content, onConfirm, confirmText, openModal, closeModal } = useAlertModal();
 
     // Redux state
-    const { currentGroup, loading, error, memberList } = useAppSelector((state) => state.groupStudy);
+    const { currentGroup, memberList } = useAppSelector((state) => state.groupStudy);
     const { accountId } = useAppSelector((state: RootState) => state.authentication);
 
     // Check if current user is the owner
@@ -67,27 +66,20 @@ export default function GroupStudyDetail() {
     const filteredMembers = memberList.filter((member) => member.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
     // Handle join request actions
-    const handleAcceptRequest = (id: number) => {
+    const handleAcceptRequest = (id: number, email: string, name: string, profilePicture: string, userId: number) => {
         dispatch(approveJoinRequestAction(id));
+        dispatch(updateJoinRequest({ joinRequestId: id, status: 'APPROVED', email, name, profilePicture, userId }));
     };
 
     const handleRejectRequest = (id: number) => {
         dispatch(rejectJoinRequestAction(id));
+        dispatch(updateJoinRequest({ joinRequestId: id, status: 'REJECTED' }));
     };
 
     // Handle member delete action
     const handleDeleteMember = (memberId: number) => {
         if (id) {
-            dispatch(removeMemberAction({ groupId: parseInt(id), userId: memberId }))
-                .unwrap()
-                .then(() => {
-                    // Sau khi xóa thành công, cập nhật state local
-                    const updatedMembers = memberList.filter((member) => member.memberId !== memberId);
-                    dispatch(updateMemberList(updatedMembers));
-                })
-                .catch((error) => {
-                    console.error('Lỗi khi xóa thành viên:', error);
-                });
+            dispatch(removeMemberAction({ groupId: parseInt(id), userId: memberId }));
         }
     };
 
@@ -187,7 +179,7 @@ export default function GroupStudyDetail() {
                             <span>
                                 Tạo ngày{' '}
                                 {currentGroup
-                                    ? new Date(currentGroup.createdAt).toLocaleDateString('vi-VN')
+                                    ? new Date(currentGroup.createdAt || '').toLocaleDateString('vi-VN')
                                     : '--/--/----'}
                             </span>
                             <span className={cx('separator')}>•</span>
@@ -220,7 +212,15 @@ export default function GroupStudyDetail() {
                                             avatar={request.avatar}
                                             name={request.name}
                                             requestDate={request.createdAt}
-                                            onAccept={() => handleAcceptRequest(request.id)}
+                                            onAccept={() =>
+                                                handleAcceptRequest(
+                                                    request.id,
+                                                    request.email,
+                                                    request.name,
+                                                    request.avatar || '',
+                                                    request.userId,
+                                                )
+                                            }
                                             onReject={() => handleRejectRequest(request.id)}
                                         />
                                     ))
@@ -286,7 +286,6 @@ export default function GroupStudyDetail() {
                             <div className={cx('section__list')}>
                                 <div className={cx('member-list-header')}>
                                     <span className={cx('header-item')}>Thành viên</span>
-                                    <span className={cx('header-item')}>Email</span>
                                     <span className={cx('header-item')}>Chức vụ</span>
                                 </div>
 
@@ -294,10 +293,10 @@ export default function GroupStudyDetail() {
                                     filteredMembers.map((member) => (
                                         <MemberItem
                                             key={member.memberId}
-                                            avatar={''}
+                                            avatar={member.profilePicture}
                                             name={member.name}
                                             joinDate={member.email}
-                                            role={currentGroup?.userId === member.memberId ? 'Admin' : 'Member'}
+                                            role={currentGroup?.userId === member.memberId ? 'Owner' : 'Member'}
                                             canDelete={isOwner && currentGroup?.userId !== member.memberId}
                                             onDelete={() => handleDeleteMember(member.memberId)}
                                         />

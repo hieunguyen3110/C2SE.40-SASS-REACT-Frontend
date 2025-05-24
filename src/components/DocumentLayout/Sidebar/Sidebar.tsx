@@ -132,6 +132,8 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
     useEffect(() => {
         if (isModal) {
             setIsOpen(false);
+        } else {
+            setIsOpen(true);
         }
     }, [isModal, setIsOpen]);
 

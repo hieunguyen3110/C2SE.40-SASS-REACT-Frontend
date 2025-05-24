@@ -25,6 +25,7 @@ import {
     getGroupOfUserApi,
     approveJoinRequestApi,
     rejectJoinRequestApi,
+    leaveGroupApi,
 } from '../../services/GroupStudyAPI/GroupStudyAPI';
 import {
     IGroup,
@@ -47,7 +48,6 @@ export interface WebSocketChatMessage {
     profilePicture: string;
     messageId: number;
 }
-
 
 // Async Actions
 export const createGroupAction = createAsyncThunk<IGroup, CreateGroupRequest>(
@@ -78,26 +78,24 @@ export const searchSubjectsAction = createAsyncThunk<SubjectDto[], string>(
     },
 );
 
-export const getGroupDetailsAction = createAsyncThunk<IGroup, number>(
-    'groupStudy/getGroupDetails',
-    async (groupId) => {
-        try {
-            const response = await getGroupDetailsApi(groupId);
-            return response.data;
-        } catch (err: unknown) {
-            const error = err as AxiosError<{ message?: string }>;
-            toast.error('Không thể lấy thông tin nhóm. Vui lòng thử lại sau.');
-            throw Error(error.message);
-        }
-    },
-);
+export const getGroupDetailsAction = createAsyncThunk<IGroup, number>('groupStudy/getGroupDetails', async (groupId) => {
+    try {
+        const response = await getGroupDetailsApi(groupId);
+        return response.data;
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        toast.error('Không thể lấy thông tin nhóm. Vui lòng thử lại sau.');
+        throw Error(error.message);
+    }
+});
 
-export const removeMemberAction = createAsyncThunk<void, { groupId: number; userId: number }>(
+export const removeMemberAction = createAsyncThunk<number, { groupId: number; userId: number }>(
     'groupStudy/removeMember',
     async ({ groupId, userId }) => {
         try {
             await removeMemberApi(groupId, userId);
             toast.success('Đã xóa thành viên thành công');
+            return userId;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
             toast.error('Không thể xóa thành viên. Vui lòng thử lại sau.');
@@ -120,27 +118,20 @@ export const addMemberAction = createAsyncThunk<void, { groupId: number; userId:
     },
 );
 
-export const joinGroupAction = createAsyncThunk<void, number>(
-    'groupStudy/joinGroup',
-    async (groupId) => {
-        try {
-            await joinGroupApi(groupId);
-            toast.success('Đã gửi yêu cầu tham gia nhóm');
-        } catch (err: unknown) {
-            const error = err as AxiosError<{ message?: string }>;
-            console.log(error);
-            
-            // If status code is 400, show a different toast message
-            if (error.response?.status === 400) {
-                toast.info('Bạn đã gửi yêu cầu tham gia nhóm này rồi');
-                return; // Don't throw error since this is expected behavior
-            }
-            
-            toast.error('Không thể gửi yêu cầu tham gia nhóm. Vui lòng thử lại sau.');
-            throw Error(error.message);
+export const joinGroupAction = createAsyncThunk<void, number>('groupStudy/joinGroup', async (groupId) => {
+    try {
+        await joinGroupApi(groupId);
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+
+        // If status code is 400, show a different toast message
+        if (error.response?.status === 400) {
+            return; // Don't throw error since this is expected behavior
         }
-    },
-);
+
+        throw Error(error.message);
+    }
+});
 
 export const listMembersAction = createAsyncThunk<MemberResponse[], { groupId: number; page: number; size: number }>(
     'groupStudy/listMembers',
@@ -254,11 +245,13 @@ export const getPinnedMessagesAction = createAsyncThunk<Message[], { groupId: nu
             return response.data.content;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string; code?: number }>;
-            
+
             // Check if it's a 404 "No pinned messages found" error
-            if (error.response?.status === 404 || 
-                (error.response?.data.code === 404 && 
-                error.response?.data.message?.includes("No pinned messages found"))) {
+            if (
+                error.response?.status === 404 ||
+                (error.response?.data.code === 404 &&
+                    error.response?.data.message?.includes('No pinned messages found'))
+            ) {
                 // Return empty array instead of throwing error
                 return [];
             }
@@ -270,23 +263,20 @@ export const getPinnedMessagesAction = createAsyncThunk<Message[], { groupId: nu
 export const getGroupMessagesAction = createAsyncThunk<
     { messages: Message[]; page: number; isLoadMore?: boolean },
     { groupId: number; page: number; size: number; isLoadMore?: boolean }
->(
-    'groupStudy/getGroupMessages',
-    async ({ groupId, page, size, isLoadMore = false }) => {
-        try {
-            const response = await getGroupMessagesApi(groupId, page, size);
-            return { 
-                messages: response.data.content, 
-                page, 
-                isLoadMore 
-            };
-        } catch (err: unknown) {
-            const error = err as AxiosError<{ message?: string }>;
-            toast.error('Không thể lấy tin nhắn nhóm. Vui lòng thử lại sau.');
-            throw Error(error.message);
-        }
-    },
-);
+>('groupStudy/getGroupMessages', async ({ groupId, page, size, isLoadMore = false }) => {
+    try {
+        const response = await getGroupMessagesApi(groupId, page, size);
+        return {
+            messages: response.data.content,
+            page,
+            isLoadMore,
+        };
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        toast.error('Không thể lấy tin nhắn nhóm. Vui lòng thử lại sau.');
+        throw Error(error.message);
+    }
+});
 
 export const sendMessageAction = createAsyncThunk<Message, { data: ChatMessage }>(
     'groupStudy/sendMessage',
@@ -302,19 +292,16 @@ export const sendMessageAction = createAsyncThunk<Message, { data: ChatMessage }
     },
 );
 
-export const findUserGroupsAction = createAsyncThunk<IGroup[], number>(
-    'groupStudy/findUserGroups',
-    async (userId) => {
-        try {
-            const response = await findUserGroupsApi(userId);
-            return response.data;
-        } catch (err: unknown) {
-            const error = err as AxiosError<{ message?: string }>;
-            toast.error('Không thể lấy danh sách nhóm. Vui lòng thử lại sau.');
-            throw Error(error.message);
-        }
-    },
-);
+export const findUserGroupsAction = createAsyncThunk<IGroup[], number>('groupStudy/findUserGroups', async (userId) => {
+    try {
+        const response = await findUserGroupsApi(userId);
+        return response.data;
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        toast.error('Không thể lấy danh sách nhóm. Vui lòng thử lại sau.');
+        throw Error(error.message);
+    }
+});
 
 export const transferOwnershipAction = createAsyncThunk<void, { groupId: number; newOwnerId: number }>(
     'groupStudy/transferOwnership',
@@ -330,19 +317,16 @@ export const transferOwnershipAction = createAsyncThunk<void, { groupId: number;
     },
 );
 
-export const deleteMessageAction = createAsyncThunk<void, number>(
-    'groupStudy/deleteMessage',
-    async (messageId) => {
-        try {
-            await deleteMessageApi(messageId);
-            toast.success('Đã xóa tin nhắn thành công');
-        } catch (err: unknown) {
-            const error = err as AxiosError<{ message?: string }>;
-            toast.error('Không thể xóa tin nhắn. Vui lòng thử lại sau.');
-            throw Error(error.message);
-        }
-    },
-);
+export const deleteMessageAction = createAsyncThunk<void, number>('groupStudy/deleteMessage', async (messageId) => {
+    try {
+        await deleteMessageApi(messageId);
+        toast.success('Đã xóa tin nhắn thành công');
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        toast.error('Không thể xóa tin nhắn. Vui lòng thử lại sau.');
+        throw Error(error.message);
+    }
+});
 
 export const searchGroupAction = createAsyncThunk<SearchGroupResult[], string>(
     'groupStudy/searchGroup',
@@ -358,19 +342,16 @@ export const searchGroupAction = createAsyncThunk<SearchGroupResult[], string>(
     },
 );
 
-export const getGroupOfUserAction = createAsyncThunk<IGroup[], void>(
-    'groupStudy/getGroupOfUser',
-    async () => {   
-        try {
-            const response = await getGroupOfUserApi();
-            return response.data;
-        } catch (err: unknown) {
-            const error = err as AxiosError<{ message?: string }>;
-            toast.error('Không thể lấy danh sách nhóm. Vui lòng thử lại sau.');
-            throw Error(error.message);
-        }
-    },
-);
+export const getGroupOfUserAction = createAsyncThunk<IGroup[], void>('groupStudy/getGroupOfUser', async () => {
+    try {
+        const response = await getGroupOfUserApi();
+        return response.data;
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        toast.error('Không thể lấy danh sách nhóm. Vui lòng thử lại sau.');
+        throw Error(error.message);
+    }
+});
 
 export const approveJoinRequestAction = createAsyncThunk<void, number>(
     'groupStudy/approveJoinRequest',
@@ -383,7 +364,7 @@ export const approveJoinRequestAction = createAsyncThunk<void, number>(
             throw Error(error.message);
         }
     },
-);  
+);
 
 export const rejectJoinRequestAction = createAsyncThunk<void, number>(
     'groupStudy/rejectJoinRequest',
@@ -398,6 +379,15 @@ export const rejectJoinRequestAction = createAsyncThunk<void, number>(
     },
 );
 
+export const leaveGroupAction = createAsyncThunk<void, number>('groupStudy/leaveGroup', async (groupId) => {
+    try {
+        await leaveGroupApi(groupId);
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        toast.error('Không thể rời nhóm. Vui lòng thử lại sau.');
+        throw Error(error.message);
+    }
+});
 
 // Initial State
 interface GroupStudyState {
@@ -413,8 +403,14 @@ interface GroupStudyState {
     subjects: SubjectDto[];
     userGroups: IGroup[];
     searchResults: SearchGroupResult[];
-    pendingJoinRequests: { requestId: number; groupId: number; userId: number; username: string; profilePicture?: string }[];
-    unreadMessages: Array<{ groupId: number, count: number }>; // Mảng những cặp groupId và số lượng tin nhắn chưa đọc
+    pendingJoinRequests: {
+        requestId: number;
+        groupId: number;
+        userId: number;
+        username: string;
+        profilePicture?: string;
+    }[];
+    unreadMessages: Array<{ groupId: number; count: number }>; // Mảng những cặp groupId và số lượng tin nhắn chưa đọc
 }
 
 const initialState: GroupStudyState = {
@@ -444,7 +440,29 @@ const GroupStudySlice = createSlice({
             state.memberList = [];
             state.pinnedMessages = [];
             state.messages = [];
+            state.pendingJoinRequests = [];
         },
+
+        updateUserGroups: (state, action: PayloadAction<any | undefined>) => {
+            if (!action.payload) return;
+            const newGroups: IGroup = {
+                groupId: action.payload.groupId,
+                userId: action.payload.userId || null,
+                message: null,
+                isPrivate: action.payload.private,
+                groupName: action.payload.groupName,
+                description: action.payload.description,
+                subjectName: action.payload.subjectName,
+                picture: action.payload.picture,
+                memberLimited: action.payload.memberLimited,
+                ownerId: null,
+                createdAt: null,
+                joinRequests: null,
+                memberCount: action.payload.memberCount,
+            };
+            state.userGroups = [...state.userGroups, newGroups];
+        },
+
         updateMemberList: (state, action: PayloadAction<MemberResponse[]>) => {
             state.memberList = action.payload;
         },
@@ -452,7 +470,7 @@ const GroupStudySlice = createSlice({
             if (state.currentGroup) {
                 // Check if this message is for the current group
                 const groupId = state.currentGroup.groupId;
-                
+
                 if (groupId === action.payload.groupId) {
                     // Convert WebSocketChatMessage to Message format
                     const newMessage: Message = {
@@ -460,45 +478,82 @@ const GroupStudySlice = createSlice({
                         senderId: action.payload.senderId,
                         content: action.payload.content,
                         timestamp: action.payload.timestamp,
-                        username: action.payload.username,      
+                        username: action.payload.username,
                         profilePicture: action.payload.profilePicture,
                         groupId: action.payload.groupId,
                         createdAt: action.payload.timestamp,
                         // Add other required fields with default values as needed
                     };
-                    
+
                     // Make sure state.messages is an array before using spread operator
                     if (!Array.isArray(state.messages)) {
                         state.messages = [];
                     }
-                    
+
                     // Add the new message to the messages array (append at the end for newest last)
                     state.messages = [...state.messages, newMessage];
-                    
+
                     // Sort messages by timestamp, oldest first (cũ lên trên, mới xuống dưới)
                     state.messages.sort((a, b) => {
                         const timeA = new Date(a.timestamp || a.createdAt || 0).getTime();
                         const timeB = new Date(b.timestamp || b.createdAt || 0).getTime();
                         return timeA - timeB; // Oldest first
                     });
-                    
+
                     state.totalMessages += 1;
                 }
             }
         },
 
-        updateUnreadMessages: (state, action: PayloadAction<{ groupId: number, count: number }>) => {
-            const existingMessage = state.unreadMessages.find(message => message.groupId === action.payload.groupId);
+        updateUnreadMessages: (state, action: PayloadAction<{ groupId: number; count: number }>) => {
+            const existingMessage = state.unreadMessages.find((message) => message.groupId === action.payload.groupId);
             if (existingMessage) {
                 existingMessage.count += action.payload.count;
             } else {
                 state.unreadMessages.push(action.payload);
             }
-        },  
-        
+        },
+
         clearUnreadMessages: (state, action: PayloadAction<number>) => {
             const groupId = action.payload;
-            state.unreadMessages = state.unreadMessages.filter(message => message.groupId !== groupId);
+            state.unreadMessages = state.unreadMessages.filter((message) => message.groupId !== groupId);
+        },
+
+        resetSearchGroup: (state) => {
+            state.searchResults = [];
+        },
+
+        updateJoinRequest: (
+            state,
+            action: PayloadAction<{
+                joinRequestId: number;
+                status: string;
+                userId?: number;
+                email?: string;
+                name?: string;
+                profilePicture?: string;
+            }>,
+        ) => {
+            if (state.currentGroup) {
+                if (action.payload.status === 'APPROVED' && action.payload.email && action.payload.name) {
+                    state.currentGroup.joinRequests =
+                        state.currentGroup.joinRequests?.filter(
+                            (request) => request.id !== action.payload.joinRequestId,
+                        ) || null;
+                    const newMember = {
+                        memberId: action.payload.userId,
+                        email: action.payload.email,
+                        name: action.payload.name,
+                        profilePicture: action.payload.profilePicture,
+                    };
+                    state.memberList = [...state.memberList, newMember as MemberResponse];
+                } else if (action.payload.status === 'REJECTED') {
+                    state.currentGroup.joinRequests =
+                        state.currentGroup.joinRequests?.filter(
+                            (request) => request.id !== action.payload.joinRequestId,
+                        ) || null;
+                }
+            }
         },
     },
     extraReducers: (builder) => {
@@ -555,10 +610,6 @@ const GroupStudySlice = createSlice({
                 state.error = action.error.message || 'Không thể thêm thành viên';
             })
 
-            // Join Group
-            .addCase(joinGroupAction.pending, (state) => {
-                state.loading = true;
-            })
             .addCase(joinGroupAction.fulfilled, (state) => {
                 state.loading = false;
             })
@@ -580,12 +631,9 @@ const GroupStudySlice = createSlice({
                 state.error = action.error.message || 'Không thể lấy danh sách thành viên';
             })
 
-            // Remove Member
-            .addCase(removeMemberAction.pending, (state) => {
-                state.loading = true;
-            })
-            .addCase(removeMemberAction.fulfilled, (state) => {
+            .addCase(removeMemberAction.fulfilled, (state, action) => {
                 state.loading = false;
+                state.memberList = state.memberList.filter((member) => member.memberId !== action.payload);
             })
             .addCase(removeMemberAction.rejected, (state, action) => {
                 state.loading = false;
@@ -630,12 +678,6 @@ const GroupStudySlice = createSlice({
             })
 
             // Pin Message
-            .addCase(pinMessageAction.pending, (state) => {
-                state.loading = true;
-            })
-            .addCase(pinMessageAction.fulfilled, (state) => {
-                state.loading = false;
-            })
             .addCase(pinMessageAction.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || 'Không thể ghim tin nhắn';
@@ -697,14 +739,14 @@ const GroupStudySlice = createSlice({
             })
             .addCase(getGroupMessagesAction.fulfilled, (state, action) => {
                 state.loading = false;
-                
+
                 // Sort messages by timestamp
                 const sortedMessages = [...action.payload.messages].sort((a, b) => {
                     const timeA = new Date(a.timestamp || a.createdAt || 0).getTime();
                     const timeB = new Date(b.timestamp || b.createdAt || 0).getTime();
                     return timeA - timeB; // Oldest first
                 });
-                
+
                 // If loading more messages (older ones), prepend them to existing messages
                 if (action.payload.isLoadMore) {
                     state.messages = [...sortedMessages, ...state.messages];
@@ -766,7 +808,7 @@ const GroupStudySlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message || 'Không thể xóa tin nhắn';
             })
-            
+
             // Search Group
             .addCase(searchGroupAction.pending, (state) => {
                 state.loading = true;
@@ -786,7 +828,7 @@ const GroupStudySlice = createSlice({
             })
             .addCase(getGroupOfUserAction.fulfilled, (state, action) => {
                 state.loading = false;
-                state.userGroups = action.payload;  
+                state.userGroups = action.payload;
             })
             .addCase(getGroupOfUserAction.rejected, (state, action) => {
                 state.loading = false;
@@ -799,7 +841,6 @@ const GroupStudySlice = createSlice({
             })
             .addCase(approveJoinRequestAction.fulfilled, (state) => {
                 state.loading = false;
-                toast.success('Đã phê duyệt yêu cầu tham gia nhóm');
             })
             .addCase(approveJoinRequestAction.rejected, (state, action) => {
                 state.loading = false;
@@ -812,15 +853,27 @@ const GroupStudySlice = createSlice({
             })
             .addCase(rejectJoinRequestAction.fulfilled, (state) => {
                 state.loading = false;
-                toast.success('Đã từ chối yêu cầu tham gia nhóm');
             })
             .addCase(rejectJoinRequestAction.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || 'Không thể từ chối yêu cầu tham gia nhóm';
+            })
+            .addCase(leaveGroupAction.fulfilled, (state) => {
+                state.loading = false;
+                resetGroupState();
             });
     },
 });
 
-export const { resetGroupState, updateMemberList, updateChatMessage, updateUnreadMessages, clearUnreadMessages } = GroupStudySlice.actions;
+export const {
+    resetGroupState,
+    updateMemberList,
+    updateChatMessage,
+    updateUnreadMessages,
+    clearUnreadMessages,
+    resetSearchGroup,
+    updateUserGroups,
+    updateJoinRequest,
+} = GroupStudySlice.actions;
 
 export default GroupStudySlice.reducer;

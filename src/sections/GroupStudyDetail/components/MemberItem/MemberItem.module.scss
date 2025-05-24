@@ -55,12 +55,12 @@
             font-size: 0.85rem;
             font-weight: 500;
 
-            &.admin {
+            &.owner {
                 color: #2563eb;
                 background-color: rgba(37, 99, 235, 0.1);
             }
 
-            &.creator {
+            &.admin {
                 color: #ff3c3c;
                 background-color: rgba(255, 60, 60, 0.1);
             }
