@@ -86,8 +86,8 @@ export default function GroupManagement() {
 
     // Filter groups based on search query
     const filteredGroups = groups?.filter((group: IGroup) => 
-        group.groupName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        group.description.toLowerCase().includes(searchQuery.toLowerCase())
+        (group.groupName?.toLowerCase() || '').includes(searchQuery.toLowerCase()) || 
+        (group.description?.toLowerCase() || '').includes(searchQuery.toLowerCase())
     ) || [];
 
     const handleGroupClick = (groupId: number) => {

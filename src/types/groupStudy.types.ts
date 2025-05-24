@@ -1,16 +1,17 @@
 export interface IGroup {
     groupId: number;
-    userId: number;
+    userId: number | null;
     message: string | null;
     isPrivate: boolean | null;
-    groupName: string;
-    description: string;
-    subjectName: string;
+    groupName: string | null;
+    description: string | null;
+    subjectName: string | null;
     picture: string | null;
-    memberLimited: number;
-    ownerId: number;
-    createdAt: string;
-    joinRequests: JoinRequest[];
+    memberLimited: number | null;
+    ownerId: number | null;
+    createdAt: string | null;
+    joinRequests: JoinRequest[] | null;
+    memberCount: number | null;
 }
 
 export interface SearchGroupResult {
@@ -22,6 +23,7 @@ export interface SearchGroupResult {
     picture: string | null;
     memberIds: number[];
     memberLimited: number;
+    private: boolean;
 }
 
 export interface Message {
@@ -45,6 +47,7 @@ export interface MemberResponse {
     memberId: number;
     name: string;
     email: string;
+    profilePicture: string;
 }
 
 export interface GroupResponse {
@@ -74,7 +77,6 @@ export interface SubjectDto {
     subjectId: number;
     subjectName: string;
 }
-
 
 export interface JoinRequest {
     id: number;

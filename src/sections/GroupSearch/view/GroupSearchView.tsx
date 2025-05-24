@@ -5,12 +5,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import GroupCard from '../components/GroupCard/GroupCard';
 import GroupSearchHeader from '../components/GroupSearchHeader';
 import SearchBar from '../components/SearchBar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import EmptyStateIllustration from '../../../assets/images/empty-state.svg';
 import GroupPlaceholder from '../../../assets/images/group-placeholder.svg';
 import styles from './GroupSearchView.module.scss';
 import { Add as AddIcon } from '@mui/icons-material';
-import { searchGroupAction, joinGroupAction } from '../../../redux/GroupStudySlice/GroupStudySlice';
+import {
+    searchGroupAction,
+    joinGroupAction,
+    resetSearchGroup,
+    updateUserGroups,
+} from '../../../redux/GroupStudySlice/GroupStudySlice';
 import { RootState, AppDispatch } from '../../../redux/store';
 import { SearchGroupResult } from '../../../types/groupStudy.types';
 import useDebounce from '../../../hooks/useDebounce';
@@ -18,14 +23,16 @@ import useDebounce from '../../../hooks/useDebounce';
 const cx = classNames.bind(styles);
 
 export default function GroupSearchView() {
+    const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedSearchQuery = useDebounce(searchQuery, 500); // 500ms debounce delay
     const dispatch = useDispatch<AppDispatch>();
     const { searchResults, loading, userGroups } = useSelector((state: RootState) => state.groupStudy);
-
     useEffect(() => {
         if (debouncedSearchQuery.trim() !== '') {
             dispatch(searchGroupAction(debouncedSearchQuery));
+        } else {
+            dispatch(resetSearchGroup());
         }
     }, [debouncedSearchQuery, dispatch]);
 
@@ -34,13 +41,19 @@ export default function GroupSearchView() {
 
     // Check if user is already a member of a group
     const isUserMemberOfGroup = (groupId: number) => {
-        return userGroups.some(userGroup => userGroup.groupId === groupId);
+        return userGroups.some((userGroup) => userGroup.groupId === groupId);
     };
 
     const handleJoinGroup = (groupId: number) => {
         // Only dispatch join action if user is not already a member
         if (!isUserMemberOfGroup(groupId)) {
             dispatch(joinGroupAction(groupId));
+            const group = searchResults.find((group) => group.groupId === groupId);
+
+            if (!group?.private) {
+                dispatch(updateUserGroups(group));
+                navigate(`/document/group-study/${groupId}/chat`);
+            }
         }
     };
 
@@ -49,21 +62,21 @@ export default function GroupSearchView() {
         visible: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.1
-            }
-        }
+                staggerChildren: 0.1,
+            },
+        },
     };
 
     const itemVariants = {
         hidden: { opacity: 0, y: 20 },
-        visible: { 
-            opacity: 1, 
+        visible: {
+            opacity: 1,
             y: 0,
             transition: {
                 duration: 0.4,
-                ease: "easeOut"
-            }
-        }
+                ease: 'easeOut',
+            },
+        },
     };
 
     return (
@@ -82,19 +95,17 @@ export default function GroupSearchView() {
                     <div className={cx('spinner')}></div>
                 </div>
             ) : noGroupsFound ? (
-                <motion.div 
+                <motion.div
                     className={cx('emptyState')}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
                 >
                     <img src={EmptyStateIllustration} alt="No groups found" className={cx('emptyStateImage')} />
-                    <h2 className={cx('emptyStateTitle')}>
-                        Không tìm thấy nhóm học tập nào
-                    </h2>
+                    <h2 className={cx('emptyStateTitle')}>Không tìm thấy nhóm học tập nào</h2>
                     <p className={cx('emptyStateDescription')}>
-                        Hiện tại chúng tôi không tìm thấy nhóm học tập nào phù hợp với từ khóa của bạn. Bạn có thể tạo một nhóm
-                        học tập mới để bắt đầu.
+                        Hiện tại chúng tôi không tìm thấy nhóm học tập nào phù hợp với từ khóa của bạn. Bạn có thể tạo
+                        một nhóm học tập mới để bắt đầu.
                     </p>
                     <Link to="/document/group-study/create" className={cx('createGroupButton')}>
                         <span>Tạo nhóm ngay</span>
@@ -102,7 +113,7 @@ export default function GroupSearchView() {
                     </Link>
                 </motion.div>
             ) : searchResults.length > 0 ? (
-                <motion.div 
+                <motion.div
                     className={cx('groupsList')}
                     variants={containerVariants}
                     initial="hidden"
@@ -119,6 +130,7 @@ export default function GroupSearchView() {
                                 description={group.description}
                                 onJoin={() => handleJoinGroup(group.groupId)}
                                 isUserMember={isUserMemberOfGroup(group.groupId)}
+                                isPrivate={group.private}
                             />
                         </motion.div>
                     ))}

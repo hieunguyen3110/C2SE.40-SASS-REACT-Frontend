@@ -2,7 +2,11 @@ import classNames from 'classnames/bind';
 import { useNavigate } from 'react-router-dom';
 import { useState, useCallback, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../redux/store';
-import { createGroupAction, searchSubjectsAction } from '../../../../redux/GroupStudySlice/GroupStudySlice';
+import {
+    createGroupAction,
+    searchSubjectsAction,
+    updateUserGroups,
+} from '../../../../redux/GroupStudySlice/GroupStudySlice';
 import { motion } from 'framer-motion';
 import { debounce } from '@mui/material';
 
@@ -14,6 +18,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import PeopleIcon from '@mui/icons-material/People';
 
 import styles from './GroupCreationForm.module.scss';
+import { SearchGroupResult } from '../../../../types/groupStudy.types';
 
 const cx = classNames.bind(styles);
 
@@ -35,10 +40,10 @@ const containerVariants = {
     visible: {
         opacity: 1,
         transition: {
-            when: "beforeChildren",
-            staggerChildren: 0.2
-        }
-    }
+            when: 'beforeChildren',
+            staggerChildren: 0.2,
+        },
+    },
 };
 
 const itemVariants = {
@@ -47,28 +52,28 @@ const itemVariants = {
         y: 0,
         opacity: 1,
         transition: {
-            type: "spring",
+            type: 'spring',
             stiffness: 300,
-            damping: 24
-        }
-    }
+            damping: 24,
+        },
+    },
 };
 
 const buttonVariants = {
     hover: {
         scale: 1.05,
-        boxShadow: "0px 5px 10px rgba(255, 60, 60, 0.3)",
-        transition: { duration: 0.3 }
+        boxShadow: '0px 5px 10px rgba(255, 60, 60, 0.3)',
+        transition: { duration: 0.3 },
     },
-    tap: { scale: 0.95 }
+    tap: { scale: 0.95 },
 };
 
 const chipVariants = {
     hover: {
         scale: 1.1,
-        transition: { duration: 0.2 }
+        transition: { duration: 0.2 },
     },
-    tap: { scale: 0.9 }
+    tap: { scale: 0.9 },
 };
 
 const GroupCreationForm = () => {
@@ -79,33 +84,34 @@ const GroupCreationForm = () => {
     const [memberLimited, setMemberLimited] = useState(10);
     const [isPrivate, setIsPrivate] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('');
-    
+
     // Create a ref for the search input
     const searchInputRef = useRef<HTMLInputElement>(null);
-    
+
+    const accountId = useAppSelector((state) => state.authentication.accountId);
     // Subject search state
     const [subjectSelected, setSubjectSelected] = useState('');
     const [subjectId, setSubjectId] = useState('');
-    
+
     // Get search results from Redux store
     const searchSubject = useAppSelector((state) => state.groupStudy.subjects) || [];
-    
+
     // Debounced search function
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const debounceSearchSubject = useCallback(
         debounce((value: string) => dispatch(searchSubjectsAction(value)).unwrap(), 1000),
         [dispatch, searchSubjectsAction],
     );
-    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const clearSubjects = useCallback(() => {
         dispatch({ type: 'groupStudy/searchSubjects/fulfilled', payload: [] });
     }, [dispatch]);
-    
+
     // Search subject handler
     const handleSearchSubject = async (value: string) => {
         setSubjectSelected(value);
-        
+
         if (!value.trim()) {
             clearSubjects();
             return;
@@ -120,17 +126,31 @@ const GroupCreationForm = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await dispatch(createGroupAction({
-                groupName: groupName,
-                description,
-                isPrivate: isPrivate,
-                memberIds: [],
-                subjectId: subjectId ? parseInt(subjectId) : undefined,
-                memberLimited: memberLimited
-            })).unwrap();
-
-            if (response && response.groupId) {
-                navigate(`/document/group-study/${response.groupId}`);
+            const response: any = await dispatch(
+                createGroupAction({
+                    groupName: groupName,
+                    description,
+                    isPrivate: isPrivate,
+                    memberIds: [],
+                    subjectId: subjectId ? parseInt(subjectId) : undefined,
+                    memberLimited: memberLimited,
+                }),
+            ).unwrap();
+            if (response && response.id) {
+                const newGroup: any = {
+                    groupId: response.id,
+                    groupName: groupName,
+                    description: description,
+                    private: isPrivate,
+                    subjectName: subjectSelected,
+                    memberCount: 1,
+                    picture: null,
+                    memberIds: [],
+                    memberLimited: memberLimited,
+                    userId: accountId,
+                };
+                dispatch(updateUserGroups(newGroup));
+                navigate(`/document/group-study/${response.id}`);
             }
         } catch (error) {
             console.error('Lỗi khi tạo nhóm:', error);
@@ -138,19 +158,19 @@ const GroupCreationForm = () => {
     };
 
     return (
-        <motion.div 
+        <motion.div
             className={cx('container')}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <motion.div 
+            <motion.div
                 className={cx('formPaper')}
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
             >
-                <motion.h2 
+                <motion.h2
                     className={cx('formTitle')}
                     initial={{ y: -20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
@@ -159,8 +179,8 @@ const GroupCreationForm = () => {
                     Tạo nhóm học tập
                 </motion.h2>
 
-                <motion.form 
-                    onSubmit={handleSubmit} 
+                <motion.form
+                    onSubmit={handleSubmit}
                     className={cx('form')}
                     variants={containerVariants}
                     initial="hidden"
@@ -186,7 +206,7 @@ const GroupCreationForm = () => {
                                 className={cx('input')}
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px rgba(255, 60, 60, 0.3)" }}
+                                whileFocus={{ scale: 1.01, boxShadow: '0 0 0 2px rgba(255, 60, 60, 0.3)' }}
                             />
                         </div>
 
@@ -203,13 +223,13 @@ const GroupCreationForm = () => {
                                     className={cx('input')}
                                     value={subjectSelected}
                                     onChange={(e) => handleSearchSubject(e.target.value)}
-                                    whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px rgba(255, 60, 60, 0.3)" }}
+                                    whileFocus={{ scale: 1.01, boxShadow: '0 0 0 2px rgba(255, 60, 60, 0.3)' }}
                                 />
                             </div>
-                            
+
                             {/* Subject search results dropdown */}
                             {subjectSelected.trim() && searchSubject?.length > 0 && (
-                                <motion.div 
+                                <motion.div
                                     className={cx('searchResults')}
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
@@ -232,7 +252,7 @@ const GroupCreationForm = () => {
                                     </ul>
                                 </motion.div>
                             )}
-                            
+
                             <div className={cx('categoryChips')}>
                                 {categories.map((category) => (
                                     <motion.button
@@ -247,8 +267,8 @@ const GroupCreationForm = () => {
                                                 searchInputRef.current.focus();
                                             }
                                         }}
-                                        className={cx('categoryChip', { 
-                                            selected: selectedCategory === category.id 
+                                        className={cx('categoryChip', {
+                                            selected: selectedCategory === category.id,
                                         })}
                                         whileHover="hover"
                                         whileTap="tap"
@@ -269,7 +289,7 @@ const GroupCreationForm = () => {
                         </div>
 
                         <label className={cx('switchControl')}>
-                            <motion.div 
+                            <motion.div
                                 className={cx('toggleContainer')}
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
@@ -280,10 +300,10 @@ const GroupCreationForm = () => {
                                     onChange={() => setIsPrivate(!isPrivate)}
                                     className={cx('toggleInput')}
                                 />
-                                <motion.span 
+                                <motion.span
                                     className={cx('toggleSlider')}
-                                    animate={{ 
-                                        backgroundColor: !isPrivate ? '#ff3c3c' : '#ccc'
+                                    animate={{
+                                        backgroundColor: !isPrivate ? '#ff3c3c' : '#ccc',
                                     }}
                                     transition={{ duration: 0.3 }}
                                 />
@@ -310,11 +330,9 @@ const GroupCreationForm = () => {
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 className={cx('textarea')}
-                                whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px rgba(255, 60, 60, 0.3)" }}
+                                whileFocus={{ scale: 1.01, boxShadow: '0 0 0 2px rgba(255, 60, 60, 0.3)' }}
                             />
-                            <small className={cx('charCount')}>
-                                {description.length}/500 kí tự
-                            </small>
+                            <small className={cx('charCount')}>{description.length}/500 kí tự</small>
                         </div>
                     </motion.section>
 
@@ -343,8 +361,8 @@ const GroupCreationForm = () => {
                     </motion.section>
 
                     {/* Submit Button */}
-                    <motion.button 
-                        type="submit" 
+                    <motion.button
+                        type="submit"
                         className={cx('submitButton')}
                         variants={buttonVariants}
                         whileHover="hover"

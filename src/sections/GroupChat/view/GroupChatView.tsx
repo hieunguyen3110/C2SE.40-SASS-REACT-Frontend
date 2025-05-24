@@ -31,6 +31,7 @@ import { useLocation } from 'react-router-dom';
 import { Message } from '../../../types/groupStudy.types';
 import { sendGroupChatMessage } from '../../../utils/Websocket';
 import SendIcon from '../../../assets/images/icons/send-alt-1-svgrepo-com.svg';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -49,6 +50,7 @@ export default function GroupChatView() {
     const MAX_CHAR_LIMIT = 300;
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
+    const emojiPickerRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
 
     // Extract groupId from URL path /document/group-study/:groupId/chat
@@ -67,9 +69,6 @@ export default function GroupChatView() {
     // Get group details and messages from Redux store
     const { currentGroup, memberList, messages, pinnedMessages } = useAppSelector((state) => state.groupStudy);
     const { accountId } = useAppSelector((state) => state.authentication);
-
-    // Add state for member count
-    const [memberCount, setMemberCount] = useState(8);
 
     // Create a ref for the latest message to add animation
     const latestMessageRef = useRef<HTMLDivElement>(null);
@@ -180,16 +179,9 @@ export default function GroupChatView() {
         }
     }, [groupId]);
 
-    // Update local state when member list changes
-    useEffect(() => {
-        if (memberList) {
-            setMemberCount(memberList.length || 8);
-        }
-    }, [memberList]);
-
     // Get display name for message sender (placeholder implementation)
     const getSenderName = (senderId: number) => {
-        const member = memberList.find(m => m.memberId === senderId);
+        const member = memberList.find((m) => m.memberId === senderId);
         return member ? member.name : `Student ${senderId}`;
     };
 
@@ -218,7 +210,7 @@ export default function GroupChatView() {
 
         // Không sắp xếp lại vì đã được sắp xếp trong Redux
         return messageArray;
-    },[messages]);
+    }, [messages]);
 
     // Get pinned messages array safely
     const getPinnedMessagesArray = useCallback(() => {
@@ -232,7 +224,7 @@ export default function GroupChatView() {
             return pinnedMessages;
         }
         return [];
-    },[pinnedMessages]);
+    }, [pinnedMessages]);
 
     // Get the messages array
     const messagesArray = getMessagesArray();
@@ -261,13 +253,17 @@ export default function GroupChatView() {
     // Handler for pinning a message
     const handlePinMessage = async (messageId: number) => {
         try {
-            setPinningMessage(messageId);
-            await dispatch(pinMessageAction({ messageId })).unwrap();
-            // After successful pin, update local state
-            setPinnedMessageIds((prev) => [...prev, messageId]);
-            // Refresh pinned messages list
-            if (groupId) {
-                fetchPinnedMessages(Number(groupId));
+            if (accountId === currentGroup?.userId) {
+                setPinningMessage(messageId);
+                await dispatch(pinMessageAction({ messageId })).unwrap();
+                // After successful pin, update local state
+                setPinnedMessageIds((prev) => [...prev, messageId]);
+                // Refresh pinned messages list
+                if (groupId) {
+                    fetchPinnedMessages(Number(groupId));
+                }
+            } else {
+                toast.error('Bạn không có quyền ghim tin nhắn');
             }
         } catch (error) {
             console.error('Failed to pin message:', error);
@@ -279,13 +275,17 @@ export default function GroupChatView() {
     // Handler for unpinning a message
     const handleUnpinMessage = async (messageId: number) => {
         try {
-            setUnpinningMessage(messageId);
-            await dispatch(unpinMessageAction({ messageId })).unwrap();
-            // After successful unpin, update local state
-            setPinnedMessageIds((prev) => prev.filter((id) => id !== messageId));
-            // Refresh pinned messages list
-            if (groupId) {
-                fetchPinnedMessages(Number(groupId));
+            if (accountId === currentGroup?.userId) {
+                setUnpinningMessage(messageId);
+                await dispatch(unpinMessageAction({ messageId })).unwrap();
+                // After successful unpin, update local state
+                setPinnedMessageIds((prev) => prev.filter((id) => id !== messageId));
+                // Refresh pinned messages list
+                if (groupId) {
+                    fetchPinnedMessages(Number(groupId));
+                }
+            } else {
+                toast.error('Bạn không có quyền bỏ ghim tin nhắn');
             }
         } catch (error) {
             console.error('Failed to unpin message:', error);
@@ -313,7 +313,7 @@ export default function GroupChatView() {
                 setUnreadMessagesCount(0);
             }
         }
-    },[hasMoreMessages]);
+    }, [hasMoreMessages]);
 
     // Thêm sự kiện lắng nghe scroll trên container tin nhắn
     useEffect(() => {
@@ -399,6 +399,23 @@ export default function GroupChatView() {
         }
     };
 
+    // Close emoji picker when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+                setShowEmojiPicker(false);
+            }
+        }
+
+        if (showEmojiPicker) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showEmojiPicker]);
+
     return (
         <div className={cx('groupStudyView', { 'with-drawer': isMembersSidebarOpen })}>
             {/* Main Chat Area */}
@@ -407,7 +424,7 @@ export default function GroupChatView() {
                 <header className={cx('header')}>
                     <div className={cx('titleArea')}>
                         <h2 className={cx('title')}>{currentGroup?.groupName || 'Loading...'}</h2>
-                        <span className={cx('subtitle')}>{memberCount} members</span>
+                        <span className={cx('subtitle')}>{currentGroup?.memberCount} members</span>
                     </div>
                     <div className={cx('actions')}>
                         <IconButton className={cx('iconButton')}>
@@ -490,13 +507,14 @@ export default function GroupChatView() {
                                                 />
                                             </IconButton>
                                         </div>
-                                        <p className={cx('messageText')} 
-                                           style={{ 
-                                               wordBreak: 'break-word', 
-                                               overflowWrap: 'break-word',
-                                               maxWidth: '100%',
-                                               overflow: 'hidden'
-                                           }}
+                                        <p
+                                            className={cx('messageText')}
+                                            style={{
+                                                wordBreak: 'break-word',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '100%',
+                                                overflow: 'hidden',
+                                            }}
                                         >
                                             {message.content}
                                         </p>
@@ -551,78 +569,94 @@ export default function GroupChatView() {
                     </div>
 
                     {messagesArray.map((message: Message, index) => (
-                        <motion.div
-                            key={message.messageId || `temp-${index}`}
-                            className={cx('messageItem', {
-                                'self-message': message.senderId === accountId,
-                                'new-message': message.messageId === mostRecentMessageId,
-                            })}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3 }}
-                            ref={message.messageId === mostRecentMessageId ? latestMessageRef : null}
-                        >
-                            <div className={cx('avatarContainer')}>
-                                {message.profilePicture ? (
-                                    <div className={cx('avatar')}>
-                                        <img src={message.profilePicture} alt={getSenderName(message.senderId)} />
-                                    </div>
-                                ) : (
-                                    <div className={cx('avatar')}>
-                                        {message.username === 'Unknown'
-                                            ? getSenderName(message.senderId).charAt(0)
-                                            : message.username.charAt(0)}
-                                    </div>
-                                )}
-                            </div>
-                            <div className={cx('messageContent')}>
-                                <div className={cx('messageHeader')}>
-                                    <span className={cx('authorName')}>
-                                        {message.username === 'Unknown'
-                                            ? getSenderName(message.senderId)
-                                            : message.username}
-                                    </span>
-                                    {message.senderId === currentGroup?.ownerId && (
-                                        <span className={cx('roleTag')}>Admin</span>
-                                    )}
-                                    <span className={cx('messageTime')}>
-                                        {formatTime(message.timestamp || message.createdAt)}
-                                    </span>
+                        message.senderId === 0 ? (
+                            // Notification message (system message)
+                            <motion.div
+                                key={`notification-${index}`}
+                                className={cx('notificationMessage')}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <div className={cx('notificationContent')}>
+                                    <p>{message.content}</p>
                                 </div>
-                                <p className={cx('messageText')}>{message.content}</p>
-                            </div>
-                            <div className={cx('messageActions')}>
-                                <IconButton
-                                    className={cx('actionButton')}
-                                    size="small"
-                                    onClick={() => handlePinMessage(message.messageId)}
-                                    disabled={
-                                        pinningMessage === message.messageId ||
-                                        pinnedMessageIds.includes(message.messageId)
-                                    }
-                                    sx={{
-                                        color: pinnedMessageIds.includes(message.messageId) ? '#ff3c3c' : 'inherit',
-                                        animation:
-                                            pinningMessage === message.messageId ? 'spin 1s linear infinite' : 'none',
-                                        '@keyframes spin': {
-                                            '0%': { transform: 'rotate(0deg)' },
-                                            '100%': { transform: 'rotate(360deg)' },
-                                        },
-                                    }}
-                                >
-                                    <img
-                                        src={pinnedMessageIds.includes(message.messageId) ? PinIcon : PinIconDefault}
-                                        alt="Pin"
-                                        width={20}
-                                        height={20}
-                                        className={cx({
-                                            'pinned-icon': pinnedMessageIds.includes(message.messageId),
-                                            'pinning-icon': pinningMessage === message.messageId,
-                                        })}
-                                    />
-                                </IconButton>
-                            </div>
-                        </motion.div>
+                            </motion.div>
+                        ) : (
+                            // Regular message
+                            <motion.div
+                                key={message.messageId || `temp-${index}`}
+                                className={cx('messageItem', {
+                                    'self-message': message.senderId === accountId,
+                                    'new-message': message.messageId === mostRecentMessageId,
+                                })}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3 }}
+                                ref={message.messageId === mostRecentMessageId ? latestMessageRef : null}
+                            >
+                                <div className={cx('avatarContainer')}>
+                                    {message.profilePicture ? (
+                                        <div className={cx('avatar')}>
+                                            <img src={message.profilePicture} alt={getSenderName(message.senderId)} />
+                                        </div>
+                                    ) : (
+                                        <div className={cx('avatar')}>
+                                            {message.username === 'Unknown'
+                                                ? getSenderName(message.senderId).charAt(0)
+                                                : message.username.charAt(0)}
+                                        </div>
+                                    )}
+                                </div>
+                                <div className={cx('messageContent')}>
+                                    <div className={cx('messageHeader')}>
+                                        <span className={cx('authorName')}>
+                                            {message.username === 'Unknown'
+                                                ? getSenderName(message.senderId)
+                                                : message.username}
+                                        </span>
+                                        {message.senderId === currentGroup?.ownerId && (
+                                            <span className={cx('roleTag')}>Admin</span>
+                                        )}
+                                        <span className={cx('messageTime')}>
+                                            {formatTime(message.timestamp || message.createdAt)}
+                                        </span>
+                                    </div>
+                                    <p className={cx('messageText')}>{message.content}</p>
+                                </div>
+                                <div className={cx('messageActions')}>
+                                    <IconButton
+                                        className={cx('actionButton')}
+                                        size="small"
+                                        onClick={() => handlePinMessage(message.messageId)}
+                                        disabled={
+                                            pinningMessage === message.messageId ||
+                                            pinnedMessageIds.includes(message.messageId)
+                                        }
+                                        sx={{
+                                            color: pinnedMessageIds.includes(message.messageId) ? '#ff3c3c' : 'inherit',
+                                            animation:
+                                                pinningMessage === message.messageId ? 'spin 1s linear infinite' : 'none',
+                                            '@keyframes spin': {
+                                                '0%': { transform: 'rotate(0deg)' },
+                                                '100%': { transform: 'rotate(360deg)' },
+                                            },
+                                        }}
+                                    >
+                                        <img
+                                            src={pinnedMessageIds.includes(message.messageId) ? PinIcon : PinIconDefault}
+                                            alt="Pin"
+                                            width={20}
+                                            height={20}
+                                            className={cx({
+                                                'pinned-icon': pinnedMessageIds.includes(message.messageId),
+                                                'pinning-icon': pinningMessage === message.messageId,
+                                            })}
+                                        />
+                                    </IconButton>
+                                </div>
+                            </motion.div>
+                        )
                     ))}
                     <div ref={messagesEndRef} />
 
@@ -660,7 +694,7 @@ export default function GroupChatView() {
                         }}
                     />
                     <div className={cx('inputActions')}>
-                        <div className={cx('emojiPickerContainer')}>
+                        <div className={cx('emojiPickerContainer')} ref={emojiPickerRef}>
                             <IconButton
                                 className={cx('actionButton')}
                                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
@@ -694,7 +728,7 @@ export default function GroupChatView() {
                 isOpen={isMembersSidebarOpen}
                 onClose={toggleMembersSidebar}
                 members={memberList}
-                ownerId={currentGroup?.userId}
+                ownerId={currentGroup?.ownerId || undefined}
             />
         </div>
     );

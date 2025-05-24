@@ -26,7 +26,7 @@ export const createGroupApi = async (data: CreateGroupRequest) => {
 export const searchSubjectsApi = async (subjectName: string) => {
     try {
         const res = await axiosInstance.get('/study-group/subjects', {
-            params: { subjectName }
+            params: { subjectName },
         });
         return res as unknown as ApiResponse<SubjectDto[]>;
     } catch (err: unknown) {
@@ -61,7 +61,7 @@ export const sendMessageApi = async (data: ChatMessage) => {
 export const addMemberApi = async (groupId: number, userId: number) => {
     try {
         const res = await axiosInstance.post(`/study-group/${groupId}/members`, null, {
-            params: { userId }
+            params: { userId },
         });
         return res as unknown as ApiResponse<void>;
     } catch (err: unknown) {
@@ -75,7 +75,7 @@ export const joinGroupApi = async (groupId: number) => {
         const res = await axiosInstance.post(`/study-group/${groupId}/join`);
         return res as unknown as ApiResponse<void>;
     } catch (err: unknown) {
-        console.log(err)
+        console.log(err);
         const error = err as AxiosError<{ message?: string }>;
         throw new Error(error.response?.data.message || error.message);
     }
@@ -149,7 +149,7 @@ export const editGroupApi = async (groupId: number, data: CreateGroupRequest) =>
             memberLimited: res.data.memberLimited,
             ownerId: res.data.ownerId,
             createdAt: res.data.createdAt,
-            joinRequests: [] // Assuming join requests need to be fetched separately
+            joinRequests: [], // Assuming join requests need to be fetched separately
         };
         return { ...res, data: transformedData } as unknown as ApiResponse<IGroup>;
     } catch (err: unknown) {
@@ -161,7 +161,7 @@ export const editGroupApi = async (groupId: number, data: CreateGroupRequest) =>
 export const updatePrivacySettingApi = async (groupId: number, isPrivate: boolean) => {
     try {
         const res = await axiosInstance.put(`/study-group/${groupId}/privacy`, null, {
-            params: { isPrivate }
+            params: { isPrivate },
         });
         return res as unknown as ApiResponse<IGroup>;
     } catch (err: unknown) {
@@ -217,7 +217,7 @@ export const findUserGroupsApi = async (userId: number) => {
 export const transferOwnershipApi = async (groupId: number, newOwnerId: number) => {
     try {
         const res = await axiosInstance.post(`/study-group/${groupId}/transfer-ownership`, null, {
-            params: { newOwnerId }
+            params: { newOwnerId },
         });
         return res as unknown as ApiResponse<void>;
     } catch (err: unknown) {
@@ -239,7 +239,7 @@ export const deleteMessageApi = async (messageId: number) => {
 export const searchGroupApi = async (keyword: string) => {
     try {
         const res = await axiosInstance.get(`/study-group/search-group/search`, {
-            params: { keyword }
+            params: { keyword },
         });
         return res as unknown as ApiResponse<SearchGroupResult[]>;
     } catch (err: unknown) {
@@ -279,3 +279,12 @@ export const rejectJoinRequestApi = async (joinRequestId: number) => {
 };
 
 
+export const leaveGroupApi = async (groupId: number) => {
+    try {
+        const res = await axiosInstance.delete(`/study-group/${groupId}/members/leave-group`);
+        return res as unknown as ApiResponse<void>;
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        throw new Error(error.response?.data.message || error.message);
+    }
+};

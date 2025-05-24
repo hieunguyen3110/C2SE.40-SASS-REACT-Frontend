@@ -10,17 +10,17 @@ import { motion } from 'framer-motion';
 import GroupEditForm from '../GroupEditForm/GroupEditForm';
 
 // MUI components
-import { 
-    Button, 
-    Dialog, 
-    DialogActions, 
-    DialogContent, 
-    DialogContentText, 
-    DialogTitle, 
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
     Divider,
     Slide,
     Zoom,
-    Alert
+    Alert,
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 
@@ -30,6 +30,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
 import WarningIcon from '@mui/icons-material/Warning';
 import LockIcon from '@mui/icons-material/Lock';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import React from 'react';
 
 const cx = classNames.bind(styles);
@@ -47,24 +48,24 @@ const Transition = React.forwardRef(function Transition(
 // Animation variants
 const containerVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-        opacity: 1, 
+    visible: {
+        opacity: 1,
         y: 0,
-        transition: { 
+        transition: {
             duration: 0.5,
-            when: "beforeChildren",
-            staggerChildren: 0.1
-        }
-    }
+            when: 'beforeChildren',
+            staggerChildren: 0.1,
+        },
+    },
 };
 
 const itemVariants = {
     hidden: { opacity: 0, y: 10 },
-    visible: { 
-        opacity: 1, 
+    visible: {
+        opacity: 1,
         y: 0,
-        transition: { duration: 0.3 }
-    }
+        transition: { duration: 0.3 },
+    },
 };
 
 export default function GroupSetting() {
@@ -72,18 +73,19 @@ export default function GroupSetting() {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const groupId = id ? parseInt(id) : 0;
-    
+
     // Get authentication state and group data
-    const { accountId } = useAppSelector(state => state.authentication);
-    const { currentGroup } = useAppSelector(state => state.groupStudy);
-    
+    const { accountId } = useAppSelector((state) => state.authentication);
+    const { currentGroup } = useAppSelector((state) => state.groupStudy);
+
     // Check if current user is the owner
     const isOwner = currentGroup?.userId === accountId;
-    
+
     // State for dialogs
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+    const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
     const [confirmText, setConfirmText] = useState('');
     const [isDeleteEnabled, setIsDeleteEnabled] = useState(false);
 
@@ -94,7 +96,11 @@ export default function GroupSetting() {
     // Handle delete dialog
     const handleOpenDeleteDialog = () => setOpenDeleteDialog(true);
     const handleCloseDeleteDialog = () => setOpenDeleteDialog(false);
-    
+
+    // Handle leave group dialog
+    const handleOpenLeaveDialog = () => setOpenLeaveDialog(true);
+    const handleCloseLeaveDialog = () => setOpenLeaveDialog(false);
+
     // Handle confirm dialog
     const handleOpenConfirmDialog = () => {
         handleCloseDeleteDialog();
@@ -128,13 +134,21 @@ export default function GroupSetting() {
         }
     };
 
+    // Handle leave group
+    const handleLeaveGroup = async () => {
+        try {
+            // Assuming there's a leaveGroupAction in your Redux slice, if not, you'll need to create it
+            // await dispatch(leaveGroupAction(groupId)).unwrap();
+            // For now, just navigate back to group-study page
+            handleCloseLeaveDialog();
+            navigate('/group-study');
+        } catch (error) {
+            console.error('Error leaving group:', error);
+        }
+    };
+
     return (
-        <motion.div 
-            className={cx('container')}
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-        >
+        <motion.div className={cx('container')} variants={containerVariants} initial="hidden" animate="visible">
             <motion.div className={cx('header')} variants={itemVariants}>
                 <SettingsIcon className={cx('icon')} />
                 <h2>Cài đặt nhóm</h2>
@@ -142,11 +156,7 @@ export default function GroupSetting() {
 
             {!isOwner && (
                 <motion.div variants={itemVariants} className={cx('owner-warning')}>
-                    <Alert 
-                        severity="warning" 
-                        icon={<LockIcon />}
-                        sx={{ marginBottom: '20px' }}
-                    >
+                    <Alert severity="warning" icon={<LockIcon />} sx={{ marginBottom: '20px' }}>
                         Chỉ có chủ nhóm mới được phép chỉnh sửa hoặc xoá nhóm học tập này.
                     </Alert>
                 </motion.div>
@@ -160,9 +170,9 @@ export default function GroupSetting() {
                         whileHover={isOwner ? { scale: 1.02 } : { scale: 1 }}
                         whileTap={isOwner ? { scale: 0.98 } : { scale: 1 }}
                     >
-                        <Button 
-                            variant="outlined" 
-                            startIcon={<EditIcon />} 
+                        <Button
+                            variant="outlined"
+                            startIcon={<EditIcon />}
                             className={cx('action-button')}
                             onClick={handleOpenEditDialog}
                             disabled={!isOwner}
@@ -174,34 +184,58 @@ export default function GroupSetting() {
 
                 <Divider className={cx('divider')} />
 
-                <motion.section className={cx('section', 'danger-zone')} variants={itemVariants}>
-                    <div className={cx('danger-header')}>
-                        <WarningIcon className={cx('warning-icon')} />
-                        <h3>Vùng nguy hiểm</h3>
-                    </div>
-                    
-                    <div className={cx('danger-action')}>
-                        <div>
-                            <h4>Xoá nhóm học tập</h4>
-                            <p>Hành động này không thể hoàn tác. Tất cả dữ liệu nhóm sẽ bị xoá vĩnh viễn.</p>
+                {!isOwner && (
+                    <>
+                        <motion.section className={cx('section', 'leave-section')} variants={itemVariants}>
+                            <h3>Rời khỏi nhóm học tập</h3>
+                            <p>Bạn sẽ không còn được tham gia các hoạt động của nhóm sau khi rời đi</p>
+                            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                                <Button
+                                    variant="outlined"
+                                    color="warning"
+                                    startIcon={<ExitToAppIcon />}
+                                    className={cx('leave-button')}
+                                    onClick={handleOpenLeaveDialog}
+                                >
+                                    Rời nhóm
+                                </Button>
+                            </motion.div>
+                        </motion.section>
+
+                        <Divider className={cx('divider')} />
+                    </>
+                )}
+
+                {isOwner && (
+                    <motion.section className={cx('section', 'danger-zone')} variants={itemVariants}>
+                        <div className={cx('danger-header')}>
+                            <WarningIcon className={cx('warning-icon')} />
+                            <h3>Vùng nguy hiểm</h3>
                         </div>
-                        <motion.div
-                            whileHover={isOwner ? { scale: 1.05 } : { scale: 1 }}
-                            whileTap={isOwner ? { scale: 0.95 } : { scale: 1 }}
-                        >
-                            <Button 
-                                variant="contained" 
-                                color="error"
-                                startIcon={<DeleteIcon />} 
-                                className={cx('delete-button')}
-                                onClick={handleOpenDeleteDialog}
-                                disabled={!isOwner}
+
+                        <div className={cx('danger-action')}>
+                            <div>
+                                <h4>Xoá nhóm học tập</h4>
+                                <p>Hành động này không thể hoàn tác. Tất cả dữ liệu nhóm sẽ bị xoá vĩnh viễn.</p>
+                            </div>
+                            <motion.div
+                                whileHover={isOwner ? { scale: 1.05 } : { scale: 1 }}
+                                whileTap={isOwner ? { scale: 0.95 } : { scale: 1 }}
                             >
-                                Xoá nhóm
-                            </Button>
-                        </motion.div>
-                    </div>
-                </motion.section>
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    startIcon={<DeleteIcon />}
+                                    className={cx('delete-button')}
+                                    onClick={handleOpenDeleteDialog}
+                                    disabled={!isOwner}
+                                >
+                                    Xoá nhóm
+                                </Button>
+                            </motion.div>
+                        </div>
+                    </motion.section>
+                )}
             </div>
 
             {/* Edit Dialog */}
@@ -214,7 +248,7 @@ export default function GroupSetting() {
                 TransitionComponent={Transition}
                 aria-labelledby="delete-dialog-title"
                 PaperProps={{
-                    className: cx('dialog-paper')
+                    className: cx('dialog-paper'),
                 }}
             >
                 <DialogTitle id="delete-dialog-title" className={cx('delete-dialog-title')}>
@@ -223,9 +257,8 @@ export default function GroupSetting() {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText className={cx('delete-dialog-content')}>
-                        Bạn chắc chắn muốn xoá nhóm học tập này? 
-                        Hành động này sẽ xoá vĩnh viễn toàn bộ dữ liệu của nhóm, bao gồm các bài đăng, 
-                        tài liệu và thông tin thành viên. Hành động này không thể hoàn tác.
+                        Bạn chắc chắn muốn xoá nhóm học tập này? Hành động này sẽ xoá vĩnh viễn toàn bộ dữ liệu của
+                        nhóm, bao gồm các bài đăng, tài liệu và thông tin thành viên. Hành động này không thể hoàn tác.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions className={cx('delete-dialog-actions')}>
@@ -233,15 +266,50 @@ export default function GroupSetting() {
                         Huỷ
                     </Button>
                     <Zoom in={openDeleteDialog} style={{ transitionDelay: '200ms' }}>
-                        <Button 
-                            variant="contained" 
-                            color="error" 
+                        <Button
+                            variant="contained"
+                            color="error"
                             onClick={handleOpenConfirmDialog}
                             className={cx('confirm-button')}
                         >
                             Xoá nhóm
                         </Button>
                     </Zoom>
+                </DialogActions>
+            </Dialog>
+
+            {/* Leave Group Dialog */}
+            <Dialog
+                open={openLeaveDialog}
+                onClose={handleCloseLeaveDialog}
+                TransitionComponent={Transition}
+                aria-labelledby="leave-dialog-title"
+                PaperProps={{
+                    className: cx('dialog-paper'),
+                }}
+            >
+                <DialogTitle id="leave-dialog-title" className={cx('leave-dialog-title')}>
+                    <ExitToAppIcon className={cx('warning-icon')} />
+                    Xác nhận rời nhóm
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText className={cx('leave-dialog-content')}>
+                        Bạn chắc chắn muốn rời khỏi nhóm học tập này? Sau khi rời đi, bạn sẽ không thể tham gia vào các
+                        hoạt động của nhóm và không thể xem các tài liệu của nhóm nữa.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions className={cx('leave-dialog-actions')}>
+                    <Button onClick={handleCloseLeaveDialog} className={cx('cancel-button')}>
+                        Huỷ
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="warning"
+                        onClick={handleLeaveGroup}
+                        className={cx('confirm-button')}
+                    >
+                        Rời nhóm
+                    </Button>
                 </DialogActions>
             </Dialog>
 
@@ -252,7 +320,7 @@ export default function GroupSetting() {
                 TransitionComponent={Transition}
                 aria-labelledby="confirm-dialog-title"
                 PaperProps={{
-                    className: cx('dialog-paper')
+                    className: cx('dialog-paper'),
                 }}
             >
                 <DialogTitle id="confirm-dialog-title" className={cx('confirm-dialog-title')}>
@@ -261,12 +329,12 @@ export default function GroupSetting() {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText className={cx('confirm-dialog-content')}>
-                        ĐÂY LÀ HÀNH ĐỘNG KHÔNG THỂ HOÀN TÁC!
-                        Nhập "XOÁ" vào ô bên dưới để xác nhận rằng bạn hiểu và muốn tiếp tục.
+                        ĐÂY LÀ HÀNH ĐỘNG KHÔNG THỂ HOÀN TÁC! Nhập "XOÁ" vào ô bên dưới để xác nhận rằng bạn hiểu và muốn
+                        tiếp tục.
                     </DialogContentText>
-                    <input 
-                        type="text" 
-                        placeholder="Nhập 'XOÁ' để xác nhận" 
+                    <input
+                        type="text"
+                        placeholder="Nhập 'XOÁ' để xác nhận"
                         className={cx('confirm-input')}
                         value={confirmText}
                         onChange={handleConfirmTextChange}
@@ -277,10 +345,12 @@ export default function GroupSetting() {
                         Huỷ
                     </Button>
                     <Zoom in={isDeleteEnabled} style={{ transitionDelay: isDeleteEnabled ? '100ms' : '0ms' }}>
-                        <span> {/* Wrap in span for the disabled state to show properly */}
-                            <Button 
-                                variant="contained" 
-                                color="error" 
+                        <span>
+                            {' '}
+                            {/* Wrap in span for the disabled state to show properly */}
+                            <Button
+                                variant="contained"
+                                color="error"
                                 onClick={handleDeleteGroup}
                                 className={cx('delete-button')}
                                 disabled={!isDeleteEnabled}

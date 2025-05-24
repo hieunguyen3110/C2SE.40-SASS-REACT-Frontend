@@ -5,6 +5,8 @@ const cx = classNames.bind(styles);
 import Carousel from 'react-multi-carousel';
 import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+import FolderOffIcon from '@mui/icons-material/FolderOff';
 import 'react-multi-carousel/lib/styles.css';
 
 // import { useState } from "react";
@@ -21,12 +23,29 @@ import { truncateTextWithLength } from '../../../../utils/truncateText';
 export default function FolderDirectory({ data }: any) {
     const navigate = useNavigate();
 
+    const onCreateFolder = () => {
+        navigate('/document/create-folder');
+    };
+
     return (
         <div className={cx('folder-directory')}>
             <div className={cx('directory-title')}>
                 <h2>THƯ MỤC CỦA TÔI</h2>
+                <button className={cx('create-folder-btn')} onClick={onCreateFolder}>
+                    <CreateNewFolderIcon /> Tạo thư mục
+                </button>
             </div>
-            {Array.isArray(data) ? (
+            {!Array.isArray(data) ? (
+                <Loader height={10} />
+            ) : data.length === 0 ? (
+                <div className={cx('no-folders')}>
+                    <FolderOffIcon sx={{ fontSize: '64px', color: '#999' }} />
+                    <p>Không có thư mục nào. Hãy tạo thư mục mới!</p>
+                    <button onClick={onCreateFolder}>
+                        <CreateNewFolderIcon /> Tạo thư mục mới
+                    </button>
+                </div>
+            ) : (
                 <Carousel
                     additionalTransfrom={0}
                     arrows
@@ -79,8 +98,6 @@ export default function FolderDirectory({ data }: any) {
                         </div>
                     ))}
                 </Carousel>
-            ) : (
-                <Loader height={10} />
             )}
         </div>
     );
