@@ -70,11 +70,11 @@ const LoginComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation) =
     const validationSchema = Yup.object({
         email: Yup.string().required('Vui lòng nhập email'),
         password: Yup.string().required('Vui lòng nhập password'),
-        // captcha: Yup.string()
-        //     .required('Vui lòng nhập mã xác nhận')
-        //     .test('captcha-match', 'Mã xác nhận không đúng', function(value) {
-        //         return value === captcha;
-        //     }),
+        captcha: Yup.string()
+            .required('Vui lòng nhập mã xác nhận')
+            .test('captcha-match', 'Mã xác nhận không đúng', function(value) {
+                return value === captcha;
+            }),
     });
 
     const refreshString = () => {
@@ -197,7 +197,7 @@ const LoginComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation) =
                                             </div>
                                         </div>
 
-                                        {/* <div className={cx('body-list', 'body-list-check')}>
+                                        <div className={cx('body-list', 'body-list-check')}>
                                             <div className={cx('list-item', 'list-check')}>
                                                 <div className={cx('list-check-item')}>
                                                     <img src={check} alt="check" />
@@ -215,7 +215,7 @@ const LoginComponents: React.FC<PopsInformation> = ({ pops }: PopsInformation) =
                                                 </div>
                                                 <img src={image4} alt="image4" onClick={refreshString} />
                                             </div>
-                                        </div> */}
+                                        </div>
                                         <div className={cx('body-button')}>
                                             <ButtonSubmit
                                                 titleButton={pop.titleButton}
