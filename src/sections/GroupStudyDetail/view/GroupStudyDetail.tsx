@@ -210,7 +210,7 @@ export default function GroupStudyDetail() {
                                         <JoinRequestItem
                                             key={request.id}
                                             avatar={request.avatar}
-                                            name={request.name}
+                                            name={request.name === 'null null' ? request.email : request.name}
                                             requestDate={request.createdAt}
                                             onAccept={() =>
                                                 handleAcceptRequest(

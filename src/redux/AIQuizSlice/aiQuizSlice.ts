@@ -169,6 +169,7 @@ const AIQuizSlice = createSlice({
         builder
             // Start Quiz
             .addCase(startQuizAction.pending, (state) => {
+                state.error = '';
                 state.loading = true;
             })
             .addCase(startQuizAction.fulfilled, (state, action) => {
@@ -176,6 +177,7 @@ const AIQuizSlice = createSlice({
                 state.currentSession = action.payload;
                 state.isAssignment = false;
                 state.result = null;
+                state.error = '';
             })
             .addCase(startQuizAction.rejected, (state, action) => {
                 state.loading = false;

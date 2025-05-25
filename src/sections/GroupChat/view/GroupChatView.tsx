@@ -179,12 +179,6 @@ export default function GroupChatView() {
         }
     }, [groupId]);
 
-    // Get display name for message sender (placeholder implementation)
-    const getSenderName = (senderId: number) => {
-        const member = memberList.find((m) => m.memberId === senderId);
-        return member ? member.name : `Student ${senderId}`;
-    };
-
     // Format time for display from timestamp
     const formatTime = (timestamp: string | undefined) => {
         if (!timestamp) return '';
@@ -474,7 +468,7 @@ export default function GroupChatView() {
                                         transition={{ duration: 0.2 }}
                                     >
                                         <div className={cx('pinnedMessageHeader')}>
-                                            <span className={cx('authorName')}>{getSenderName(message.senderId)}</span>
+                                            <span className={cx('authorName')}>{message.username}</span>
                                             <span className={cx('messageTime')}>
                                                 {formatTime(message.timestamp || message.createdAt)}
                                             </span>
@@ -568,7 +562,7 @@ export default function GroupChatView() {
                         <span>Today</span>
                     </div>
 
-                    {messagesArray.map((message: Message, index) => (
+                    {messagesArray.map((message: Message, index) =>
                         message.senderId === 0 ? (
                             // Notification message (system message)
                             <motion.div
@@ -598,12 +592,12 @@ export default function GroupChatView() {
                                 <div className={cx('avatarContainer')}>
                                     {message.profilePicture ? (
                                         <div className={cx('avatar')}>
-                                            <img src={message.profilePicture} alt={getSenderName(message.senderId)} />
+                                            <img src={message.profilePicture} alt={message.username} />
                                         </div>
                                     ) : (
                                         <div className={cx('avatar')}>
                                             {message.username === 'Unknown'
-                                                ? getSenderName(message.senderId).charAt(0)
+                                                ? message.username.charAt(0)
                                                 : message.username.charAt(0)}
                                         </div>
                                     )}
@@ -611,9 +605,7 @@ export default function GroupChatView() {
                                 <div className={cx('messageContent')}>
                                     <div className={cx('messageHeader')}>
                                         <span className={cx('authorName')}>
-                                            {message.username === 'Unknown'
-                                                ? getSenderName(message.senderId)
-                                                : message.username}
+                                            {message.username === 'Unknown' ? message.username : message.username}
                                         </span>
                                         {message.senderId === currentGroup?.ownerId && (
                                             <span className={cx('roleTag')}>Admin</span>
@@ -636,7 +628,9 @@ export default function GroupChatView() {
                                         sx={{
                                             color: pinnedMessageIds.includes(message.messageId) ? '#ff3c3c' : 'inherit',
                                             animation:
-                                                pinningMessage === message.messageId ? 'spin 1s linear infinite' : 'none',
+                                                pinningMessage === message.messageId
+                                                    ? 'spin 1s linear infinite'
+                                                    : 'none',
                                             '@keyframes spin': {
                                                 '0%': { transform: 'rotate(0deg)' },
                                                 '100%': { transform: 'rotate(360deg)' },
@@ -644,7 +638,9 @@ export default function GroupChatView() {
                                         }}
                                     >
                                         <img
-                                            src={pinnedMessageIds.includes(message.messageId) ? PinIcon : PinIconDefault}
+                                            src={
+                                                pinnedMessageIds.includes(message.messageId) ? PinIcon : PinIconDefault
+                                            }
                                             alt="Pin"
                                             width={20}
                                             height={20}
@@ -656,8 +652,8 @@ export default function GroupChatView() {
                                     </IconButton>
                                 </div>
                             </motion.div>
-                        )
-                    ))}
+                        ),
+                    )}
                     <div ref={messagesEndRef} />
 
                     {/* Unread Messages Indicator */}
