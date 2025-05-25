@@ -105,7 +105,7 @@ const GroupSidebar = () => {
                     {profilePicture ? (
                         <img src={profilePicture} alt={username} />
                     ) : (
-                        <span>{username?.charAt(0)?.toUpperCase()}</span>
+                        <span>{username?username?.charAt(0)?.toUpperCase():"A"}</span>
                     )}
                 </div>
                 <div className={cx('userInfo')}>
