@@ -5,7 +5,8 @@ export const truncateText = (txt: string) => {
     return txt;
 };
 
-export const truncateTextWithLength = (txt: string, length: number) => {
+export const truncateTextWithLength = (txt: string|undefined, length: number) => {
+    if(txt===undefined) return "";
     if (txt.length > length) {
         return `${txt.substring(0, length)}...`;
     }
