@@ -82,7 +82,7 @@ export default function GroupCard({
 
                     <motion.button
                         className={cx('joinButton', {
-                            memberButton: isUserMember,
+                            memberButton: isUserMember || isSent,
                             fullButton: isGroupFull && !isUserMember,
                         })}
                         onClick={() => {

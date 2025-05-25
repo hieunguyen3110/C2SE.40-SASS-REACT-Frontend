@@ -135,9 +135,10 @@ export default function TestProcess() {
             interval = setInterval(() => {
                 setTimer((prevTime) => prevTime - 1);
             }, 1000);
-        } else if (timer === 0) {
+        } else if (timer <= 0) {
             // Auto-submit when time is up
-            handleOpenSubmitModal();
+            toast.warning('Thời gian làm bài đã hết');
+            handleSubmit();
         }
 
         return () => {
