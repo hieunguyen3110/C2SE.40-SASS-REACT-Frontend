@@ -179,12 +179,26 @@ export default function ChatBox() {
                                 <div className={cx('message-content')}>
                                     <p>
                                         {/* {message.message.replace("\n","<br>")} */}
-                                        {message.message.split('\n').map((line, index) => (
-                                            <React.Fragment key={index}>
-                                                {line}
-                                                <br />
-                                            </React.Fragment>
-                                        ))}
+                                        {message.message.split('\n').map((line, index) => {
+                                            const parts = line.split(/(\*\*.*?\*\*)/g);
+                                            return (
+                                                <>
+                                                    {parts && parts.length > 0
+                                                        ? parts.map((part, index) => {
+                                                              if (part.startsWith('**') && part.endsWith('**')) {
+                                                                  return <b key={index}><br /> <br />{part.slice(2, -2)} <br /> <br /></b>;
+                                                              } else {
+                                                                  return <span key={index}>{part}</span>;
+                                                              }
+                                                          })
+                                                        : ''}
+                                                </>
+                                                // <React.Fragment key={index}>
+                                                //     {line}
+                                                //     <br />
+                                                // </React.Fragment>
+                                            );
+                                        })}
                                     </p>
                                 </div>
                             </div>

@@ -6,14 +6,14 @@ import React, { useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import AnalystICON from '../../../assets/images/icons/analystICON.png';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import { Button } from '../../../components/Button';
-import MultiSelectSubjects from './MultiSelectSubjects';
 import { SelectChangeEvent } from '@mui/material';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import DocumentIMG from '../../../assets/images/library.document.png';
 import { toast } from 'react-toastify';
+import { useAppSelector } from '../../../redux/store';
+import { useNavigate } from 'react-router-dom';
+import { truncateTextWithLength } from '../../../utils/truncateText';
 // import { useAppSelector } from "../../../redux/store";
 // import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 // import Images from "../../../assets/images/library.document.png";
@@ -22,6 +22,7 @@ const options = ['Gắn thẻ', 'Lưu tài liệu', 'Tải xuống', 'Chia sẻ'
 const ITEM_HEIGHT = 48;
 
 export default function ProposalDocs() {
+    const navigate = useNavigate();
     // config cho popover ...
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -34,7 +35,7 @@ export default function ProposalDocs() {
 
     const [isAnalysing] = useState<boolean>(false);
     const [courseName, setCourseName] = React.useState<string[]>([]);
-    // const { documentAnalysis } = useAppSelector((state) => state.chatbot);
+    const { documentAnalysis } = useAppSelector((state) => state.chatbot);
 
     const handleChange = (event: SelectChangeEvent<typeof courseName>) => {
         const {
@@ -65,6 +66,38 @@ export default function ProposalDocs() {
             </div>
         </div>
     );
+    const Document = () => {
+        return (
+            <div className={cx('cards')}>
+                {documentAnalysis && documentAnalysis.length > 0
+                    ? documentAnalysis.map((document, index) => {
+                          return (
+                              <div key={index} className={cx('card')}>
+                                  {/* <div className={cx('author')}>
+                                      <IconButton
+                                          aria-label="more"
+                                          id={`long-button-${document.docId}`}
+                                          aria-haspopup="true"
+                                      >
+                                          <MoreHorizIcon />
+                                      </IconButton>
+                                  </div> */}
+                                  <img
+                                      onClick={() => navigate(`/document/${document.docId}`)}
+                                      src={DocumentIMG}
+                                      alt="doc"
+                                  />
+                                  <h3 onClick={() => navigate(`/document/${document.docId}`)}>
+                                      {truncateTextWithLength(document.fileName, 45)}
+                                  </h3>
+                                  <span>{document.subjectName}</span>
+                              </div>
+                          );
+                      })
+                    : ''}
+            </div>
+        );
+    };
 
     return (
         <div className={cx('proposal-docs')}>
@@ -104,7 +137,8 @@ export default function ProposalDocs() {
                     ))}
                 </Menu>
             </div>
-            {isAnalysing ? (
+            <Document />
+            {/* {isAnalysing ? (
                 <div className={cx('analyst')}>
                     <div className={cx('title')}>
                         <img src={AnalystICON} alt="analyst" />
@@ -135,7 +169,7 @@ export default function ProposalDocs() {
                 </div>
             ) : (
                 notifyBox
-            )}
+            )} */}
         </div>
     );
 }

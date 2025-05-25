@@ -101,6 +101,8 @@
             flex-direction: column;
             gap: 10px;
             padding: 10px;
+            justify-content: space-between;
+            cursor: pointer;
             & > .author {
                 display: flex;
                 align-items: center;
@@ -128,7 +130,7 @@
             }
 
             & > h3 {
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: 600;
                 line-height: 19.5px;
                 text-align: left;
