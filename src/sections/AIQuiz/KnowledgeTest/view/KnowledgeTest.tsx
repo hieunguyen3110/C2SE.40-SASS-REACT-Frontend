@@ -10,6 +10,7 @@ import { startQuizAction } from '../../../../redux/AIQuizSlice/aiQuizSlice';
 import CreateTestLoading from '../components/CreateTestLoading/CreateTestLoading';
 import { useAlert } from '../../../../contexts/AlertContext';
 import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -257,27 +258,34 @@ export default function KnowledgeTest() {
                     endTime: endTimeStr,
                     isCompleted: false,
                 }),
-            );
+            )
+                .unwrap()
+                .then((data) => {
+                    console.log('startQuizAction', data);
+                    // Create quiz data object
+                    const quizData = {
+                        sessionId: localSessionId,
+                        startTime: currentTime,
+                        endTime: endTimeStr,
+                        duration: durationNum * 60 * 1000, // Chuyển từ phút sang milliseconds
+                        subjectId: parseInt(subjectId),
+                        numberOfQuestions: questionsNum,
+                        subjectName: subjectInput,
+                    };
 
-            // Create quiz data object
-            const quizData = {
-                sessionId: localSessionId,
-                startTime: currentTime,
-                endTime: endTimeStr,
-                duration: durationNum * 60 * 1000, // Chuyển từ phút sang milliseconds
-                subjectId: parseInt(subjectId),
-                numberOfQuestions: questionsNum,
-                subjectName: subjectInput,
-            };
+                    // Set cookie with expiration time based on quiz duration
+                    Cookies.set('quiz_session', JSON.stringify(quizData), {
+                        expires: new Date(currentTime + durationNum * 60 * 1000),
+                        sameSite: 'strict',
+                    });
 
-            // Set cookie with expiration time based on quiz duration
-            Cookies.set('quiz_session', JSON.stringify(quizData), {
-                expires: new Date(currentTime + durationNum * 60 * 1000),
-                sameSite: 'strict',
-            });
-
-            // Chuyển hướng đến trang làm bài không cần sessionId
-            navigate(`/document/ai-quiz/test-process`);
+                    // Chuyển hướng đến trang làm bài không cần sessionId
+                    navigate(`/document/ai-quiz/test-process`);
+                })
+                .catch((error) => {
+                    console.error('Error starting quiz:', error);
+                    toast.error('Không tìm thấy câu hỏi!');
+                });
         }
     };
 

@@ -30,6 +30,7 @@ interface IDetailDoc {
 function Content({ url, id }: IDetailDoc) {
     const [openConfirmModal, setOpenConfirmModal] = useState(false);
     const [openExamModal, setOpenExamModal] = useState(false);
+    const [openExistingSessionModal, setOpenExistingSessionModal] = useState(false);
     const [examDuration, setExamDuration] = useState<number>(10);
     const [questionCount, setQuestionCount] = useState<number>(5);
     const { accountId } = useAppSelector((state) => state.authentication);
@@ -69,8 +70,18 @@ function Content({ url, id }: IDetailDoc) {
         setOpenConfirmModal(false);
     };
 
+    const continueExistingSession = () => {
+        setOpenExistingSessionModal(false);
+        navigate('/document/ai-quiz/test-process');
+    };
+
     const handleSubmitExam = () => {
         setOpenExamModal(false);
+        const currentSession = Cookies.get('quiz_session');
+        if (currentSession) {
+            setOpenExistingSessionModal(true);
+            return;
+        }
         if (!id || !DocumentDetail?.subjectId) {
             toast.error('Không tìm thấy môn học');
             return;
@@ -92,27 +103,32 @@ function Content({ url, id }: IDetailDoc) {
                 endTime: endTimeStr,
                 isCompleted: false,
             }),
-        );
+        )
+            .unwrap()
+            .then(() => {
+                // Create quiz data object
+                const quizData = {
+                    sessionId: localSessionId,
+                    startTime: currentTime,
+                    endTime: endTimeStr,
+                    duration: examDuration * 60 * 1000, // Chuyển từ phút sang milliseconds
+                    subjectId: DocumentDetail.subjectId,
+                    numberOfQuestions: questionCount,
+                    subjectName: DocumentDetail.subjectName,
+                };
 
-        // Create quiz data object
-        const quizData = {
-            sessionId: localSessionId,
-            startTime: currentTime,
-            endTime: endTimeStr,
-            duration: examDuration * 60 * 1000, // Chuyển từ phút sang milliseconds
-            subjectId: DocumentDetail.subjectId,
-            numberOfQuestions: questionCount,
-            subjectName: DocumentDetail.subjectName,
-        };
+                // Set cookie with expiration time based on quiz duration
+                Cookies.set('quiz_session', JSON.stringify(quizData), {
+                    expires: new Date(currentTime + examDuration * 60 * 1000),
+                    sameSite: 'strict',
+                });
 
-        // Set cookie with expiration time based on quiz duration
-        Cookies.set('quiz_session', JSON.stringify(quizData), {
-            expires: new Date(currentTime + examDuration * 60 * 1000),
-            sameSite: 'strict',
-        });
-
-        // Chuyển hướng đến trang làm bài không cần sessionId
-        navigate(`/document/ai-quiz/test-process`);
+                // Chuyển hướng đến trang làm bài không cần sessionId
+                navigate(`/document/ai-quiz/test-process`);
+            })
+            .catch((error) => {
+                console.error('Error starting quiz:', error);
+            });
     };
 
     const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -204,6 +220,16 @@ function Content({ url, id }: IDetailDoc) {
                 content={<ExamFormContent />}
                 onConfirm={handleSubmitExam}
                 confirmText="Tạo bài thi"
+            />
+
+            {/* Existing session modal */}
+            <AlertModal
+                isOpen={openExistingSessionModal}
+                onClose={() => setOpenExistingSessionModal(false)}
+                title="Bài thi đang diễn ra"
+                content="Bạn đang có một phiên bài thi chưa hoàn thành. Bạn không thể bắt đầu bài thi mới cho đến khi phiên hiện tại kết thúc."
+                onConfirm={continueExistingSession}
+                confirmText="Tiếp tục làm bài"
             />
         </div>
     );

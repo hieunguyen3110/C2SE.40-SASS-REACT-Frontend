@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styles from './GroupSetting.module.scss';
 import classNames from 'classnames/bind';
 import { useAppDispatch, useAppSelector } from '../../../../redux/store';
-import { deleteGroupAction } from '../../../../redux/GroupStudySlice/GroupStudySlice';
+import { deleteGroupAction, leaveGroupAction } from '../../../../redux/GroupStudySlice/GroupStudySlice';
 import { motion } from 'framer-motion';
 
 // Components
@@ -137,11 +137,9 @@ export default function GroupSetting() {
     // Handle leave group
     const handleLeaveGroup = async () => {
         try {
-            // Assuming there's a leaveGroupAction in your Redux slice, if not, you'll need to create it
-            // await dispatch(leaveGroupAction(groupId)).unwrap();
-            // For now, just navigate back to group-study page
+            await dispatch(leaveGroupAction(groupId)).unwrap();
             handleCloseLeaveDialog();
-            navigate('/group-study');
+            navigate('/document/group-study/management');
         } catch (error) {
             console.error('Error leaving group:', error);
         }

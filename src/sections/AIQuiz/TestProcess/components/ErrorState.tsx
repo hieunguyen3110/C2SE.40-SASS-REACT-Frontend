@@ -6,10 +6,10 @@ import Cookies from 'js-cookie';
 const cx = classNames.bind(styles);
 
 interface ErrorStateProps {
-    message: string;
+    message?: string;
 }
 
-export default function ErrorState({ message }: ErrorStateProps) {
+export default function ErrorState({ message = 'No questions are available for this subject yet.' }: ErrorStateProps) {
     const navigate = useNavigate();
 
     const handleGoBack = () => {
@@ -24,7 +24,7 @@ export default function ErrorState({ message }: ErrorStateProps) {
     return (
         <div className={cx('error-container')}>
             <div className={cx('error-icon')}>❌</div>
-            <h2>Error Loading Quiz</h2>
+            <h2>Không tìm thấy câu hỏi</h2>
             <p>{message}</p>
             <button onClick={handleGoBack} className={cx('error-button')}>
                 Go Back
