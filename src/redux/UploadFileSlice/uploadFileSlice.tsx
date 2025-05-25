@@ -156,7 +156,7 @@ const uploadFileSlice = createSlice({
             .addCase(UploadFileAction.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
-                toast.error('Upload failed!');
+                toast.error('tiêu đề file không hợp lệ!');
                 state.isupload = false;
             })
             .addCase(SearchFacultyAction.rejected, (state, action) => {
