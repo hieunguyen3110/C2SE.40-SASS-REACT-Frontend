@@ -115,7 +115,7 @@ export default function GroupSetting() {
 
     // Check if delete should be enabled
     useEffect(() => {
-        setIsDeleteEnabled(confirmText === 'XOÁ');
+        setIsDeleteEnabled(confirmText === 'XOÁ' || confirmText === 'XÓA');
     }, [confirmText]);
 
     // Handle confirm text change
@@ -128,7 +128,7 @@ export default function GroupSetting() {
         try {
             await dispatch(deleteGroupAction(groupId)).unwrap();
             handleCloseConfirmDialog();
-            navigate('/group-study');
+            navigate('/document/group-study');
         } catch (error) {
             console.error('Error deleting group:', error);
         }
