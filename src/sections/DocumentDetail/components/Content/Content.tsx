@@ -21,13 +21,15 @@ import { toast } from 'react-toastify';
 import { startAssignmentAction } from '../../../../redux/AIQuizSlice/aiQuizSlice';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { DocumentResponse } from '../../../../redux/DocumentSlice/InterfaceResponse';
 
 interface IDetailDoc {
     url: string | undefined;
     id: number;
+    doc: DocumentResponse
 }
 
-function Content({ url, id }: IDetailDoc) {
+function Content({ url, id , doc}: IDetailDoc) {
     const [openConfirmModal, setOpenConfirmModal] = useState(false);
     const [openExamModal, setOpenExamModal] = useState(false);
     const [openExistingSessionModal, setOpenExistingSessionModal] = useState(false);
@@ -36,9 +38,14 @@ function Content({ url, id }: IDetailDoc) {
     const { accountId } = useAppSelector((state) => state.authentication);
     const navigate = useNavigate();
     // configs cho nút chia sẻ
-    const { openSharingModal, setUrl } = useSharingModal();
+    const { openSharingModal, setUrl,setDoc } = useSharingModal();
     const handleOpenModal = (id: number) => {
         setUrl(`${import.meta.env.VITE_CLIENT_URL}/document/${id}`);
+        setDoc({
+            documentId: doc.docId.toString(),
+            documentName: doc.title,
+            docFilePath: doc.filePath
+        })
         openSharingModal();
     };
     const { username } = useAppSelector((state) => state.authentication);

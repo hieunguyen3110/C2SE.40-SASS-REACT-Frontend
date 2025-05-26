@@ -65,9 +65,14 @@ const ProfileAuthorComponent = () => {
     }, [getUserProfile]);
 
     // Config for sharing modal
-    const { openSharingModal, setUrl } = useSharingModal();
-    const handleOpenModal = (id: number) => {
-        setUrl(`${import.meta.env.VITE_CLIENT_URL}/document/${id}`);
+    const { openSharingModal, setUrl, setDoc } = useSharingModal();
+    const handleOpenModal = (doc: GetDocument) => {
+        setUrl(`${import.meta.env.VITE_CLIENT_URL}/document/${doc.docId}`);
+        setDoc({
+            documentId: doc.docId.toString(),
+            documentName: doc.title,
+            docFilePath: doc.filePath
+        })
         openSharingModal();
     };
 

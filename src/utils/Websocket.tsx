@@ -18,6 +18,7 @@ import store from '../redux/store';
 import { toast } from 'react-toastify';
 import { AutoLoginAction } from '../redux/AuthenticationSlice/AuthenticationSlice';
 import { getGroupDetailsAction } from '../redux/GroupStudySlice/GroupStudySlice';
+import { DocumentAttached } from '../components/SharingModal/SharingModal';
 type NotificationResponse = {
     notificationId: number;
     message: string;
@@ -101,6 +102,10 @@ export const WebsocketConnection: React.FC = () => {
                             timestamp: data.timestamp || new Date().toISOString(),
                             username: data.username,
                             profilePicture: data.profilePicture,
+                            documentId: data.documentId,
+                            documentName: data.documentName,
+                            docFilePath: data.docFilePath,
+                            messageType: data.messageType,
                         };
 
                         // Dispatch to Redux store
@@ -151,7 +156,12 @@ export const getStompClient = (): Client | undefined => {
 };
 
 // Function to send a message to group chat
-export const sendGroupChatMessage = (groupId: number, content: string): void => {
+export const sendGroupChatMessage = (
+    groupId: number,
+    content: string,
+    type: string,
+    documentAttached: DocumentAttached | null,
+): void => {
     if (!stompClient || !stompClient.connected) {
         console.error('WebSocket connection not established');
         toast.error('Không thể gửi tin nhắn. Kết nối WebSocket chưa được thiết lập.');
@@ -183,14 +193,33 @@ export const sendGroupChatMessage = (groupId: number, content: string): void => 
         const seconds = String(now.getSeconds()).padStart(2, '0');
 
         const formattedTimestamp = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+        let messageRequest = {};
+        if (documentAttached !== null) {
+            messageRequest = {
+                groupId,
+                content,
+                timestamp: formattedTimestamp,
+                username,
+                profilePicture,
+                documentId: documentAttached.documentId,
+                documentName: documentAttached.documentName,
+                docFilePath: documentAttached.docFilePath,
+                messageType: type,
+            };
+        } else {
+            messageRequest = {
+                groupId,
+                content,
+                timestamp: formattedTimestamp,
+                username,
+                profilePicture,
+                documentId: null,
+                documentName: null,
+                docFilePath: null,
+                messageType: type,
+            };
+        }
 
-        const messageRequest = {
-            groupId,
-            content,
-            timestamp: formattedTimestamp,
-            username,
-            profilePicture,
-        };
         stompClient.publish({
             destination: `/app/chat.private`,
             body: JSON.stringify(messageRequest),
