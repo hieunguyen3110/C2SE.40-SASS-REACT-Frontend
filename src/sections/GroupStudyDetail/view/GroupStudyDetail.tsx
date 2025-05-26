@@ -14,7 +14,7 @@ import styles from './GroupStudyDetail.module.scss';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PersonAddDisabledIcon from '@mui/icons-material/PersonAddDisabled';
 import GroupIcon from '@mui/icons-material/Group';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Import custom components
 import TabNavigation from '../components/TabNavigation/TabNavigation';
@@ -29,6 +29,7 @@ import {
     approveJoinRequestAction,
     rejectJoinRequestAction,
     updateJoinRequest,
+    getGroupOfUserAction,
 } from '../../../redux/GroupStudySlice/GroupStudySlice';
 import GroupEditForm from '../components/GroupEditForm/GroupEditForm';
 import AlertModal from '../../../components/AlertModal/AlertModal';
@@ -36,6 +37,7 @@ import { useAlertModal } from '../../../hooks/useAlertModal';
 import { JoinRequest } from '../../../types/groupStudy.types';
 import GroupSetting from '../components/GroupSetting/GroupSetting';
 import PinnedMessages from '../components/PinnedMessages/PinnedMessages';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -43,6 +45,7 @@ export default function GroupStudyDetail() {
     const [activeTab, setActiveTab] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
     const [openEditForm, setOpenEditForm] = useState(false);
+    const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const dispatch = useAppDispatch();
     const { isOpen, title, content, onConfirm, confirmText, openModal, closeModal } = useAlertModal();
@@ -56,10 +59,17 @@ export default function GroupStudyDetail() {
 
     // Fetch group details when component mounts
     useEffect(() => {
-        if (id) {
-            dispatch(getGroupDetailsAction(parseInt(id)));
-            dispatch(listMembersAction({ groupId: parseInt(id), page: 0, size: 10 }));
-        }
+        dispatch(getGroupOfUserAction())
+            .unwrap()
+            .then((res) => {
+                if (id && res.some((group) => group.groupId === parseInt(id))) {
+                    dispatch(getGroupDetailsAction(parseInt(id)));
+                    dispatch(listMembersAction({ groupId: parseInt(id), page: 0, size: 10 }));
+                } else {
+                    toast.error('Bạn không có quyền truy cập vào nhóm này');
+                    navigate('/document/group-study/management');
+                }
+            });
     }, [dispatch, id]);
 
     // Filter members based on search term
@@ -67,19 +77,29 @@ export default function GroupStudyDetail() {
 
     // Handle join request actions
     const handleAcceptRequest = (id: number, email: string, name: string, profilePicture: string, userId: number) => {
-        dispatch(approveJoinRequestAction(id));
-        dispatch(updateJoinRequest({ joinRequestId: id, status: 'APPROVED', email, name, profilePicture, userId }));
+        if (currentGroup?.userId === accountId) {
+            dispatch(approveJoinRequestAction(id));
+            dispatch(updateJoinRequest({ joinRequestId: id, status: 'APPROVED', email, name, profilePicture, userId }));
+        } else {
+            toast.error('Bạn không có quyền xác nhận yêu cầu tham gia');
+        }
     };
 
     const handleRejectRequest = (id: number) => {
-        dispatch(rejectJoinRequestAction(id));
-        dispatch(updateJoinRequest({ joinRequestId: id, status: 'REJECTED' }));
+        if (currentGroup?.userId === accountId) {
+            dispatch(rejectJoinRequestAction(id));
+            dispatch(updateJoinRequest({ joinRequestId: id, status: 'REJECTED' }));
+        } else {
+            toast.error('Bạn không có quyền từ chối yêu cầu tham gia');
+        }
     };
 
     // Handle member delete action
     const handleDeleteMember = (memberId: number) => {
-        if (id) {
-            dispatch(removeMemberAction({ groupId: parseInt(id), userId: memberId }));
+        if (currentGroup?.userId === accountId) {
+            dispatch(removeMemberAction({ groupId: parseInt(id || ''), userId: memberId }));
+        } else {
+            toast.error('Bạn không có quyền xóa thành viên');
         }
     };
 
@@ -222,6 +242,7 @@ export default function GroupStudyDetail() {
                                                 )
                                             }
                                             onReject={() => handleRejectRequest(request.id)}
+                                            isOwner={isOwner}
                                         />
                                     ))
                                 ) : (

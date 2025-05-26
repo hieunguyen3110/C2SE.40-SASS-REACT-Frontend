@@ -124,7 +124,7 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
     const pathName = useLocation().pathname;
     const [dropdownToggle, setDropdownToggle] = useState<boolean>(false);
     const [showToggle, setShowToggle] = useState<boolean>(false);
-    const { username, profilePicture, follower, following, upload } = useAppSelector((state) => state.authentication);
+    const { username, profilePicture, follower, following, upload, ilogins } = useAppSelector((state) => state.authentication);
     const { numberOfNotificationsUnRead } = useAppSelector((state) => state.notication);
     const isOpenAndModal = isModal && isOpen;
     const shouldShowTooltip = !isOpen;
@@ -231,7 +231,7 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
                             exit={{ opacity: 0, x: -20 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <h3 onClick={handleClickProfile}>{username ? username : 'Student'}</h3>
+                            <h3 onClick={handleClickProfile}>{username ? username : ilogins?.email}</h3>
                             <a href="/document/edit-profile">+ Add information</a>
                         </motion.div>
                     )}

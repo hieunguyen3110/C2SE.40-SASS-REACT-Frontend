@@ -22,6 +22,9 @@ export interface QuizSessionDTO {
     docId?: number;
     sessionId?: string;
     startTime?: string;
+    duration?: number;
+    numberOfQuestions?: number;
+    subjectName?: string;
     endTime?: string;
     subject?: SubjectDto;
     isCompleted?: boolean;

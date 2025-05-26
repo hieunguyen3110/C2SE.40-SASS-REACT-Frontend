@@ -27,6 +27,7 @@ interface ILoginS {
     accountId: number;
     listRoles: string[];
     username: string;
+    email: string;
     profilePicture: string | null;
     follower: number;
     following: number;
@@ -92,7 +93,7 @@ export const LoginAction = createAsyncThunk<ApiResponse<ILoginS>, ILogin>(
     async (login: ILogin, { rejectWithValue }) => {
         try {
             const response = await LoginApi(login); //login api
-            return response;
+            return response as unknown as ApiResponse<ILoginS>;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
             return rejectWithValue(error.message); //rejectWithValue

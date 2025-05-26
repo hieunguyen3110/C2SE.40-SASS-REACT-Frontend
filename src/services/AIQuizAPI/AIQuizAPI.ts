@@ -75,9 +75,10 @@ export const updateSessionAnswerApi = async (userAnswer: string, isAssignment: b
     }
 };
 
-export const submitApi = async (subjectId: number, userAnswers: string[], isAssignment: boolean) => {
+export const submitApi = async (docId: number | undefined, subjectId: number, userAnswers: string[], isAssignment: boolean) => {
     try {
         const res = await axiosInstance.post('/e-learning/submit', {
+            docId: docId || undefined,
             subjectId,
             userAnswers,
             isAssignment,

@@ -96,7 +96,7 @@ export default function GroupManagement() {
 
     const getRoleColor = (role: string) => {
         switch(role) {
-            case 'Admin':
+            case 'Owner':
                 return '#ff3c3c'; // updated to use the main color for admin
             case 'Moderator':
                 return '#1976d2'; // blue for moderator
@@ -108,8 +108,8 @@ export default function GroupManagement() {
     // Determine role based on ownerId
     const getRole = (group: IGroup) => {
         // No longer using useSelector inside this function
-        if (group.ownerId === currentUserId) {
-            return "Admin";
+        if (group.userId === currentUserId) {
+            return "Owner";
         } else {
             return "Member";
         }

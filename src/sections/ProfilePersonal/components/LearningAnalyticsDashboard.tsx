@@ -102,6 +102,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
 
     const handleSubjectSelection = (subjects: SubjectDto[]) => {
         if (subjects.length > 0 && !getUserProfile?.coursePeriodDto) {
+            console.log('subjects', subjects);
             dispatch(saveCoursePeriodAction(subjects));
             setIsAnalyticsEnabled(true);
             toast.success('Phân tích học tập đã được bật');

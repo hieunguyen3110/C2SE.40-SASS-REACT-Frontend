@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import GroupCard from '../components/GroupCard/GroupCard';
 import GroupSearchHeader from '../components/GroupSearchHeader';
 import SearchBar from '../components/SearchBar';
@@ -16,7 +16,7 @@ import {
     resetSearchGroup,
     updateUserGroups,
 } from '../../../redux/GroupStudySlice/GroupStudySlice';
-import { RootState, AppDispatch } from '../../../redux/store';
+import { RootState, AppDispatch, useAppSelector } from '../../../redux/store';
 import { SearchGroupResult } from '../../../types/groupStudy.types';
 import useDebounce from '../../../hooks/useDebounce';
 
@@ -27,7 +27,7 @@ export default function GroupSearchView() {
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedSearchQuery = useDebounce(searchQuery, 500); // 500ms debounce delay
     const dispatch = useDispatch<AppDispatch>();
-    const { searchResults, loading, userGroups } = useSelector((state: RootState) => state.groupStudy);
+    const { searchResults, loading, userGroups } = useAppSelector((state: RootState) => state.groupStudy);
     useEffect(() => {
         if (debouncedSearchQuery.trim() !== '') {
             dispatch(searchGroupAction(debouncedSearchQuery));
@@ -50,7 +50,7 @@ export default function GroupSearchView() {
             dispatch(joinGroupAction(groupId));
             const group = searchResults.find((group) => group.groupId === groupId);
 
-            if (!group?.private) {
+            if (!group?.isPrivate) {
                 dispatch(updateUserGroups(group));
                 navigate(`/document/group-study/${groupId}/chat`);
             }
@@ -130,7 +130,7 @@ export default function GroupSearchView() {
                                 description={group.description}
                                 onJoin={() => handleJoinGroup(group.groupId)}
                                 isUserMember={isUserMemberOfGroup(group.groupId)}
-                                isPrivate={group.private}
+                                isPrivate={group.isPrivate}
                             />
                         </motion.div>
                     ))}

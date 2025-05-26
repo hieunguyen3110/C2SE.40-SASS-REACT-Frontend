@@ -6,9 +6,7 @@ import { IconButton } from '@mui/material';
 import DocumentIMG from '../../../assets/images/library.document.png';
 import {
     PeopleOutline,
-    SearchOutlined,
     InfoOutlined,
-    MoreHoriz,
     Close,
     AttachFile,
     KeyboardArrowDown,
@@ -27,6 +25,7 @@ import {
     pinMessageAction,
     unpinMessageAction,
     clearUnreadMessages,
+    getGroupOfUserAction,
 } from '../../../redux/GroupStudySlice/GroupStudySlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Message } from '../../../types/groupStudy.types';
@@ -70,7 +69,9 @@ export default function GroupChatView() {
     const groupId = getGroupIdFromPath();
 
     // Get group details and messages from Redux store
-    const { currentGroup, memberList, messages, pinnedMessages } = useAppSelector((state) => state.groupStudy);
+    const { currentGroup, memberList, messages, pinnedMessages } = useAppSelector(
+        (state) => state.groupStudy,
+    );
     const { accountId } = useAppSelector((state) => state.authentication);
 
     // Create a ref for the latest message to add animation
@@ -119,7 +120,7 @@ export default function GroupChatView() {
     };
 
     // Get members list
-    const fetchMembers = async (groupId: number, page: number = 1, size: number = 10) => {
+    const fetchMembers = async (groupId: number, page: number = 0, size: number = 10) => {
         try {
             await dispatch(listMembersAction({ groupId, page, size })).unwrap();
         } catch (error) {
@@ -174,12 +175,22 @@ export default function GroupChatView() {
 
     // Fetch group details, members, messages, and pinned messages when component mounts
     useEffect(() => {
-        if (groupId) {
-            fetchGroupDetails(Number(groupId));
-            fetchMembers(Number(groupId));
-            fetchMessages(Number(groupId), 0, 10); // Initial load with page 0
-            fetchPinnedMessages(Number(groupId));
-        }
+        dispatch(getGroupOfUserAction())
+            .unwrap()
+            .then((res) => {
+                if (groupId && res.some((group) => group.groupId === parseInt(groupId))) {
+                    fetchGroupDetails(Number(groupId));
+                    fetchMembers(Number(groupId));
+                    fetchMessages(Number(groupId), 0, 10); // Initial load with page 0
+                    fetchPinnedMessages(Number(groupId));
+                } else {
+                    toast.error('Bạn không có quyền truy cập vào nhóm này');
+                    navigate('/document/group-study/management');
+                }
+            })
+            .catch((error) => {
+                console.error('Failed to fetch group of user:', error);
+            });
     }, [groupId]);
 
     // Format time for display from timestamp
@@ -424,17 +435,14 @@ export default function GroupChatView() {
                         <span className={cx('subtitle')}>{currentGroup?.memberCount} members</span>
                     </div>
                     <div className={cx('actions')}>
-                        <IconButton className={cx('iconButton')}>
-                            <SearchOutlined />
-                        </IconButton>
                         <IconButton className={cx('iconButton')} onClick={toggleMembersSidebar}>
                             <PeopleOutline />
                         </IconButton>
-                        <IconButton className={cx('iconButton')}>
+                        <IconButton
+                            className={cx('iconButton')}
+                            onClick={() => navigate(`/document/group-study/${groupId}`)}
+                        >
                             <InfoOutlined />
-                        </IconButton>
-                        <IconButton className={cx('iconButton')}>
-                            <MoreHoriz />
                         </IconButton>
                     </div>
                 </header>

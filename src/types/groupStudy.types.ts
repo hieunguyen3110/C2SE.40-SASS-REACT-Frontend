@@ -23,7 +23,7 @@ export interface SearchGroupResult {
     picture: string | null;
     memberIds: number[];
     memberLimited: number;
-    private: boolean;
+    isPrivate: boolean;
 }
 
 export interface Message {

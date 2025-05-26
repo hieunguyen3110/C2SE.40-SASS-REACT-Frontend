@@ -135,7 +135,12 @@ export const listMembersApi = async (groupId: number, page: number = 0, size: nu
 
 export const editGroupApi = async (groupId: number, data: CreateGroupRequest) => {
     try {
-        const res = await axiosInstance.put(`/study-group/${groupId}`, data);
+        // Check if data is FormData and add proper headers
+        const isFormData = data instanceof FormData;
+        const config = isFormData ? { headers: { 'Content-Type': 'multipart/form-data' } } : {};
+        
+        const res = await axiosInstance.put(`/study-group/${groupId}`, data, config);
+        
         // Transform the response to match IGroup interface
         const transformedData = {
             groupId: res.data.id,
