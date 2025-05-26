@@ -78,7 +78,7 @@ export default function DocumentDetailView() {
     return (
         <div className={cx('document-detail-view')}>
             <Sidebar doc={documentWithRatings} />
-            <Content id={Number.parseInt(id)} url={document?.filePath} />
+            <Content id={Number.parseInt(id)} url={document?.filePath} doc={document} />
         </div>
     );
 }

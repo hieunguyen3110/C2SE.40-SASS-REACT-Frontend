@@ -136,10 +136,15 @@ const DocumentStorageComponents = () => {
     const handleDownloadDocuments = (documentId: number) => {
         dispatch(DownloadDocumentAction({ documentId, username }));
     };
-    const { openSharingModal, setUrl } = useSharingModal();
+    const { openSharingModal, setUrl, setDoc } = useSharingModal();
 
-    const handleOpenModal = (id: number) => {
-        setUrl(`${import.meta.env.VITE_CLIENT_URL}/document/${id}`);
+    const handleOpenModal = (doc: GetDocument) => {
+        setUrl(`${import.meta.env.VITE_CLIENT_URL}/document/${doc.docId}`);
+        setDoc({
+            documentId: doc.docId.toString(),
+            documentName: doc.title,
+            docFilePath: doc.filePath
+        })
         openSharingModal();
     };
     useEffect(() => {
@@ -177,7 +182,7 @@ const DocumentStorageComponents = () => {
                                             alt="down"
                                             onClick={() => handleDownloadDocuments(data.docId)}
                                         />
-                                        <img src={Share} alt="share" onClick={() => handleOpenModal(data.docId)} />
+                                        <img src={Share} alt="share" onClick={() => handleOpenModal(data)} />
                                         <img
                                             src={Delect}
                                             alt="Delect"

@@ -35,6 +35,10 @@ export interface Message {
     profilePicture: string | null;
     messageId: number;
     createdAt: string;
+    documentId: string | null;
+    documentName: string | null;
+    docFilePath: string | null;
+    messageType: string;
 }
 
 export interface ChatMessage {

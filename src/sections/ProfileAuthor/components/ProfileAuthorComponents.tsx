@@ -36,8 +36,13 @@ const ProfilePersonalComponents = () => {
 
     // configs cho nút chia sẻ
     const { openSharingModal, setUrl } = useSharingModal();
-    const handleOpenModal = (id: number) => {
-        setUrl(`${import.meta.env.VITE_CLIENT_URL}/document/${id}`);
+    const handleOpenModal = (doc: any) => {
+        setUrl(`${import.meta.env.VITE_CLIENT_URL}/document/${doc.docId}`);
+        setDoc({
+            documentId: doc.docId.toString(),
+            documentName: doc.title,
+            docFilePath: doc.filePath
+        })
         openSharingModal();
     };
 
@@ -227,7 +232,7 @@ const ProfilePersonalComponents = () => {
                                                 <img
                                                     src={Share}
                                                     alt="share"
-                                                    onClick={() => handleOpenModal(data.docId)}
+                                                    onClick={() => handleOpenModal(data)}
                                                 />
                                             </div>
                                         </div>

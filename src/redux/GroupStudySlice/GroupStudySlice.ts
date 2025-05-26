@@ -47,6 +47,10 @@ export interface WebSocketChatMessage {
     username: string;
     profilePicture: string;
     messageId: number;
+    documentId : string | null;
+    documentName: string | null;
+    docFilePath: string | null;
+    messageType : string;
 }
 
 // Async Actions
@@ -482,6 +486,10 @@ const GroupStudySlice = createSlice({
                         profilePicture: action.payload.profilePicture,
                         groupId: action.payload.groupId,
                         createdAt: action.payload.timestamp,
+                        documentId: action.payload.documentId,
+                        documentName: action.payload.documentName,
+                        docFilePath: action.payload.docFilePath,
+                        messageType: action.payload.messageType
                         // Add other required fields with default values as needed
                     };
 

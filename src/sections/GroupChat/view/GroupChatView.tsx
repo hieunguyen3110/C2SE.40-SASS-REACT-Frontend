@@ -3,6 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './GroupChatView.module.scss';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IconButton } from '@mui/material';
+import DocumentIMG from '../../../assets/images/library.document.png';
 import {
     PeopleOutline,
     SearchOutlined,
@@ -27,11 +28,12 @@ import {
     unpinMessageAction,
     clearUnreadMessages,
 } from '../../../redux/GroupStudySlice/GroupStudySlice';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Message } from '../../../types/groupStudy.types';
 import { sendGroupChatMessage } from '../../../utils/Websocket';
 import SendIcon from '../../../assets/images/icons/send-alt-1-svgrepo-com.svg';
 import { toast } from 'react-toastify';
+import { truncateTextWithLength } from '../../../utils/truncateText';
 
 const cx = classNames.bind(styles);
 
@@ -52,6 +54,7 @@ export default function GroupChatView() {
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const emojiPickerRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     // Extract groupId from URL path /document/group-study/:groupId/chat
     const location = useLocation();
@@ -160,7 +163,7 @@ export default function GroupChatView() {
             // Thêm tin nhắn tạm thời vào state local
             setMessage('');
             // Gửi tin nhắn qua WebSocket
-            sendGroupChatMessage(Number(groupId), message);
+            sendGroupChatMessage(Number(groupId), message, 'MESSAGE', null);
         } catch (error) {
             console.error('Failed to send message:', error);
 
@@ -614,7 +617,23 @@ export default function GroupChatView() {
                                             {formatTime(message.timestamp || message.createdAt)}
                                         </span>
                                     </div>
-                                    <p className={cx('messageText')}>{message.content}</p>
+                                    {/* <p className={cx('messageText')}>{message.content}</p> */}
+                                    {message.messageType==="DOCUMENT"?(
+                                        <div className={cx('card')}>
+                                            <img
+                                                onClick={() => navigate(`/document/${message.documentId!==null? Number.parseInt(message.documentId): 0}`)}
+                                                src={DocumentIMG}
+                                                alt="doc"
+                                            />
+                                            <h3 onClick={() => navigate(`/document/${message.documentId!==null? Number.parseInt(message.documentId): 0}`)}>
+                                                {truncateTextWithLength(message.documentName!==null? message.documentName: "", 45)}
+                                            </h3>
+                                            <p className={cx('messageText')}>{message.content}</p>
+                                        </div>
+                                    ): (
+                                        <p className={cx('messageText')}>{message.content}</p>
+                                    )}
+                                    
                                 </div>
                                 <div className={cx('messageActions')}>
                                     <IconButton

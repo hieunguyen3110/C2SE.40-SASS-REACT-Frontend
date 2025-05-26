@@ -52,9 +52,14 @@ export default function FolderDetailView() {
     const { profilePicture } = useAppSelector((state) => state.authentication);
 
     // configs cho nút chia sẻ
-    const { openSharingModal, setUrl } = useSharingModal();
-    const handleOpenModal = (id: number) => {
-        setUrl(`${import.meta.env.VITE_CLIENT_URL}/document/${id}`);
+    const { openSharingModal, setUrl, setDoc } = useSharingModal();
+    const handleOpenModal = (doc: any) => {
+        setUrl(`${import.meta.env.VITE_CLIENT_URL}/document/${doc.docId}`);
+        setDoc({
+            documentId: doc.docId.toString(),
+            documentName: doc.title,
+            docFilePath: doc.filePath
+        })
         openSharingModal();
     };
 
@@ -215,7 +220,7 @@ export default function FolderDetailView() {
                                             <button onClick={() => downloadFile(value.filePath, value.title)}>
                                                 <img src={DownICON} alt="down" />
                                             </button>
-                                            <button onClick={() => handleOpenModal(value.docId)}>
+                                            <button onClick={() => handleOpenModal(value)}>
                                                 <img src={ShareICON} alt="share" />
                                             </button>
                                             {data.accountId === accountId && (
