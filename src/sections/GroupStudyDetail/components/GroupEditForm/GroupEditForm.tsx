@@ -6,6 +6,7 @@ import { editGroupAction, searchSubjectsAction } from '../../../../redux/GroupSt
 import { motion } from 'framer-motion';
 import { debounce } from '@mui/material';
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
+import { CreateGroupRequest } from '../../../../types/groupStudy.types';
 
 // MUI Icons only
 import SearchIcon from '@mui/icons-material/Search';
@@ -114,9 +115,9 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
     // Load current group data when the component mounts or currentGroup changes
     useEffect(() => {
         if (currentGroup) {
-            setGroupName(currentGroup.groupName);
+            setGroupName(currentGroup.groupName || '');
             setDescription(currentGroup.description || '');
-            setMemberLimited(currentGroup.memberLimited);
+            setMemberLimited(currentGroup.memberLimited || 10);
             setIsPrivate(currentGroup.isPrivate ?? true);
             // Check if subjectName exists and use it to set appropriate values
             if (currentGroup.subjectName) {
@@ -188,20 +189,30 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
         e.preventDefault();
         
         try {
-            // Create a regular object instead of FormData
-            const groupData = {
-                groupName,
-                description,
-                isPrivate: isPrivate,
-                memberLimited,
-                subjectId: subjectId ? parseInt(subjectId) : undefined,
-                memberIds: [], // Add empty memberIds array to match the CreateGroupRequest interface
-                picture: groupPicture // This will be handled separately by the API
-            };
+            // Create FormData instead of a regular object
+            const formData = new FormData();
+            formData.append('groupName', groupName);
+            formData.append('description', description);
+            formData.append('isPrivate', String(isPrivate));
+            formData.append('memberLimited', String(memberLimited));
+            
+            // Add subjectId if it exists
+            if (subjectId) {
+                formData.append('subjectId', subjectId);
+            }
+            
+            // Add picture if selected
+            if (groupPicture) {
+                formData.append('file', groupPicture);
+            }
+            
+            // Empty memberIds array as before
+            formData.append('memberIds', JSON.stringify([]));
             
             await dispatch(editGroupAction({
                 groupId,
-                data: groupData
+                // Use type assertion to resolve type compatibility issue
+                data: formData as unknown as CreateGroupRequest
             })).unwrap();
             
             onClose();
@@ -327,33 +338,33 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
                                         onChange={(e) => handleSearchSubject(e.target.value)}
                                         whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px rgba(255, 60, 60, 0.3)" }}
                                     />
+                                    
+                                    {/* Subject search results dropdown - Moved inside searchContainer */}
+                                    {subjectSelected.trim() && searchSubject?.length > 0 && (
+                                        <motion.div 
+                                            className={cx('searchResults')}
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.2 }}
+                                        >
+                                            <ul>
+                                                {searchSubject.map((result, index) => (
+                                                    <motion.li
+                                                        key={index}
+                                                        whileHover={{ backgroundColor: 'rgba(255, 60, 60, 0.1)' }}
+                                                        onClick={() => {
+                                                            setSubjectId(String(result.subjectId));
+                                                            setSubjectSelected(result.subjectName);
+                                                            clearSubjects();
+                                                        }}
+                                                    >
+                                                        {result.subjectName}
+                                                    </motion.li>
+                                                ))}
+                                            </ul>
+                                        </motion.div>
+                                    )}
                                 </div>
-                                
-                                {/* Subject search results dropdown */}
-                                {subjectSelected.trim() && searchSubject?.length > 0 && (
-                                    <motion.div 
-                                        className={cx('searchResults')}
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.2 }}
-                                    >
-                                        <ul>
-                                            {searchSubject.map((result, index) => (
-                                                <motion.li
-                                                    key={index}
-                                                    whileHover={{ backgroundColor: 'rgba(255, 60, 60, 0.1)' }}
-                                                    onClick={() => {
-                                                        setSubjectId(String(result.subjectId));
-                                                        setSubjectSelected(result.subjectName);
-                                                        clearSubjects();
-                                                    }}
-                                                >
-                                                    {result.subjectName}
-                                                </motion.li>
-                                            ))}
-                                        </ul>
-                                    </motion.div>
-                                )}
                                 
                                 <div className={cx('categoryChips')}>
                                     {categories.map((category) => (
@@ -430,11 +441,17 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
                                     rows={4}
                                     placeholder="Mô tả về nhóm học tập của bạn về ngành học, mục tiêu,..."
                                     value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (value.length <= 500) {
+                                            setDescription(value);
+                                        }
+                                    }}
                                     className={cx('textarea')}
                                     whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px rgba(255, 60, 60, 0.3)" }}
+                                    maxLength={500}
                                 />
-                                <small className={cx('charCount')}>
+                                <small className={cx('charCount', { 'limit-reached': description.length === 500 })}>
                                     {description.length}/500 kí tự
                                 </small>
                             </div>

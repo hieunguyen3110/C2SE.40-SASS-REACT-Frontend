@@ -22,7 +22,9 @@ export const disableLearningAnalytics = async () => {
 
 export const saveCoursePeriod = async (subjects: SubjectDto[]) => {
     try {
-        const res = await axiosInstance.post('/identity/account/save-course-period', subjects);
+        const res = await axiosInstance.post('/identity/account/save-course-period', {
+            subjects: subjects
+        });
         return res as unknown as ApiResponse<string>;
     } catch (error) {
         throw error;

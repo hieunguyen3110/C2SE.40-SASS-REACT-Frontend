@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/store';
 import { getPinnedMessagesAction, unpinMessageAction } from '../../../../redux/GroupStudySlice/GroupStudySlice';
 import { useLocation } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PushPinIcon from '@mui/icons-material/PushPin';
 import { Message } from '../../../../types/groupStudy.types';
 import { Delete } from '@mui/icons-material';
 
@@ -71,7 +70,7 @@ export default function PinnedMessages() {
                     {pinnedMessages.map((message: Message) => (
                         <div key={message.messageId} className={cx('message-item')}>
                             <div className={cx('message-header')}>
-                                <span className={cx('sender-id')}>User {message.senderId}</span>
+                                <span className={cx('sender-id')}>{message.username}</span>
                                 <button
                                     className={cx('unpin-icon')}
                                     onClick={() => handleUnpin(message.messageId)}

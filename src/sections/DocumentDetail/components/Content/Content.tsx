@@ -21,6 +21,8 @@ import { toast } from 'react-toastify';
 import { startAssignmentAction } from '../../../../redux/AIQuizSlice/aiQuizSlice';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Modal, Box, Typography, Button, TextField, Slider, Stack } from '@mui/material';
 
 interface IDetailDoc {
     url: string | undefined;
@@ -33,6 +35,8 @@ function Content({ url, id }: IDetailDoc) {
     const [openExistingSessionModal, setOpenExistingSessionModal] = useState(false);
     const [examDuration, setExamDuration] = useState<number>(10);
     const [questionCount, setQuestionCount] = useState<number>(5);
+    const [durationError, setDurationError] = useState<string>('');
+    const [questionCountError, setQuestionCountError] = useState<string>('');
     const { accountId } = useAppSelector((state) => state.authentication);
     const navigate = useNavigate();
     // configs cho nút chia sẻ
@@ -43,6 +47,7 @@ function Content({ url, id }: IDetailDoc) {
     };
     const { username } = useAppSelector((state) => state.authentication);
     const { DocumentDetail } = useAppSelector((state) => state.document);
+    const { loading } = useAppSelector((state) => state.aiQuiz);
     const dispatch = useAppDispatch();
 
     const handleDownload = () => {
@@ -75,7 +80,29 @@ function Content({ url, id }: IDetailDoc) {
         navigate('/document/ai-quiz/test-process');
     };
 
+    const validateForm = (): boolean => {
+        let isValid = true;
+        
+        if (examDuration < 1 || examDuration > 30) {
+            setDurationError('Thời gian phải từ 1-30 phút');
+            isValid = false;
+        } else {
+            setDurationError('');
+        }
+        
+        if (questionCount < 1 || questionCount > 15) {
+            setQuestionCountError('Số câu hỏi phải từ 1-15');
+            isValid = false;
+        } else {
+            setQuestionCountError('');
+        }
+        
+        return isValid;
+    };
+
     const handleSubmitExam = () => {
+        if (!validateForm()) return;
+        
         setOpenExamModal(false);
         const currentSession = Cookies.get('quiz_session');
         if (currentSession) {
@@ -103,72 +130,48 @@ function Content({ url, id }: IDetailDoc) {
                 endTime: endTimeStr,
                 isCompleted: false,
             }),
-        )
-            .unwrap()
-            .then(() => {
-                // Create quiz data object
-                const quizData = {
-                    sessionId: localSessionId,
-                    startTime: currentTime,
-                    endTime: endTimeStr,
-                    duration: examDuration * 60 * 1000, // Chuyển từ phút sang milliseconds
-                    subjectId: DocumentDetail.subjectId,
-                    numberOfQuestions: questionCount,
-                    subjectName: DocumentDetail.subjectName,
-                };
-
-                // Set cookie with expiration time based on quiz duration
-                Cookies.set('quiz_session', JSON.stringify(quizData), {
-                    expires: new Date(currentTime + examDuration * 60 * 1000),
-                    sameSite: 'strict',
-                });
-
-                // Chuyển hướng đến trang làm bài không cần sessionId
-                navigate(`/document/ai-quiz/test-process`);
-            })
-            .catch((error) => {
-                console.error('Error starting quiz:', error);
-            });
+        );
+        navigate(`/document/ai-quiz/test-process`);
     };
 
-    const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleDurationChange = (_: Event, newValue: number | number[]) => {
+        setExamDuration(newValue as number);
+        if (durationError) setDurationError('');
+    };
+
+    const handleDurationInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(e.target.value);
-        setExamDuration(Math.min(Math.max(value, 1), 30));
+        if (!isNaN(value)) {
+            setExamDuration(Math.min(Math.max(value, 1), 30));
+            setDurationError('');
+        }
     };
 
-    const handleQuestionCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleQuestionCountChange = (_: Event, newValue: number | number[]) => {
+        setQuestionCount(newValue as number);
+        if (questionCountError) setQuestionCountError('');
+    };
+
+    const handleQuestionCountInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(e.target.value);
-        setQuestionCount(Math.min(Math.max(value, 1), 15));
+        if (!isNaN(value)) {
+            setQuestionCount(Math.min(Math.max(value, 1), 15));
+            setQuestionCountError('');
+        }
     };
 
-    const ExamFormContent = () => (
-        <div className={cx('exam-form')}>
-            <div className={cx('form-group')}>
-                <label htmlFor="duration">Thời gian làm bài (phút):</label>
-                <input
-                    type="number"
-                    id="duration"
-                    value={examDuration}
-                    onChange={handleDurationChange}
-                    min={1}
-                    max={30}
-                />
-                <small className={cx('form-hint')}>Tối đa 30 phút</small>
-            </div>
-            <div className={cx('form-group')}>
-                <label htmlFor="questionCount">Số lượng câu hỏi:</label>
-                <input
-                    type="number"
-                    id="questionCount"
-                    value={questionCount}
-                    onChange={handleQuestionCountChange}
-                    min={1}
-                    max={15}
-                />
-                <small className={cx('form-hint')}>Tối đa 15 câu hỏi</small>
-            </div>
-        </div>
-    );
+    // Modal style
+    const modalStyle = {
+        position: 'absolute' as 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        boxShadow: 24,
+        p: 4,
+        borderRadius: 2,
+    };
 
     return (
         <div
@@ -185,7 +188,7 @@ function Content({ url, id }: IDetailDoc) {
                 <div className={cx('right-actions')}>
                     <button onClick={handleCreateExam}>
                         <AssignmentOutlinedIcon sx={{ color: 'black' }} />
-                        Tạo bài thi
+                        {loading ? <CircularProgress size={20} /> : 'Tạo bài thi'}
                     </button>
                     <button onClick={handleSave}>
                         <BookmarkBorderOutlinedIcon />
@@ -212,15 +215,100 @@ function Content({ url, id }: IDetailDoc) {
                 confirmText="Chấp nhận"
             />
 
-            {/* Exam creation modal */}
-            <AlertModal
-                isOpen={openExamModal}
+            {/* Exam creation modal - MUI version */}
+            <Modal
+                open={openExamModal}
                 onClose={() => setOpenExamModal(false)}
-                title="Tạo bài thi"
-                content={<ExamFormContent />}
-                onConfirm={handleSubmitExam}
-                confirmText="Tạo bài thi"
-            />
+                aria-labelledby="exam-modal-title"
+                aria-describedby="exam-modal-description"
+            >
+                <Box sx={modalStyle}>
+                    <Typography id="exam-modal-title" variant="h6" component="h2" gutterBottom>
+                        Tạo bài thi
+                    </Typography>
+                    
+                    <Box sx={{ mt: 3, mb: 3 }}>
+                        <Typography gutterBottom>Thời gian làm bài (phút)</Typography>
+                        <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
+                            <Slider
+                                value={examDuration}
+                                onChange={handleDurationChange}
+                                valueLabelDisplay="auto"
+                                step={1}
+                                marks
+                                min={1}
+                                max={30}
+                                aria-labelledby="duration-slider"
+                                color="error"
+                            />
+                            <TextField
+                                value={examDuration}
+                                onChange={handleDurationInputChange}
+                                inputProps={{
+                                    step: 1,
+                                    min: 1,
+                                    max: 30,
+                                    type: 'number',
+                                }}
+                                sx={{ width: 70 }}
+                                size="small"
+                                error={!!durationError}
+                                helperText={durationError}
+                                color="error"
+                            />
+                        </Stack>
+                        
+                        <Typography gutterBottom sx={{ mt: 3 }}>Số lượng câu hỏi</Typography>
+                        <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
+                            <Slider
+                                value={questionCount}
+                                onChange={handleQuestionCountChange}
+                                valueLabelDisplay="auto"
+                                step={1}
+                                marks
+                                min={1}
+                                max={15}
+                                aria-labelledby="questions-slider"
+                                color="error"
+                            />
+                            <TextField
+                                value={questionCount}
+                                onChange={handleQuestionCountInputChange}
+                                inputProps={{
+                                    step: 1,
+                                    min: 1,
+                                    max: 15,
+                                    type: 'number',
+                                }}
+                                sx={{ width: 70 }}
+                                size="small"
+                                error={!!questionCountError}
+                                helperText={questionCountError}
+                                color="error"
+                            />
+                        </Stack>
+                    </Box>
+                    
+                    <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 4 }}>
+                        <Button 
+                            variant="outlined" 
+                            onClick={() => setOpenExamModal(false)}
+                            color="error"
+                            sx={{ borderColor: 'error.main', '&:hover': { borderColor: 'error.dark' } }}
+                        >
+                            Hủy
+                        </Button>
+                        <Button 
+                            variant="contained" 
+                            onClick={handleSubmitExam}
+                            disabled={loading}
+                            color="error"
+                        >
+                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo bài thi'}
+                        </Button>
+                    </Stack>
+                </Box>
+            </Modal>
 
             {/* Existing session modal */}
             <AlertModal

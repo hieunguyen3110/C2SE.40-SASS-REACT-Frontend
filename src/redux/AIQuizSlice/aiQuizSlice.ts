@@ -9,6 +9,7 @@ import {
     getHistoryApi,
 } from '../../services/AIQuizAPI/AIQuizAPI';
 import { QuizSessionDTO, Grade, HistoryQuizzes } from '../../types/quiz.types';
+import Cookies from 'js-cookie';
 
 // Async Actions
 export const startQuizAction = createAsyncThunk<
@@ -112,10 +113,10 @@ export const updateSessionAnswerAction = createAsyncThunk<
 
 export const submitAction = createAsyncThunk<
     Grade,
-    { subjectId: number; userAnswers: string[]; isAssignment: boolean }
->('aiQuiz/submit', async ({ subjectId, userAnswers, isAssignment }) => {
+    { docId: number | undefined; subjectId: number; userAnswers: string[]; isAssignment: boolean }
+>('aiQuiz/submit', async ({ docId, subjectId, userAnswers, isAssignment }) => {
     try {
-        const response = await submitApi(subjectId, userAnswers, isAssignment);
+        const response = await submitApi(docId, subjectId, userAnswers, isAssignment);
         return response.data;
     } catch (err: unknown) {
         const error = err as AxiosError<{ message?: string }>;
@@ -193,10 +194,30 @@ const AIQuizSlice = createSlice({
                 state.currentSession = action.payload;
                 state.isAssignment = true;
                 state.result = null;
+
+                const quizData = {
+                    sessionId: action.payload.sessionId,
+                    startTime: action.payload.startTime,
+                    endTime: action.payload.endTime,
+                    duration: action.payload.duration,
+                    subjectId: action.payload.subjectId,
+                    numberOfQuestions: action.payload.numberOfQuestions,
+                    subjectName: action.payload.subjectName,
+                };
+
+                // Set cookie with expiration time based on quiz duration
+                if (quizData.startTime && quizData.endTime) {
+                    Cookies.set('quiz_session', JSON.stringify(quizData), {
+                        expires: new Date(quizData.endTime),
+                        sameSite: 'strict',
+                    });
+                    console.log('quizData in redux', quizData);
+                }
             })
             .addCase(startAssignmentAction.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || 'Không thể bắt đầu bài tập';
+                Cookies.remove('quiz_session');
             })
 
             // Restore Session

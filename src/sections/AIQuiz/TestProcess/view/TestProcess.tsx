@@ -46,44 +46,46 @@ export default function TestProcess() {
 
     // Load quiz data from cookie and Redux
     useEffect(() => {
-        const quizCookie = Cookies.get('quiz_session');
-
-        // If no quiz cookie exists, navigate back to knowledge test page
-        if (!quizCookie) {
-            toast.error('No active quiz session found');
-            navigate('/document/ai-quiz');
-            return;
-        }
-
-        try {
-            const quizData = JSON.parse(quizCookie);
-
-            // Check if the quiz time has expired
-            const now = new Date().getTime();
-            const endTime = new Date(quizData.endTime).getTime();
-
-            if (now >= endTime) {
-                Cookies.remove('quiz_session');
-                toast.error('Quiz time has expired');
+        if (!loading) {
+            const quizCookie = Cookies.get('quiz_session');
+            console.log('quizCookie', quizCookie);
+            // If no quiz cookie exists, navigate back to knowledge test page
+            if (!quizCookie) {
+                toast.error('No active quiz session found');
                 navigate('/document/ai-quiz');
                 return;
             }
 
-            // Calculate remaining time
-            const remainingTimeInSeconds = Math.max(0, Math.floor((endTime - now) / 1000));
-            setTimer(remainingTimeInSeconds);
-            setSubjectName(quizData.subjectName || 'Subject');
+            try {
+                const quizData = JSON.parse(quizCookie);
 
-            // If there's no current session in Redux, restore it from cookie data
-            if (!currentSession && !loading) {
-                dispatch(restoreSessionAction({ isAssignment: isAssignment }));
+                // Check if the quiz time has expired
+                const now = new Date().getTime();
+                const endTime = new Date(quizData.endTime).getTime();
+
+                if (now >= endTime) {
+                    Cookies.remove('quiz_session');
+                    toast.error('Quiz time has expired');
+                    navigate('/document/ai-quiz');
+                    return;
+                }
+
+                // Calculate remaining time
+                const remainingTimeInSeconds = Math.max(0, Math.floor((endTime - now) / 1000));
+                setTimer(remainingTimeInSeconds);
+                setSubjectName(quizData.subjectName || 'Subject');
+
+                // If there's no current session in Redux, restore it from cookie data
+                if (!currentSession && !loading) {
+                    dispatch(restoreSessionAction({ isAssignment: isAssignment }));
+                }
+            } catch (error) {
+                console.error('Error parsing quiz cookie:', error);
+                toast.error('Error loading quiz data');
+                navigate('/document/ai-quiz');
             }
-        } catch (error) {
-            console.error('Error parsing quiz cookie:', error);
-            toast.error('Error loading quiz data');
-            navigate('/document/ai-quiz');
         }
-    }, []);
+    }, [loading]);
 
     // Transform Redux questions to component format
     useEffect(() => {
@@ -206,6 +208,7 @@ export default function TestProcess() {
         if (currentSession && currentSession.subjectId) {
             dispatch(
                 submitAction({
+                    docId: currentSession.docId,
                     subjectId: currentSession.subjectId,
                     userAnswers: userAnswers,
                     isAssignment: isAssignment,
@@ -278,7 +281,7 @@ export default function TestProcess() {
     }
 
     // Show error message if there's an error
-    if (error) {
+    if (error && !loading && !currentSession) {
         return <ErrorState message={error} />;
     }
 

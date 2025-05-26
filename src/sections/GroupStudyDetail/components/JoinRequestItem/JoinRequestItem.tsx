@@ -14,11 +14,19 @@ interface JoinRequestItemProps {
     requestDate: string;
     onAccept: () => void;
     onReject: () => void;
+    isOwner: boolean;
 }
 
-const JoinRequestItem: React.FC<JoinRequestItemProps> = ({ avatar, name, requestDate, onAccept, onReject }) => {
+const JoinRequestItem: React.FC<JoinRequestItemProps> = ({
+    avatar,
+    name,
+    requestDate,
+    onAccept,
+    onReject,
+    isOwner,
+}) => {
     return (
-        <motion.div 
+        <motion.div
             className={cx('join-request-item')}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -33,24 +41,26 @@ const JoinRequestItem: React.FC<JoinRequestItemProps> = ({ avatar, name, request
                 </div>
                 <span className={cx('date')}>{requestDate}</span>
             </div>
-            <div className={cx('actions')}>
-                <motion.button 
-                    className={cx('accept-btn')} 
-                    onClick={onAccept}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    <CheckIcon />
-                </motion.button>
-                <motion.button 
-                    className={cx('reject-btn')} 
-                    onClick={onReject}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    <CloseIcon />
-                </motion.button>
-            </div>
+            {isOwner && (
+                <div className={cx('actions')}>
+                    <motion.button
+                        className={cx('accept-btn')}
+                        onClick={onAccept}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <CheckIcon />
+                    </motion.button>
+                    <motion.button
+                        className={cx('reject-btn')}
+                        onClick={onReject}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <CloseIcon />
+                    </motion.button>
+                </div>
+            )}
         </motion.div>
     );
 };

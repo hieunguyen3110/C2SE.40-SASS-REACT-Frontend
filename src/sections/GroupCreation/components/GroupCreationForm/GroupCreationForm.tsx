@@ -16,9 +16,8 @@ import BookIcon from '@mui/icons-material/Book';
 import LockIcon from '@mui/icons-material/Lock';
 import InfoIcon from '@mui/icons-material/Info';
 import PeopleIcon from '@mui/icons-material/People';
-
+import { toast } from 'react-toastify';
 import styles from './GroupCreationForm.module.scss';
-import { SearchGroupResult } from '../../../../types/groupStudy.types';
 
 const cx = classNames.bind(styles);
 
@@ -126,6 +125,10 @@ const GroupCreationForm = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            if (!subjectId) {
+                toast.error('Vui lòng chọn đúng môn học');
+                return;
+            }
             const response: any = await dispatch(
                 createGroupAction({
                     groupName: groupName,
@@ -218,6 +221,7 @@ const GroupCreationForm = () => {
                                 <SearchIcon className={cx('searchIcon')} />
                                 <motion.input
                                     ref={searchInputRef}
+                                    required
                                     type="text"
                                     placeholder="Tìm kiếm môn học, ngành học..."
                                     className={cx('input')}
@@ -328,7 +332,11 @@ const GroupCreationForm = () => {
                                 rows={4}
                                 placeholder="Mô tả về nhóm học tập của bạn về ngành học, mục tiêu,..."
                                 value={description}
-                                onChange={(e) => setDescription(e.target.value)}
+                                onChange={(e) => {
+                                    if (e.target.value.length <= 500) {
+                                        setDescription(e.target.value);
+                                    }
+                                }}
                                 className={cx('textarea')}
                                 whileFocus={{ scale: 1.01, boxShadow: '0 0 0 2px rgba(255, 60, 60, 0.3)' }}
                             />
