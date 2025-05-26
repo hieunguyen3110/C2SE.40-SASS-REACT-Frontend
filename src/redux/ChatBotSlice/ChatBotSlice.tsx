@@ -1,4 +1,3 @@
- 
 /* eslint-disable react-refresh/only-export-components */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { sendMessageService, TrainChatbotRequest, trainChatbotService } from '../../services/ChatBotAPI/ChatBotAPI';
@@ -23,10 +22,8 @@ type DocumentAnalysis = {
 };
 
 export type ChatbotResponse = {
-    parts: {
-        file_source: string[];
-        text: string;
-    }[];
+    responseText: string;
+    file_source: string[];
     role: string;
     filePath: string | undefined;
     fileName: string | undefined;
@@ -99,20 +96,23 @@ const ChatBotSlice = createSlice({
                     id: Date.now().toString(),
                     name: 'DTU AI Chat',
                     avatar: Avatar,
-                    message: action.payload.parts[0].text,
+                    message: action.payload.responseText,
                     time: new Date().toLocaleTimeString(),
                     sender: 'bot',
                 };
-                const findDocExist = state.documentAnalysis.find((doc) => doc.docId === action.payload.docId);
-                if (!findDocExist) {
-                    state.documentAnalysis.push({
-                        fileName: action.payload.fileName,
-                        subjectName: action.payload.subjectName,
-                        userName: action.payload.userName,
-                        filePath: action.payload.filePath,
-                        docId: action.payload.docId,
-                    });
+                if (action.payload.docId) {
+                    const findDocExist = state.documentAnalysis.find((doc) => doc.docId === action.payload.docId);
+                    if (!findDocExist) {
+                        state.documentAnalysis.push({
+                            fileName: action.payload.fileName,
+                            subjectName: action.payload.subjectName,
+                            userName: action.payload.userName,
+                            filePath: action.payload.filePath,
+                            docId: action.payload.docId,
+                        });
+                    }
                 }
+
                 state.messages = [...state.messages, data];
             })
             .addCase(trainChatbotAction.fulfilled, (state) => {

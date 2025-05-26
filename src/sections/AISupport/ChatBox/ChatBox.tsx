@@ -179,7 +179,7 @@ export default function ChatBox() {
                                 <div className={cx('message-content')}>
                                     <p>
                                         {/* {message.message.replace("\n","<br>")} */}
-                                        {message.message.split('\n').map((line, index) => {
+                                        {message.message.split(/\n\*|\n/).map((line, index) => {
                                             const parts = line.split(/(\*\*.*?\*\*)/g);
                                             return (
                                                 <>
