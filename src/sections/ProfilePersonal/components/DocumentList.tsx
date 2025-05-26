@@ -13,7 +13,7 @@ interface DocumentListProps {
   documents: GetDocument[];
   profileData: GetProfileRequest;
   onDownload: (docId: number) => void;
-  onShare: (docId: number) => void;
+  onShare: (doc: GetDocument) => void;
   onEdit: (document: GetDocument, profileData: GetProfileRequest) => void;
 }
 

@@ -18,7 +18,7 @@ const cx = classnames.bind(styles);
 interface DocumentListItemProps {
   document: GetDocument;
   onDownload: (docId: number) => void;
-  onShare: (docId: number) => void;
+  onShare: (doc: GetDocument) => void;
   onEdit: (document: GetDocument, profileData: GetProfileRequest) => void;
   profileData: GetProfileRequest;
 }
@@ -62,7 +62,7 @@ const DocumentListItem = ({ document, onDownload, onShare, onEdit, profileData }
         <motion.img
           src={Share}
           alt="share"
-          onClick={() => onShare(document.docId)}
+          onClick={() => onShare(document)}
           whileHover={{ y: -2 }}
         />
         <motion.img

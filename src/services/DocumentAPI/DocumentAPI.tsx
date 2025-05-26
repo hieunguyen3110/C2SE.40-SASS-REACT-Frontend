@@ -17,6 +17,7 @@ export interface GetDocument {
     docId: number;
     title: string;
     description: string;
+    filePath: string;
     type: string;
     subjectName: string;
     facultyName: string;

@@ -1,9 +1,8 @@
- 
 import classNames from 'classnames/bind';
 import styles from './Docs.module.scss';
 const cx = classNames.bind(styles);
 import avartar from '../../../../assets/images/icons/student-avatar.svg';
-import DocumentIMG from "../../../../assets/images/library.document.png"
+import DocumentIMG from '../../../../assets/images/library.document.png';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
@@ -18,6 +17,7 @@ import { useAppDispatch } from '../../../../redux/store';
 import { DownloadDocumentAction, SaveDocumentStogeAction } from '../../../../redux/DocumentSlice/documentSlice';
 import { useAppSelector } from '../../../../redux/store';
 import Loader from '../../../../components/Loader/Loader';
+import { DocumentResponse } from '../../../../redux/DocumentSlice/InterfaceResponse';
 
 const options = ['Lưu tài liệu', 'Tải xuống', 'Chia sẻ'];
 
@@ -25,9 +25,16 @@ const ITEM_HEIGHT = 48;
 
 export default function Docs({ title, docs }: any) {
     // configs cho nút chia sẻ
-    const { openSharingModal, setUrl } = useSharingModal();
-    const handleOpenModal = (id: number) => {
-        setUrl(`${import.meta.env.VITE_CLIENT_URL}/document/${id}`);
+    const { openSharingModal, setUrl, setDoc } = useSharingModal();
+    const handleOpenModal = (doc: DocumentResponse | null) => {
+        setUrl(`${import.meta.env.VITE_CLIENT_URL}/document/${doc?.docId}`);
+        if (doc !== null) {
+            setDoc({
+                documentId: doc.docId.toString(),
+                documentName: doc.title,
+                docFilePath: doc.filePath,
+            });
+        }
         openSharingModal();
     };
 
@@ -43,12 +50,12 @@ export default function Docs({ title, docs }: any) {
     };
 
     const dispatch = useAppDispatch();
-    const handleClose = (option: string, docId: number) => {
+    const handleClose = (option: string, docId: number, doc: DocumentResponse | null) => {
         if (option === 'Lưu tài liệu') {
             dispatch(SaveDocumentStogeAction(docId));
         }
         if (option === 'Chia sẻ') {
-            handleOpenModal(docId);
+            handleOpenModal(doc);
         }
         setAnchorEls((prev) => ({ ...prev, [docId]: null }));
     };
@@ -126,7 +133,7 @@ export default function Docs({ title, docs }: any) {
                                                 <MenuItem
                                                     key={option}
                                                     onClick={() => {
-                                                        handleClose(option, docIdCopy);
+                                                        handleClose(option, docIdCopy, data);
                                                     }}
                                                 >
                                                     {option}
@@ -135,11 +142,7 @@ export default function Docs({ title, docs }: any) {
                                         })}
                                     </Menu>
                                 </div>
-                                <img
-                                    onClick={() => navigate(`/document/${data.docId}`)}
-                                    src={DocumentIMG}
-                                    alt="doc"
-                                />
+                                <img onClick={() => navigate(`/document/${data.docId}`)} src={DocumentIMG} alt="doc" />
                                 <h3 onClick={() => navigate(`/document/${data.docId}`)}>
                                     {truncateTextWithLength(data.title, 45)}
                                 </h3>
@@ -151,7 +154,7 @@ export default function Docs({ title, docs }: any) {
                                         <div onClick={() => handleDownloadDocuments(data.docId)}>
                                             <FileDownloadOutlinedIcon sx={{ color: '#EB2930' }} />
                                         </div>
-                                        <div onClick={() => handleOpenModal(data.docId)}>
+                                        <div onClick={() => handleOpenModal(data)}>
                                             <ShareOutlinedIcon sx={{ color: '#EB2930' }} />
                                         </div>
                                     </div>
