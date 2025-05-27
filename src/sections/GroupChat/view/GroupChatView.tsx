@@ -69,7 +69,7 @@ export default function GroupChatView() {
     const groupId = getGroupIdFromPath();
 
     // Get group details and messages from Redux store
-    const { currentGroup, memberList, messages, pinnedMessages } = useAppSelector(
+    const { currentGroup, memberList, messages, pinnedMessages, loading } = useAppSelector(
         (state) => state.groupStudy,
     );
     const { accountId } = useAppSelector((state) => state.authentication);

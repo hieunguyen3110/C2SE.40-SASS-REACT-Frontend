@@ -37,8 +37,10 @@ const GroupSidebar = () => {
 
     useEffect(() => {
         // Dispatch action to get user groups
-        dispatch(getGroupOfUserAction());
-    }, [dispatch]);
+        if (userGroups.length === 0) {
+            dispatch(getGroupOfUserAction());
+        }
+    }, [dispatch, userGroups]);
 
     useEffect(() => {
         if (userGroups && Array.isArray(userGroups)) {

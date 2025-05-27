@@ -30,6 +30,8 @@ import {
     rejectJoinRequestAction,
     updateJoinRequest,
     getGroupOfUserAction,
+    setRoleAction,
+    getPinnedMessagesAction,
 } from '../../../redux/GroupStudySlice/GroupStudySlice';
 import GroupEditForm from '../components/GroupEditForm/GroupEditForm';
 import AlertModal from '../../../components/AlertModal/AlertModal';
@@ -38,7 +40,6 @@ import { JoinRequest } from '../../../types/groupStudy.types';
 import GroupSetting from '../components/GroupSetting/GroupSetting';
 import PinnedMessages from '../components/PinnedMessages/PinnedMessages';
 import { toast } from 'react-toastify';
-
 const cx = classNames.bind(styles);
 
 export default function GroupStudyDetail() {
@@ -51,25 +52,47 @@ export default function GroupStudyDetail() {
     const { isOpen, title, content, onConfirm, confirmText, openModal, closeModal } = useAlertModal();
 
     // Redux state
-    const { currentGroup, memberList } = useAppSelector((state) => state.groupStudy);
+    const { loading, currentGroup, memberList, userGroups, pinnedMessages } = useAppSelector(
+        (state) => state.groupStudy,
+    );
     const { accountId } = useAppSelector((state: RootState) => state.authentication);
 
     // Check if current user is the owner
-    const isOwner = currentGroup?.userId === accountId;
+    const canAccept = useMemo(() => {
+        const hasPermission = currentGroup?.role === 'OWNER' || currentGroup?.role === 'ADMIN';
+        return hasPermission;
+    }, [currentGroup?.role]);
 
     // Fetch group details when component mounts
     useEffect(() => {
-        dispatch(getGroupOfUserAction())
-            .unwrap()
-            .then((res) => {
-                if (id && res.some((group) => group.groupId === parseInt(id))) {
+        if (userGroups.length > 0) {
+            if (id && userGroups.some((group) => group.groupId === parseInt(id))) {
+                if (!currentGroup) {
                     dispatch(getGroupDetailsAction(parseInt(id)));
-                    dispatch(listMembersAction({ groupId: parseInt(id), page: 0, size: 10 }));
-                } else {
-                    toast.error('Bạn không có quyền truy cập vào nhóm này');
-                    navigate('/document/group-study/management');
                 }
-            });
+                if (!memberList) {
+                    dispatch(listMembersAction({ groupId: parseInt(id), page: 0, size: 10 }));
+                }
+                if (!pinnedMessages) {
+                    dispatch(getPinnedMessagesAction({ groupId: parseInt(id), page: 0, size: 10 }));
+                }
+            } else {
+                toast.error('Bạn không có quyền truy cập vào nhóm này');
+                navigate('/document/group-study/management');
+            }
+        } else {
+            dispatch(getGroupOfUserAction())
+                .unwrap()
+                .then((res) => {
+                    if (id && res.some((group) => group.groupId === parseInt(id))) {
+                        dispatch(getGroupDetailsAction(parseInt(id)));
+                        dispatch(listMembersAction({ groupId: parseInt(id), page: 0, size: 10 }));
+                    } else {
+                        toast.error('Bạn không có quyền truy cập vào nhóm này');
+                        navigate('/document/group-study/management');
+                    }
+                });
+        }
     }, [dispatch, id]);
 
     // Filter members based on search term
@@ -86,7 +109,7 @@ export default function GroupStudyDetail() {
     };
 
     const handleRejectRequest = (id: number) => {
-        if (currentGroup?.userId === accountId) {
+        if (canAccept) {
             dispatch(rejectJoinRequestAction(id));
             dispatch(updateJoinRequest({ joinRequestId: id, status: 'REJECTED' }));
         } else {
@@ -96,11 +119,15 @@ export default function GroupStudyDetail() {
 
     // Handle member delete action
     const handleDeleteMember = (memberId: number) => {
-        if (currentGroup?.userId === accountId) {
+        if (canAccept) {
             dispatch(removeMemberAction({ groupId: parseInt(id || ''), userId: memberId }));
         } else {
             toast.error('Bạn không có quyền xóa thành viên');
         }
+    };
+
+    const handleRoleChange = (memberId: number, newRole: string) => {
+        dispatch(setRoleAction({ groupId: parseInt(id || ''), userId: memberId, role: newRole }));
     };
 
     // Handle edit and delete actions
@@ -135,12 +162,20 @@ export default function GroupStudyDetail() {
         return currentGroup?.joinRequests || [];
     }, [currentGroup]);
 
+    if (loading) {
+        return (
+            <div className={cx('loader-container')}>
+                <div className={cx('loader')}></div>
+            </div>
+        );
+    }
+
     return (
         <div className={cx('group-study-detail')}>
             {/* Header */}
             <header className={cx('group-study-detail__header')}>
                 <div className={cx('header-wrapper')}>
-                    <a href="#" className={cx('back-button')}>
+                    <a href="/document/group-study" className={cx('back-button')}>
                         <ArrowBackIcon />
                     </a>
                     <div className={cx('title-wrapper')}>
@@ -155,7 +190,7 @@ export default function GroupStudyDetail() {
                     </div>
 
                     {/* Owner Actions */}
-                    {isOwner && (
+                    {currentGroup?.role === 'OWNER' && (
                         <div className={cx('owner-actions')}>
                             <Button
                                 variant="contained"
@@ -242,7 +277,7 @@ export default function GroupStudyDetail() {
                                                 )
                                             }
                                             onReject={() => handleRejectRequest(request.id)}
-                                            isOwner={isOwner}
+                                            canAccept={canAccept}
                                         />
                                     ))
                                 ) : (
@@ -317,9 +352,11 @@ export default function GroupStudyDetail() {
                                             avatar={member.profilePicture}
                                             name={member.name}
                                             joinDate={member.email}
-                                            role={currentGroup?.userId === member.memberId ? 'Owner' : 'Member'}
-                                            canDelete={isOwner && currentGroup?.userId !== member.memberId}
+                                            role={member.role}
+                                            canDelete={currentGroup?.role === 'OWNER'}
+                                            canChangeRole={currentGroup?.role === 'OWNER'}
                                             onDelete={() => handleDeleteMember(member.memberId)}
+                                            onRoleChange={(newRole) => handleRoleChange(member.memberId, newRole)}
                                         />
                                     ))
                                 ) : (
@@ -340,13 +377,13 @@ export default function GroupStudyDetail() {
 
                 {activeTab === 1 && (
                     <div className={cx('section')}>
-                        <PinnedMessages />
+                        <PinnedMessages pinnedMessages={pinnedMessages} />
                     </div>
                 )}
 
                 {activeTab === 2 && (
                     <div className={cx('section')}>
-                        <GroupSetting />
+                        <GroupSetting isOwner={currentGroup?.role === 'OWNER'} />
                     </div>
                 )}
             </div>

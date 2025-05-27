@@ -14,7 +14,7 @@ interface JoinRequestItemProps {
     requestDate: string;
     onAccept: () => void;
     onReject: () => void;
-    isOwner: boolean;
+    canAccept: boolean;
 }
 
 const JoinRequestItem: React.FC<JoinRequestItemProps> = ({
@@ -23,7 +23,7 @@ const JoinRequestItem: React.FC<JoinRequestItemProps> = ({
     requestDate,
     onAccept,
     onReject,
-    isOwner,
+    canAccept,
 }) => {
     return (
         <motion.div
@@ -41,7 +41,7 @@ const JoinRequestItem: React.FC<JoinRequestItemProps> = ({
                 </div>
                 <span className={cx('date')}>{requestDate}</span>
             </div>
-            {isOwner && (
+            {canAccept && (
                 <div className={cx('actions')}>
                     <motion.button
                         className={cx('accept-btn')}

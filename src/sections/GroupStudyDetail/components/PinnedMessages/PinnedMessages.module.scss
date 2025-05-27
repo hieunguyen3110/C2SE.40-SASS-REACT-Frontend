@@ -1,122 +1,121 @@
 .pinned-messages {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  
-  .title {
-    color: #ff3c3c;
-    font-size: 18px;
-    margin-bottom: 16px;
-    font-weight: 600;
-    border-bottom: 2px solid #ff3c3c;
-    padding-bottom: 8px;
-  }
-  
-  .message-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    max-height: 400px;
-    overflow-y: auto;
-    
-    &::-webkit-scrollbar {
-      width: 6px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .title {
+        color: #ff3c3c;
+        font-size: 18px;
+        margin-bottom: 16px;
+        font-weight: 600;
+        border-bottom: 2px solid #ff3c3c;
+        padding-bottom: 8px;
     }
-    
-    &::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
+
+    .message-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        max-height: 400px;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #ff3c3c;
+            border-radius: 10px;
+        }
     }
-    
-    &::-webkit-scrollbar-thumb {
-      background: #ff3c3c;
-      border-radius: 10px;
+
+    .message-item {
+        position: relative;
+        background-color: #f9f9f9;
+        border-left: 3px solid #ff3c3c;
+        border-radius: 4px;
+        padding: 12px;
+        transition: all 0.2s ease;
+        .unpin-button {
+            opacity: 1;
+        }
+        &:hover {
+            background-color: #f5f5f5;
+        }
     }
-  }
-  
-  .message-item {
-    position: relative;
-    background-color: #f9f9f9;
-    border-left: 3px solid #ff3c3c;
-    border-radius: 4px;
-    padding: 12px;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      background-color: #f5f5f5;
-      
-      .unpin-button {
-        opacity: 1;
-      }
+
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        align-items: center;
+
+        .sender-id {
+            font-weight: 600;
+            color: #ff3c3c;
+        }
+
+        .unpin-icon {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #ff3c3c;
+            padding: 0;
+            margin: 0 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: #666;
+            margin-left: auto;
+            margin-right: 30px;
+        }
     }
-  }
-  
-  .message-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    align-items: center;
-    
-    .sender-id {
-      font-weight: 600;
-      color: #ff3c3c;
+
+    .message-content {
+        word-break: break-word;
+        line-height: 1.5;
+        color: #333;
     }
-    
-    .unpin-icon {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: #ff3c3c;
-      padding: 0;
-      margin: 0 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      
-      &:hover {
-        transform: scale(1.1);
-      }
+
+    .unpin-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        color: #ff3c3c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            transform: scale(1.1);
+        }
     }
-    
-    .timestamp {
-      font-size: 12px;
-      color: #666;
-      margin-left: auto;
+
+    .no-messages {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+        font-style: italic;
+        border: 1px dashed #ff3c3c;
+        border-radius: 4px;
     }
-  }
-  
-  .message-content {
-    word-break: break-word;
-    line-height: 1.5;
-    color: #333;
-  }
-  
-  .unpin-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    color: #ff3c3c;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    &:hover {
-      transform: scale(1.1);
-    }
-  }
-  
-  .no-messages {
-    text-align: center;
-    padding: 20px;
-    color: #666;
-    font-style: italic;
-    border: 1px dashed #ff3c3c;
-    border-radius: 4px;
-  }
 }

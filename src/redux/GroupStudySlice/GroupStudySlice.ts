@@ -26,6 +26,7 @@ import {
     approveJoinRequestApi,
     rejectJoinRequestApi,
     leaveGroupApi,
+    setRoleApi,
 } from '../../services/GroupStudyAPI/GroupStudyAPI';
 import {
     IGroup,
@@ -47,10 +48,10 @@ export interface WebSocketChatMessage {
     username: string;
     profilePicture: string;
     messageId: number;
-    documentId : string | null;
+    documentId: string | null;
     documentName: string | null;
     docFilePath: string | null;
-    messageType : string;
+    messageType: string;
 }
 
 // Async Actions
@@ -190,11 +191,12 @@ export const pinMessageAction = createAsyncThunk<void, { messageId: number }>(
     },
 );
 
-export const unpinMessageAction = createAsyncThunk<void, { messageId: number }>(
+export const unpinMessageAction = createAsyncThunk<number, { messageId: number }>(
     'groupStudy/unpinMessage',
     async ({ messageId }) => {
         try {
             await unpinMessageApi(messageId);
+            return messageId;
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
             toast.error('Không thể bỏ ghim tin nhắn. Vui lòng thử lại sau.');
@@ -393,6 +395,19 @@ export const leaveGroupAction = createAsyncThunk<void, number>('groupStudy/leave
     }
 });
 
+export const setRoleAction = createAsyncThunk<
+    { userId: number; role: string },
+    { groupId: number; userId: number; role: string }
+>('groupStudy/setRole', async ({ groupId, userId, role }) => {
+    try {
+        await setRoleApi(groupId, userId, role);
+        return { userId, role };
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        throw Error(error.message);
+    }
+});
+
 // Initial State
 interface GroupStudyState {
     loading: boolean;
@@ -463,6 +478,7 @@ const GroupStudySlice = createSlice({
                 createdAt: null,
                 joinRequests: null,
                 memberCount: action.payload.memberCount,
+                role: action.payload.role || 'MEMBER',
             };
             state.userGroups = [...state.userGroups, newGroups];
         },
@@ -489,7 +505,7 @@ const GroupStudySlice = createSlice({
                         documentId: action.payload.documentId,
                         documentName: action.payload.documentName,
                         docFilePath: action.payload.docFilePath,
-                        messageType: action.payload.messageType
+                        messageType: action.payload.messageType,
                         // Add other required fields with default values as needed
                     };
 
@@ -691,16 +707,13 @@ const GroupStudySlice = createSlice({
                 state.error = action.error.message || 'Không thể ghim tin nhắn';
             })
 
-            // Unpin Message
-            .addCase(unpinMessageAction.pending, (state) => {
-                state.loading = true;
-            })
-            .addCase(unpinMessageAction.fulfilled, (state) => {
+            .addCase(unpinMessageAction.fulfilled, (state, action) => {
                 state.loading = false;
+                state.pinnedMessages = state.pinnedMessages.filter((message) => message.messageId !== action.payload);
             })
             .addCase(unpinMessageAction.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message || 'Không thể bỏ ghim tin nhắn';
+                toast.error(action.error.message || 'Không thể bỏ ghim tin nhắn');
             })
 
             // Update Privacy Setting
@@ -869,6 +882,20 @@ const GroupStudySlice = createSlice({
             .addCase(leaveGroupAction.fulfilled, (state) => {
                 state.loading = false;
                 resetGroupState();
+            })
+            .addCase(setRoleAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.memberList = state.memberList.map((member) => {
+                    if (member.memberId === action.payload.userId) {
+                        return { ...member, role: action.payload.role as 'OWNER' | 'ADMIN' | 'MEMBER' };
+                    }
+                    return member;
+                });
+                toast.success('Đã thiết lập vai trò thành công');
+            })
+            .addCase(setRoleAction.rejected, (state, action) => {
+                state.loading = false;
+                toast.error(action.error.message || 'Không thể thiết lập vai trò');
             });
     },
 });
