@@ -45,7 +45,7 @@ const Content = () => {
             {content !== null && (
                 <div className={cx('content')}>
                     <div className={cx('title')}>
-                        <img src={content.icon} alt="icon" />
+                        <img src={content.icon} alt="icon" style={{width : "50px"}} />
                         <h3>{content.title}</h3>
                         <hr />
                         <p>{content.paragraph}</p>

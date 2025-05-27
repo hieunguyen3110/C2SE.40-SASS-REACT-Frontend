@@ -189,6 +189,9 @@ const ProfilePersonalSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message || 'Lỗi khi lưu kỳ học';
             })
+            .addCase(getAnalyzeAction.pending, (state) => {
+                state.loading = false;
+            })
             .addCase(getAnalyzeAction.fulfilled, (state, action: PayloadAction<AnalyticsData>) => {
                 state.loading = false;
                 state.analyzeData = action.payload;

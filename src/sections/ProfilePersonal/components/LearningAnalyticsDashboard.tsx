@@ -110,16 +110,15 @@ const LearningAnalyticsDashboard: React.FC = () => {
             toast.success('Phân tích học tập đã được bật');
         }
     };
-    const handleNavigateAi= ()=>{
-        navigate("/document/ai-quiz");
-    }
+    const handleNavigateAi = () => {
+        navigate('/document/ai-quiz');
+    };
 
     const handleModalClose = () => {
         // If the user cancels the modal without selecting subjects
         dispatch(disableLearningAnalyticsAction());
         setShowSubjectModal(false);
     };
-    
 
     useEffect(() => {
         if (getUserProfile?.isEnableAnalyze) {
@@ -242,9 +241,13 @@ const LearningAnalyticsDashboard: React.FC = () => {
                             </div>
                             <div className={cx('card-content')}>
                                 <div className={cx('card-title')}>Trạng thái học tập</div>
-                                {isAnalyticsEnabled && analyzeData ? (
+                                {(isAnalyticsEnabled && analyzeData && analyzeData.general_assessment!== null) ? (
                                     <div className={cx('card-alert-important')}>
-                                        <p>{analyzeData.general_assessment.risk_assessment.substring(0, 100)}...</p>
+                                        <p>
+                                            {analyzeData.general_assessment !== null &&
+                                                analyzeData.general_assessment.risk_assessment.substring(0, 100)}
+                                            ...
+                                        </p>
                                     </div>
                                 ) : (
                                     <div className={cx('card-alert')}>
@@ -260,268 +263,297 @@ const LearningAnalyticsDashboard: React.FC = () => {
                         </motion.div>
                     </motion.div>
 
-                    <div className={cx('analytics-detail')}>
-                        <h4>PHÂN TÍCH HỌC TẬP VÀ PHƯƠNG PHÁP HỌC DÀNH CHO BẠN</h4>
-                        <div className={cx('divider')}></div>
+                    {analyzeData &&
+                    analyzeData.general_assessment !== null &&
+                    analyzeData.progress_tracking !== null &&
+                    analyzeData.weekly_study_plan !== null &&
+                    analyzeData.improvement_suggestions.length > 0 &&
+                    analyzeData.subject_weakens.length > 0 ? (
+                        <div className={cx('analytics-detail')}>
+                            <h4>PHÂN TÍCH HỌC TẬP VÀ PHƯƠNG PHÁP HỌC DÀNH CHO BẠN</h4>
+                            <div className={cx('divider')}></div>
 
-                        <div className={cx('tabs')}>
-                            <div className={cx('tab', { active: activeTab === 0 })} onClick={() => handleTabChange(0)}>
-                                <Timeline />
-                                <span>Phân tích học tập</span>
-                            </div>
-                            <div className={cx('tab', { active: activeTab === 1 })} onClick={() => handleTabChange(1)}>
-                                <AutoGraph />
-                                <span>Đề xuất phương pháp</span>
-                            </div>
-                            <div className={cx('tab', { active: activeTab === 2 })} onClick={() => handleTabChange(2)}>
-                                <Book />
-                                <span>Tài liệu gợi ý</span>
-                            </div>
-                            <div className={cx('tab', { active: activeTab === 3 })} onClick={() => handleTabChange(3)}>
-                                <Schedule />
-                                <span>Kế hoạch học tập</span>
-                            </div>
-                        </div>
-
-                        <div className={cx('tab-content')}>
-                            {activeTab === 0 && (
-                                <div className={cx('tab-panel')}>
-                                    {!isAnalyticsEnabled || !analyzeData ? (
-                                        <div className={cx('info-alert')}>
-                                            <h5>Thông tin phân tích</h5>
-                                            <p>
-                                                Hiện tại bạn cần hoàn thành ít nhất 3 bài tập hoặc bài thi để có thể xem
-                                                phân tích chi tiết về quá trình học tập của mình.
-                                            </p>
-                                            <div className={cx('button-container')}>
-                                                <button className={cx('primary-button')}>Xem danh sách bài tập</button>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <>
-                                            <CollapsibleSection
-                                                title="Đánh giá tổng quan"
-                                                id="overview"
-                                                iconColor="#5c6bc0"
-                                            >
-                                                <div className={cx('overview-content')}>
-                                                    <p>{analyzeData.general_assessment.overall_status}</p>
-                                                </div>
-                                            </CollapsibleSection>
-
-                                            <div className={cx('analysis-columns')}>
-                                                <div className={cx('analysis-column')}>
-                                                    <CollapsibleSection
-                                                        title="Điểm mạnh"
-                                                        id="strengths"
-                                                        iconColor="#558b2f"
-                                                    >
-                                                        <div className={cx('analysis-item', 'strength')}>
-                                                            <ul>
-                                                                {analyzeData.general_assessment.strengths.map(
-                                                                    (strength, index) => (
-                                                                        <li key={index}>{strength}</li>
-                                                                    ),
-                                                                )}
-                                                            </ul>
-                                                        </div>
-                                                    </CollapsibleSection>
-                                                </div>
-                                                <div className={cx('analysis-column')}>
-                                                    <CollapsibleSection
-                                                        title="Điểm yếu"
-                                                        id="weaknesses"
-                                                        iconColor="#f57c00"
-                                                    >
-                                                        <div className={cx('analysis-item', 'weakness')}>
-                                                            <ul>
-                                                                {analyzeData.general_assessment.weaknesses.map(
-                                                                    (weakness, index) => (
-                                                                        <li key={index}>{weakness}</li>
-                                                                    ),
-                                                                )}
-                                                            </ul>
-                                                        </div>
-                                                    </CollapsibleSection>
-                                                </div>
-                                            </div>
-
-                                            <CollapsibleSection
-                                                title="Chỉ số cần theo dõi"
-                                                id="metrics"
-                                                iconColor="#5c6bc0"
-                                            >
-                                                <ul className={cx('metrics-list')}>
-                                                    {analyzeData.progress_tracking.metrics_to_monitor.map(
-                                                        (metric, index) => (
-                                                            <li key={index}>{metric}</li>
-                                                        ),
-                                                    )}
-                                                </ul>
-                                            </CollapsibleSection>
-                                        </>
-                                    )}
+                            <div className={cx('tabs')}>
+                                <div
+                                    className={cx('tab', { active: activeTab === 0 })}
+                                    onClick={() => handleTabChange(0)}
+                                >
+                                    <Timeline />
+                                    <span>Phân tích học tập</span>
                                 </div>
-                            )}
-
-                            {activeTab === 1 && (
-                                <div className={cx('tab-panel')}>
-                                    {!isAnalyticsEnabled || !analyzeData ? (
-                                        <div className={cx('info-alert')}>
-                                            <h5>Phương pháp học tập</h5>
-                                            <p>
-                                                Dựa trên dữ liệu học tập, hệ thống sẽ đề xuất các phương pháp học tập
-                                                phù hợp. Vui lòng hoàn thành thêm bài tập để nhận đề xuất chi tiết.
-                                            </p>
-                                        </div>
-                                    ) : (
-                                        <>
-                                            <CollapsibleSection
-                                                title="Đề xuất cải thiện"
-                                                id="suggestions"
-                                                iconColor="#5c6bc0"
-                                            >
-                                                <div className={cx('suggestions-container')}>
-                                                    {analyzeData.improvement_suggestions.map((suggestion, index) => (
-                                                        <div className={cx('suggestion-card')} key={index}>
-                                                            <div className={cx('suggestion-header')}>
-                                                                <Lightbulb className={cx('suggestion-icon')} />
-                                                                <h5>{suggestion.focus_area}</h5>
-                                                            </div>
-                                                            <p className={cx('suggestion-action')}>
-                                                                {suggestion.specific_action}
-                                                            </p>
-                                                            <div className={cx('suggestion-outcome')}>
-                                                                <strong>Kết quả mong đợi:</strong>{' '}
-                                                                {suggestion.expected_outcome}
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </CollapsibleSection>
-
-                                            <CollapsibleSection
-                                                title="Chiến lược điều chỉnh"
-                                                id="adjustments"
-                                                iconColor="#5c6bc0"
-                                            >
-                                                <ul className={cx('adjustment-list')}>
-                                                    {analyzeData.progress_tracking.adjustment_strategies.map(
-                                                        (strategy, index) => (
-                                                            <li key={index}>
-                                                                <Check className={cx('check-icon')} />
-                                                                <span>{strategy}</span>
-                                                            </li>
-                                                        ),
-                                                    )}
-                                                </ul>
-                                            </CollapsibleSection>
-                                        </>
-                                    )}
-
-                                    <div className={cx('tips-card')}>
-                                        <h5>Mẹo học tập hiệu quả:</h5>
-                                        <ul className={cx('tips-list')}>
-                                            <li>
-                                                <Check className={cx('check-icon')} />
-                                                <span>Lập kế hoạch học tập cụ thể với thời gian biểu chi tiết</span>
-                                            </li>
-                                            <li>
-                                                <Check className={cx('check-icon')} />
-                                                <span>Sử dụng phương pháp Pomodoro (25 phút học, 5 phút nghỉ)</span>
-                                            </li>
-                                            <li>
-                                                <Check className={cx('check-icon')} />
-                                                <span>Luyện tập giải bài tập thường xuyên để củng cố kiến thức</span>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                <div
+                                    className={cx('tab', { active: activeTab === 1 })}
+                                    onClick={() => handleTabChange(1)}
+                                >
+                                    <AutoGraph />
+                                    <span>Đề xuất phương pháp</span>
                                 </div>
-                            )}
+                                <div
+                                    className={cx('tab', { active: activeTab === 2 })}
+                                    onClick={() => handleTabChange(2)}
+                                >
+                                    <Book />
+                                    <span>Tài liệu gợi ý</span>
+                                </div>
+                                <div
+                                    className={cx('tab', { active: activeTab === 3 })}
+                                    onClick={() => handleTabChange(3)}
+                                >
+                                    <Schedule />
+                                    <span>Kế hoạch học tập</span>
+                                </div>
+                            </div>
 
-                            {activeTab === 2 && (
-                                <div className={cx('tab-panel')}>
-                                    <h5>Tài liệu tham khảo được đề xuất dựa trên quá trình học tập của bạn:</h5>
-                                    <div className={cx('resources-grid')}>
+                            <div className={cx('tab-content')}>
+                                {activeTab === 0 && (
+                                    <div className={cx('tab-panel')}>
                                         {!isAnalyticsEnabled || !analyzeData ? (
-                                            <>
-                                                <div className={cx('resource-card')}>
-                                                    <div className={cx('resource-icon')}>
-                                                        <Book className={cx('book-icon')} />
-                                                    </div>
-                                                    <h6>Calculus Made Easy</h6>
-                                                    <button className={cx('outline-button')}>Xem Tài Liệu</button>
+                                            <div className={cx('info-alert')}>
+                                                <h5>Thông tin phân tích</h5>
+                                                <p>
+                                                    Hiện tại bạn cần hoàn thành ít nhất 3 bài tập hoặc bài thi để có thể
+                                                    xem phân tích chi tiết về quá trình học tập của mình.
+                                                </p>
+                                                <div className={cx('button-container')}>
+                                                    <button className={cx('primary-button')}>
+                                                        Xem danh sách bài tập
+                                                    </button>
                                                 </div>
-                                                <div className={cx('resource-card')}>
-                                                    <div className={cx('resource-icon')}>
-                                                        <Book className={cx('book-icon')} />
-                                                    </div>
-                                                    <h6>3D Geometry Guide</h6>
-                                                    <button className={cx('outline-button')}>Xem Tài Liệu</button>
-                                                </div>
-                                            </>
+                                            </div>
                                         ) : (
-                                            analyzeData.document_recommend.map((doc, index) => (
-                                                <div className={cx('resource-card')} key={index}>
-                                                    <div className={cx('resource-icon')}>
-                                                        <Book className={cx('book-icon')} />
+                                            <>
+                                                <CollapsibleSection
+                                                    title="Đánh giá tổng quan"
+                                                    id="overview"
+                                                    iconColor="#5c6bc0"
+                                                >
+                                                    <div className={cx('overview-content')}>
+                                                        <p>
+                                                            {analyzeData.general_assessment !== null &&
+                                                                analyzeData.general_assessment.overall_status}
+                                                        </p>
                                                     </div>
-                                                    <h6>{doc.description}</h6>
-                                                    <p className={cx('resource-subject')}>{doc.subjectName}</p>
-                                                    <a
-                                                        href={doc.filePath}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className={cx('outline-button')}
-                                                    >
-                                                        Xem Tài Liệu
-                                                    </a>
+                                                </CollapsibleSection>
+
+                                                <div className={cx('analysis-columns')}>
+                                                    <div className={cx('analysis-column')}>
+                                                        <CollapsibleSection
+                                                            title="Điểm mạnh"
+                                                            id="strengths"
+                                                            iconColor="#558b2f"
+                                                        >
+                                                            <div className={cx('analysis-item', 'strength')}>
+                                                                <ul>
+                                                                    {analyzeData.general_assessment !== null &&
+                                                                        analyzeData.general_assessment.strengths.map(
+                                                                            (strength, index) => (
+                                                                                <li key={index}>{strength}</li>
+                                                                            ),
+                                                                        )}
+                                                                </ul>
+                                                            </div>
+                                                        </CollapsibleSection>
+                                                    </div>
+                                                    <div className={cx('analysis-column')}>
+                                                        <CollapsibleSection
+                                                            title="Điểm yếu"
+                                                            id="weaknesses"
+                                                            iconColor="#f57c00"
+                                                        >
+                                                            <div className={cx('analysis-item', 'weakness')}>
+                                                                <ul>
+                                                                    {analyzeData.general_assessment !== null &&
+                                                                        analyzeData.general_assessment.weaknesses.map(
+                                                                            (weakness, index) => (
+                                                                                <li key={index}>{weakness}</li>
+                                                                            ),
+                                                                        )}
+                                                                </ul>
+                                                            </div>
+                                                        </CollapsibleSection>
+                                                    </div>
                                                 </div>
-                                            ))
+
+                                                <CollapsibleSection
+                                                    title="Chỉ số cần theo dõi"
+                                                    id="metrics"
+                                                    iconColor="#5c6bc0"
+                                                >
+                                                    <ul className={cx('metrics-list')}>
+                                                        {analyzeData.progress_tracking !== null &&
+                                                            analyzeData.progress_tracking.metrics_to_monitor.map(
+                                                                (metric, index) => <li key={index}>{metric}</li>,
+                                                            )}
+                                                    </ul>
+                                                </CollapsibleSection>
+                                            </>
                                         )}
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            {activeTab === 3 && (
-                                <div className={cx('tab-panel')}>
-                                    {!isAnalyticsEnabled || !analyzeData ? (
-                                        <div className={cx('info-alert')}>
-                                            <h5>Kế hoạch học tập</h5>
-                                            <p>
-                                                Để xem kế hoạch học tập chi tiết, vui lòng hoàn thành các bài tập và bật
-                                                tính năng phân tích học tập.
-                                            </p>
-                                        </div>
-                                    ) : (
-                                        <>
-                                            <div className={cx('goals-section')}>
-                                                <div className={cx('goals-column')}>
-                                                    <h5>Mục tiêu ngắn hạn</h5>
-                                                    <ul>
-                                                        {analyzeData.weekly_study_plan.short_term_goals.map(
-                                                            (goal, index) => (
-                                                                <li key={index}>{goal}</li>
-                                                            ),
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                                <div className={cx('goals-column')}>
-                                                    <h5>Mục tiêu dài hạn</h5>
-                                                    <ul>
-                                                        {analyzeData.weekly_study_plan.long_term_goals.map(
-                                                            (goal, index) => (
-                                                                <li key={index}>{goal}</li>
-                                                            ),
-                                                        )}
-                                                    </ul>
-                                                </div>
+                                {activeTab === 1 && (
+                                    <div className={cx('tab-panel')}>
+                                        {!isAnalyticsEnabled || !analyzeData ? (
+                                            <div className={cx('info-alert')}>
+                                                <h5>Phương pháp học tập</h5>
+                                                <p>
+                                                    Dựa trên dữ liệu học tập, hệ thống sẽ đề xuất các phương pháp học
+                                                    tập phù hợp. Vui lòng hoàn thành thêm bài tập để nhận đề xuất chi
+                                                    tiết.
+                                                </p>
                                             </div>
+                                        ) : (
+                                            <>
+                                                <CollapsibleSection
+                                                    title="Đề xuất cải thiện"
+                                                    id="suggestions"
+                                                    iconColor="#5c6bc0"
+                                                >
+                                                    <div className={cx('suggestions-container')}>
+                                                        {analyzeData.improvement_suggestions.map(
+                                                            (suggestion, index) => (
+                                                                <div className={cx('suggestion-card')} key={index}>
+                                                                    <div className={cx('suggestion-header')}>
+                                                                        <Lightbulb className={cx('suggestion-icon')} />
+                                                                        <h5>{suggestion.focus_area}</h5>
+                                                                    </div>
+                                                                    <p className={cx('suggestion-action')}>
+                                                                        {suggestion.specific_action}
+                                                                    </p>
+                                                                    <div className={cx('suggestion-outcome')}>
+                                                                        <strong>Kết quả mong đợi:</strong>{' '}
+                                                                        {suggestion.expected_outcome}
+                                                                    </div>
+                                                                </div>
+                                                            ),
+                                                        )}
+                                                    </div>
+                                                </CollapsibleSection>
 
-                                            <h5>Lịch học hàng tuần</h5>
-                                            <div className={cx('schedule-grid')}>
-                                                {Object.entries(analyzeData.weekly_study_plan.daily_schedule).map(
-                                                    ([day, schedule]) => (
+                                                <CollapsibleSection
+                                                    title="Chiến lược điều chỉnh"
+                                                    id="adjustments"
+                                                    iconColor="#5c6bc0"
+                                                >
+                                                    <ul className={cx('adjustment-list')}>
+                                                        {analyzeData.progress_tracking.adjustment_strategies.map(
+                                                            (strategy, index) => (
+                                                                <li key={index}>
+                                                                    <Check className={cx('check-icon')} />
+                                                                    <span>{strategy}</span>
+                                                                </li>
+                                                            ),
+                                                        )}
+                                                    </ul>
+                                                </CollapsibleSection>
+                                            </>
+                                        )}
+
+                                        <div className={cx('tips-card')}>
+                                            <h5>Mẹo học tập hiệu quả:</h5>
+                                            <ul className={cx('tips-list')}>
+                                                <li>
+                                                    <Check className={cx('check-icon')} />
+                                                    <span>Lập kế hoạch học tập cụ thể với thời gian biểu chi tiết</span>
+                                                </li>
+                                                <li>
+                                                    <Check className={cx('check-icon')} />
+                                                    <span>Sử dụng phương pháp Pomodoro (25 phút học, 5 phút nghỉ)</span>
+                                                </li>
+                                                <li>
+                                                    <Check className={cx('check-icon')} />
+                                                    <span>
+                                                        Luyện tập giải bài tập thường xuyên để củng cố kiến thức
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeTab === 2 && (
+                                    <div className={cx('tab-panel')}>
+                                        <h5>Tài liệu tham khảo được đề xuất dựa trên quá trình học tập của bạn:</h5>
+                                        <div className={cx('resources-grid')}>
+                                            {!isAnalyticsEnabled || !analyzeData ? (
+                                                <>
+                                                    <div className={cx('resource-card')}>
+                                                        <div className={cx('resource-icon')}>
+                                                            <Book className={cx('book-icon')} />
+                                                        </div>
+                                                        <h6>Calculus Made Easy</h6>
+                                                        <button className={cx('outline-button')}>Xem Tài Liệu</button>
+                                                    </div>
+                                                    <div className={cx('resource-card')}>
+                                                        <div className={cx('resource-icon')}>
+                                                            <Book className={cx('book-icon')} />
+                                                        </div>
+                                                        <h6>3D Geometry Guide</h6>
+                                                        <button className={cx('outline-button')}>Xem Tài Liệu</button>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                analyzeData.document_recommend.map((doc, index) => (
+                                                    <div className={cx('resource-card')} key={index}>
+                                                        <div className={cx('resource-icon')}>
+                                                            <Book className={cx('book-icon')} />
+                                                        </div>
+                                                        <h6>{doc.description}</h6>
+                                                        <p className={cx('resource-subject')}>{doc.subjectName}</p>
+                                                        <a
+                                                            href={doc.filePath}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className={cx('outline-button')}
+                                                        >
+                                                            Xem Tài Liệu
+                                                        </a>
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeTab === 3 && (
+                                    <div className={cx('tab-panel')}>
+                                        {!isAnalyticsEnabled || !analyzeData ? (
+                                            <div className={cx('info-alert')}>
+                                                <h5>Kế hoạch học tập</h5>
+                                                <p>
+                                                    Để xem kế hoạch học tập chi tiết, vui lòng hoàn thành các bài tập và
+                                                    bật tính năng phân tích học tập.
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className={cx('goals-section')}>
+                                                    <div className={cx('goals-column')}>
+                                                        <h5>Mục tiêu ngắn hạn</h5>
+                                                        <ul>
+                                                            {analyzeData.weekly_study_plan !== null &&
+                                                                analyzeData.weekly_study_plan.short_term_goals.map(
+                                                                    (goal, index) => <li key={index}>{goal}</li>,
+                                                                )}
+                                                        </ul>
+                                                    </div>
+                                                    <div className={cx('goals-column')}>
+                                                        <h5>Mục tiêu dài hạn</h5>
+                                                        <ul>
+                                                            {analyzeData.weekly_study_plan !== null &&
+                                                                analyzeData.weekly_study_plan.long_term_goals.map(
+                                                                    (goal, index) => <li key={index}>{goal}</li>,
+                                                                )}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+
+                                                <h5>Lịch học hàng tuần</h5>
+                                                <div className={cx('schedule-grid')}>
+                                                    {Object.entries(
+                                                        analyzeData.weekly_study_plan !== null &&
+                                                            analyzeData.weekly_study_plan.daily_schedule,
+                                                    ).map(([day, schedule]) => (
                                                         <div className={cx('schedule-card')} key={day}>
                                                             <div className={cx('schedule-day')}>
                                                                 <School />
@@ -538,22 +570,28 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                                                 <strong>Hoạt động:</strong>
                                                                 <ul>
                                                                     {schedule.recommended_activities.map(
-                                                                        (activity, index) => (
+                                                                        (activity: any, index: number) => (
                                                                             <li key={index}>{activity}</li>
                                                                         ),
                                                                     )}
                                                                 </ul>
                                                             </div>
                                                         </div>
-                                                    ),
-                                                )}
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-                            )}
+                                                    ))}
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className={cx('analytics-detail')} style={{backgroundColor : "rgb(171 248 174)", fontWeight: "bold"}}>
+                            <p>
+                                Bạn đã có sự cải thiện rõ rệt trong việc học tập. Việc chăm chỉ làm bài tập và hoàn thành các bài quiz đều đặn đang giúp bạn tiến bộ từng ngày. Cố gắng phát huy nhé!
+                            </p>
+                        </div>
+                    )}
 
                     <div className={cx('warning-section')}>
                         <div className={cx('warning-content')}>
