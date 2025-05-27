@@ -14,11 +14,12 @@ export default function TestResultActions({ onBack }: TestResultActionsProps) {
     const navigate = useNavigate();
     
     const handleBackToQuiz = () => {
-        if (onBack) {
-            onBack();
-        } else {
-            navigate('/document/ai-quiz');
-        }
+        navigate("/document")
+        // if (onBack) {
+        //     onBack();
+        // } else {
+        //     navigate('/document/ai-quiz');
+        // }
     };
     
     const handleNewQuiz = () => {

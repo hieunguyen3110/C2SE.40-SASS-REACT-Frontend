@@ -24,7 +24,7 @@ export default function QuestionDisplay({
             key={currentQuestionData.id}
         >
             <motion.div className={cx('question-header')}>
-                <div className={cx('question-label')}>Question {currentQuestionData.id}</div>
+                <div className={cx('question-label')}>Câu hỏi {currentQuestionData.id}</div>
             </motion.div>
 
             <motion.div className={cx('question-text')}>

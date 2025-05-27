@@ -48,21 +48,21 @@ const resourcesData = [
         id: 1,
         title: 'Kỹ thuật học nhóm hiệu quả',
         description: 'Tìm hiểu các chiến lược đã được chứng minh để tối đa hóa năng suất trong các nhóm học tập của bạn.',
-        image: 'https://via.placeholder.com/300x160',
+        image: 'https://www.euroschoolindia.com/blogs/wp-content/uploads/2023/07/student-study-group.jpg',
         link: '#'
     },
     {
         id: 2,
         title: 'Hướng dẫn nhóm học trực tuyến',
         description: 'Mẹo và công cụ để quản lý các buổi học trực tuyến một cách hiệu quả.',
-        image: 'https://via.placeholder.com/300x160',
+        image: 'https://www.euroschoolindia.com/blogs/wp-content/uploads/2023/07/student-study-group.jpg',
         link: '#'
     },
     {
         id: 3,
         title: 'Phương pháp ghi chú cộng tác',
         description: 'Kỹ thuật ghi chú cộng tác hiệu quả trong môi trường nhóm.',
-        image: 'https://via.placeholder.com/300x160',
+        image: 'https://www.euroschoolindia.com/blogs/wp-content/uploads/2023/07/student-study-group.jpg',
         link: '#'
     }
 ];

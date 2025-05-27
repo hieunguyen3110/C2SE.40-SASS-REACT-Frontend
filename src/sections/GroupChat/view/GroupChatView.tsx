@@ -730,9 +730,9 @@ export default function GroupChatView() {
                                 </div>
                             )}
                         </div>
-                        <IconButton className={cx('actionButton')}>
+                        {/* <IconButton className={cx('actionButton')}>
                             <AttachFile />
-                        </IconButton>
+                        </IconButton> */}
                         <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                             <IconButton
                                 className={cx('sendButton')}

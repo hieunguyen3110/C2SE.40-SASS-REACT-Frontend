@@ -137,6 +137,7 @@
 }
 
 .card-alert,
+.card-alert-success,
 .card-alert-important {
     background-color: #fff8e1;
     border-radius: 6px;
@@ -152,6 +153,13 @@
 
 .card-alert-important {
     background-color: rgba(211, 47, 47, 0.1);
+
+    p {
+        color: var(--danger-color);
+    }
+}
+.card-alert-success {
+    background-color: rgba(22, 197, 65, 0.1);
 
     p {
         color: var(--danger-color);

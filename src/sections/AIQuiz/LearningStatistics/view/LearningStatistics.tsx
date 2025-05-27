@@ -158,7 +158,7 @@ export default function LearningStatistics() {
                                                     average: quiz.score < 70,
                                                 })}
                                             >
-                                                {quiz.score}%
+                                                {Math.round(quiz.score)}%
                                             </span>
                                         </td>
                                         <td>
@@ -193,7 +193,7 @@ export default function LearningStatistics() {
                                     Ngày tạo: {new Date(selectedQuiz.createdAt).toLocaleDateString('vi-VN')}
                                 </p>
                                 <p className={cx('modal-subtitle')}>
-                                    Điểm số: {selectedQuiz.score}% (
+                                    Điểm số: {Math.round(selectedQuiz.score)}% (
                                     {Math.round((selectedQuiz.score * selectedQuiz.totalQuestions) / 100)}/
                                     {selectedQuiz.totalQuestions} câu đúng)
                                 </p>
