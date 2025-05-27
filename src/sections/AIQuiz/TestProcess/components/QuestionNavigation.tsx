@@ -111,7 +111,7 @@ export default function QuestionNavigation({
                 title="Review questions"
             >
                 <AssignmentTurnedIn />
-                <span>Review</span>
+                <span>Xem lại</span>
             </motion.button>
         </div>
     );

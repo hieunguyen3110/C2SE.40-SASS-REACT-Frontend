@@ -35,7 +35,7 @@ export default function TestHeader({
             >
                 <BarChart className={cx('icon')} />
                 <h1>{subjectName}</h1>
-                <span className={cx('test-label')}>Test</span>
+                <span className={cx('test-label')}>Bài kiểm tra</span>
             </motion.div>
             <motion.div
                 className={cx('progress-container')}
@@ -52,7 +52,7 @@ export default function TestHeader({
                     ></motion.div>
                 </div>
                 <span className={cx('progress-text')}>
-                    {answeredQuestions}/{totalQuestions} Questions Answered
+                    {answeredQuestions}/{totalQuestions} Câu hỏi đã trả lời
                 </span>
             </motion.div>
             <motion.div
@@ -62,7 +62,7 @@ export default function TestHeader({
                 transition={{ duration: 0.2, delay: 0.1 }}
             >
                 <Timer className={cx('timer-icon')} />
-                <span className={cx('timer-text')}>Time Left: {formatTime()}</span>
+                <span className={cx('timer-text')}>Thời gian còn lại: {formatTime()}</span>
             </motion.div>
         </div>
     );

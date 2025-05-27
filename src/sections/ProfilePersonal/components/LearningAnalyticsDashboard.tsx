@@ -31,6 +31,7 @@ import {
     getAnalyzeAction,
 } from '../../../redux/ProfilePersonalSlice/ProfilePersonalSlice';
 import { AppDispatch } from '../../../redux/store';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classnames.bind(styles);
 
@@ -54,6 +55,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<number>(0);
     const [isAnalyticsEnabled, setIsAnalyticsEnabled] = useState<boolean>(false);
     const [showSubjectModal, setShowSubjectModal] = useState<boolean>(false);
+    const navigate = useNavigate();
     // Expanded state for collapsible sections
     const [expandedSections, setExpandedSections] = useState({
         overview: true,
@@ -108,12 +110,16 @@ const LearningAnalyticsDashboard: React.FC = () => {
             toast.success('Phân tích học tập đã được bật');
         }
     };
+    const handleNavigateAi= ()=>{
+        navigate("/document/ai-quiz");
+    }
 
     const handleModalClose = () => {
         // If the user cancels the modal without selecting subjects
         dispatch(disableLearningAnalyticsAction());
         setShowSubjectModal(false);
     };
+    
 
     useEffect(() => {
         if (getUserProfile?.isEnableAnalyze) {
@@ -246,7 +252,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                         <p>để có thể phân tích trạng thái học tập của bạn!</p>
                                     </div>
                                 )}
-                                <button className={cx('start-button')}>
+                                <button className={cx('start-button')} onClick={handleNavigateAi}>
                                     <TrendingUp />
                                     <span>Bắt đầu học tập</span>
                                 </button>

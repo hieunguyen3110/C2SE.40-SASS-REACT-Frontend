@@ -125,7 +125,7 @@ const ChatBotSlice = createSlice({
                     id: Date.now().toString(),
                     name: 'DTU AI Chat',
                     avatar: Avatar,
-                    message: 'Tôi đang gặp lỗi, vui lòng thử lại sau',
+                    message: 'Xin lỗi, tôi chưa hiểu rõ câu hỏi. Bạn vui lòng diễn đạt lại cụ thể hơn được không?',
                     time: new Date().toLocaleTimeString(),
                     sender: 'bot',
                 };

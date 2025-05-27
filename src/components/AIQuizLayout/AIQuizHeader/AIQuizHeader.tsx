@@ -38,7 +38,7 @@ export default function AIQuizHeader() {
                     variants={buttonVariants}
                 >
                     <AutoStories />
-                    <span>Knowledge Test</span>
+                    <span>Bài kiểm tra kiến thức</span>
                 </motion.div>
                 <motion.div
                     className={cx('action-btn', { active: currentPath.includes('/ai-quiz/learning-statistics') })}
@@ -51,7 +51,7 @@ export default function AIQuizHeader() {
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 >
                     <TaskAlt />
-                    <span>Learning Statistics</span>
+                    <span>Thống kê học tập</span>
                 </motion.div>
             </div>
         </header>
