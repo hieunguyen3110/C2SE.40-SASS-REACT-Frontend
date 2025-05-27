@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './GroupSetting.module.scss';
 import classNames from 'classnames/bind';
-import { useAppDispatch, useAppSelector } from '../../../../redux/store';
+import { useAppDispatch } from '../../../../redux/store';
 import { deleteGroupAction, leaveGroupAction } from '../../../../redux/GroupStudySlice/GroupStudySlice';
 import { motion } from 'framer-motion';
 
@@ -68,18 +68,15 @@ const itemVariants = {
     },
 };
 
-export default function GroupSetting() {
+interface GroupSettingProps {
+    isOwner: boolean;
+}
+
+export default function GroupSetting({ isOwner }: GroupSettingProps) {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const groupId = id ? parseInt(id) : 0;
-
-    // Get authentication state and group data
-    const { accountId } = useAppSelector((state) => state.authentication);
-    const { currentGroup } = useAppSelector((state) => state.groupStudy);
-
-    // Check if current user is the owner
-    const isOwner = currentGroup?.userId === accountId;
 
     // State for dialogs
     const [openEditDialog, setOpenEditDialog] = useState(false);

@@ -146,7 +146,7 @@ export const WebsocketConnection: React.FC = () => {
         return () => {
             stompClient?.deactivate();
         };
-    }, [dispatch, accountId, numberOfNotificationsUnRead, numberOfNotifications, currentGroup, userGroups, isLogined]);
+    }, [dispatch, accountId, numberOfNotificationsUnRead, numberOfNotifications]);
     return null;
 };
 

@@ -138,9 +138,9 @@ export const editGroupApi = async (groupId: number, data: CreateGroupRequest) =>
         // Check if data is FormData and add proper headers
         const isFormData = data instanceof FormData;
         const config = isFormData ? { headers: { 'Content-Type': 'multipart/form-data' } } : {};
-        
+
         const res = await axiosInstance.put(`/study-group/${groupId}`, data, config);
-        
+
         // Transform the response to match IGroup interface
         const transformedData = {
             groupId: res.data.id,
@@ -283,11 +283,20 @@ export const rejectJoinRequestApi = async (joinRequestId: number) => {
     }
 };
 
-
 export const leaveGroupApi = async (groupId: number) => {
     try {
         const res = await axiosInstance.delete(`/study-group/${groupId}/members/leave-group`);
         return res as unknown as ApiResponse<void>;
+    } catch (err: unknown) {
+        const error = err as AxiosError<{ message?: string }>;
+        throw new Error(error.response?.data.message || error.message);
+    }
+};
+
+export const setRoleApi = async (groupId: number, userId: number, role: string) => {
+    try {
+        const res = await axiosInstance.put(`/study-group/groups/${groupId}/members/${userId}/role?role=${role}`);
+        return res as unknown as ApiResponse<string>;
     } catch (err: unknown) {
         const error = err as AxiosError<{ message?: string }>;
         throw new Error(error.response?.data.message || error.message);

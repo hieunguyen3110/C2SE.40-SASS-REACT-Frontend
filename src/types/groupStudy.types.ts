@@ -12,6 +12,7 @@ export interface IGroup {
     createdAt: string | null;
     joinRequests: JoinRequest[] | null;
     memberCount: number | null;
+    role: 'OWNER' | 'ADMIN' | 'MEMBER';
 }
 
 export interface SearchGroupResult {
@@ -52,6 +53,7 @@ export interface MemberResponse {
     name: string;
     email: string;
     profilePicture: string;
+    role: 'OWNER' | 'ADMIN' | 'MEMBER';
 }
 
 export interface GroupResponse {

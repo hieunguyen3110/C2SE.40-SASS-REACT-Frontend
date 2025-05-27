@@ -1,52 +1,33 @@
-import { useEffect } from 'react';
+import { useMemo } from 'react';
 import classNames from 'classnames/bind';
 import styles from './PinnedMessages.module.scss';
 import { useAppDispatch, useAppSelector } from '../../../../redux/store';
-import { getPinnedMessagesAction, unpinMessageAction } from '../../../../redux/GroupStudySlice/GroupStudySlice';
-import { useLocation } from 'react-router-dom';
+import { unpinMessageAction } from '../../../../redux/GroupStudySlice/GroupStudySlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Message } from '../../../../types/groupStudy.types';
-import { Delete } from '@mui/icons-material';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
-export default function PinnedMessages() {
+interface PinnedMessagesProps {
+    pinnedMessages: Message[];
+}
+
+export default function PinnedMessages({ pinnedMessages }: PinnedMessagesProps) {
     const dispatch = useAppDispatch();
-    const { pinnedMessages, currentGroup } = useAppSelector((state: any) => state.groupStudy);
-    const { accountId } = useAppSelector((state: any) => state.authentication);
-
-    // Get group ID from URL path
-    const location = useLocation();
-    const getGroupIdFromPath = () => {
-        const pathSegments = location.pathname.split('/');
-        const groupStudyIndex = pathSegments.findIndex((segment) => segment === 'group-study');
-        if (groupStudyIndex !== -1 && pathSegments.length > groupStudyIndex + 1) {
-            return Number(pathSegments[groupStudyIndex + 1]);
-        }
-        return null;
-    };
-
-    const groupId = getGroupIdFromPath();
-
-    // Fetch pinned messages when component mounts
-    useEffect(() => {
-        if (groupId) {
-            dispatch(getPinnedMessagesAction({ groupId, page: 0, size: 10 }));
-        }
-    }, [dispatch, groupId]);
+    const { currentGroup } = useAppSelector((state) => state.groupStudy);
 
     // Check if current user is group owner
-    const isGroupOwner = currentGroup?.ownerId === accountId;
+    const hasPermission = useMemo(() => {
+        return currentGroup?.role === 'OWNER' || currentGroup?.role === 'ADMIN';
+    }, [currentGroup?.role]);
 
     // Handle unpinning a message
     const handleUnpin = (messageId: number) => {
-        dispatch(unpinMessageAction({ messageId }));
-
-        // Refetch pinned messages after unpinning
-        if (groupId) {
-            setTimeout(() => {
-                dispatch(getPinnedMessagesAction({ groupId, page: 0, size: 10 }));
-            }, 300);
+        if (hasPermission) {
+            dispatch(unpinMessageAction({ messageId }));
+        } else {
+            toast.error('Bạn không có quyền bỏ ghim tin nhắn');
         }
     };
 
@@ -71,19 +52,12 @@ export default function PinnedMessages() {
                         <div key={message.messageId} className={cx('message-item')}>
                             <div className={cx('message-header')}>
                                 <span className={cx('sender-id')}>{message.username}</span>
-                                <button
-                                    className={cx('unpin-icon')}
-                                    onClick={() => handleUnpin(message.messageId)}
-                                    title="Bỏ ghim tin nhắn"
-                                >
-                                    <Delete fontSize="small" />
-                                </button>
                                 <span className={cx('timestamp')}>{formatTime(message.createdAt)}</span>
                             </div>
 
                             <div className={cx('message-content')}>{message.content}</div>
 
-                            {(isGroupOwner || accountId === message.senderId) && (
+                            {hasPermission && (
                                 <button
                                     className={cx('unpin-button')}
                                     onClick={() => handleUnpin(message.messageId)}

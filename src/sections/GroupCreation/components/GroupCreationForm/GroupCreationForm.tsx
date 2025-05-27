@@ -151,6 +151,7 @@ const GroupCreationForm = () => {
                     memberIds: [],
                     memberLimited: memberLimited,
                     userId: accountId,
+                    role: 'OWNER',
                 };
                 dispatch(updateUserGroups(newGroup));
                 navigate(`/document/group-study/${response.id}`);
