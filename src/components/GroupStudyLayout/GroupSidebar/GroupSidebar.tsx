@@ -110,7 +110,7 @@ const GroupSidebar = () => {
                 </div>
                 <div className={cx('userInfo')}>
                     <span className={cx('username')}>{username}</span>
-                    <span className={cx('userRole')}>{listRoles.map((role) => role).join(', ')}</span>
+                    <span className={cx('userRole')}>{listRoles.map((role) => role).join(', ').toString()==="STUDENT"?"Sinh viên": "Giảng viên"}</span>
                 </div>
             </div>
 
@@ -118,7 +118,7 @@ const GroupSidebar = () => {
 
             {/* Navigation */}
             <div className={cx('section')}>
-                <h3 className={cx('sectionTitle')}>NAVIGATION</h3>
+                <h3 className={cx('sectionTitle')}>Điều hướng</h3>
 
                 <ul className={cx('navList')}>
                     {navigationItems.map((item, index) => (
@@ -146,7 +146,7 @@ const GroupSidebar = () => {
             {/* Group Chats */}
             <div className={cx('section')}>
                 <div className={cx('sectionHeader')}>
-                    <h3 className={cx('sectionTitle')}>GROUP CHATS</h3>
+                    <h3 className={cx('sectionTitle')}>Nhóm chat</h3>
                     <Link to={'/document/group-study/create'} className={cx('addButton')}>
                         <AddIcon className={cx('addIcon')} />
                     </Link>

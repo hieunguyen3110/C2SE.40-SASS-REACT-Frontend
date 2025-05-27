@@ -90,9 +90,9 @@ export default function DocumentHeader() {
             <div className={cx('items')}>
                 <div className={cx('language')}>
                     <img src={VietnameseIcon} alt="" />
-                    <h3>Vietnamese</h3>
+                    <h3>Tiếng việt</h3>
                 </div>
-                <button onClick={handleClickLogout}>{isLogined ? 'SIGN OUT' : 'SIGN IN'}</button>
+                <button onClick={handleClickLogout}>{isLogined ? 'Đăng xuất' : 'Đăng nhập'}</button>
             </div>
             {isModalOpen && (
                 <div className={cx('modal')} ref={searchRef}>

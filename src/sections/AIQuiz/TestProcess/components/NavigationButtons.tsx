@@ -32,7 +32,7 @@ export default function NavigationButtons({
                 whileTap={{ scale: 0.95 }}
             >
                 <NavigateBefore />
-                <span>Previous</span>
+                <span>Câu trước</span>
             </motion.button>
 
             {isLastQuestion ? (
@@ -42,7 +42,7 @@ export default function NavigationButtons({
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                 >
-                    <span>Submit</span>
+                    <span>Nộp bài</span>
                 </motion.button>
             ) : (
                 <motion.button
@@ -51,7 +51,7 @@ export default function NavigationButtons({
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                 >
-                    <span>Next</span>
+                    <span>Câu tiếp theo</span>
                     <NavigateNext />
                 </motion.button>
             )}

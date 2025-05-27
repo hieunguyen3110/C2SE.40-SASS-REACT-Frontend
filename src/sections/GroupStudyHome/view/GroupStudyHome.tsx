@@ -10,6 +10,7 @@ import {
   School
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -39,6 +40,7 @@ const cardVariant = {
 };
     
 export default function GroupStudyHome() {
+  const navigate = useNavigate();
   return (
     <div className={cx('group-study-home')}>
       <motion.div 
@@ -164,6 +166,7 @@ export default function GroupStudyHome() {
           className={cx('cta-button')}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={()=>{navigate("/document/group-study/search")}}
         >
           Bắt đầu ngay
         </motion.button>

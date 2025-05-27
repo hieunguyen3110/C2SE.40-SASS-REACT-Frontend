@@ -193,8 +193,8 @@ export default function SharingModal() {
                         />
                     </div>
                     <div className={cx('email-form')} style={{ alignItems: 'center' }}>
-                        <FormControl sx={{ m: 1, width: '300px', background: '#eaeaea' }}>
-                            <InputLabel id="demo-multiple-checkbox-label">nhóm của bạn</InputLabel>
+                        <FormControl sx={{ m: 1, width: '360px', background: '#eaeaea' }}>
+                            <InputLabel id="demo-multiple-checkbox-label">Nhóm của bạn</InputLabel>
                             <Select
                                 labelId="demo-multiple-checkbox-label"
                                 id="demo-multiple-checkbox"

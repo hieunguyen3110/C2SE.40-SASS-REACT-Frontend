@@ -1,6 +1,11 @@
 import classNames from 'classnames/bind';
 import styles from './Content.module.scss';
 import { useNavigate } from 'react-router-dom';
+import BoxIcon from "../../../assets/images/icons/BoxIcon.png";
+import DocumentUploadIcon from "../../../assets/images/icons/DocumentUploadIcon.png";
+import FolderAddIcon from "../../../assets/images/icons/FolderAddIcon.png";
+import UserSearchIcon from "../../../assets/images/icons/UserSearchIcon.png";
+import ChatBot from "../../../assets/images/icons/chatbot-image.png";
 const cx = classNames.bind(styles);
 
 type FAQDetail = {
@@ -14,7 +19,7 @@ type FAQDetail = {
 const cardsData: FAQDetail[] = [
     {
         id: 0,
-        icon: '/src/assets/images/icons/BoxIcon.png',
+        icon: BoxIcon,
         title: 'Dịch vụ của chúng tôi là gì?',
         paragraph: 'Giải thích mục đích của nền tảng và lợi ích của việc lưu trữ tài liệu trực tuyến.',
         content:
@@ -22,7 +27,7 @@ const cardsData: FAQDetail[] = [
     },
     {
         id: 1,
-        icon: '/src/assets/images/icons/DocumentUploadIcon.png',
+        icon: DocumentUploadIcon,
         title: 'Loại tài liệu nào được hỗ trợ?',
         paragraph: 'Danh sách định dạng tệp được hỗ trợ: PDF.',
         content:
@@ -30,7 +35,7 @@ const cardsData: FAQDetail[] = [
     },
     {
         id: 2,
-        icon: '/src/assets/images/icons/DocumentUploadIcon.png',
+        icon: DocumentUploadIcon,
         title: 'Kích thước tối đa của mỗi tệp là bao nhiêu?',
         paragraph: 'Quy định về dung lượng của tệp.',
         content:
@@ -38,7 +43,7 @@ const cardsData: FAQDetail[] = [
     },
     {
         id: 3,
-        icon: '/src/assets/images/icons/FolderAddIcon.png',
+        icon: FolderAddIcon,
         title: 'Tạo thư mục',
         paragraph: 'Hướng dẫn tạo thư mục đúng cách và thêm tài liệu phù hợp với thư mục của bạn.',
         content:
@@ -46,7 +51,7 @@ const cardsData: FAQDetail[] = [
     },
     {
         id: 4,
-        icon: '/src/assets/images/icons/BoxIcon.png',
+        icon: BoxIcon,
         title: 'Dữ liệu của tôi có an toàn không?',
         paragraph: 'Giải thích về bảo mật (mã hóa, xác thực hai yếu tố).',
         content:
@@ -54,7 +59,7 @@ const cardsData: FAQDetail[] = [
     },
     {
         id: 5,
-        icon: '/src/assets/images/icons/DocumentUploadIcon.png',
+        icon: DocumentUploadIcon,
         title: 'Tôi gặp lỗi khi tải tài liệu lên, phải làm sao?',
         paragraph: 'Các bước khắc phục sự cố.',
         content:
@@ -62,7 +67,7 @@ const cardsData: FAQDetail[] = [
     },
     {
         id: 6,
-        icon: '/src/assets/images/icons/UserSearchIcon.png',
+        icon: UserSearchIcon,
         title: 'Tôi không thể đăng nhập vào tài khoản của mình.',
         paragraph: 'Hướng dẫn đặt lại mật khẩu hoặc liên hệ hỗ trợ.',
         content:
@@ -70,7 +75,7 @@ const cardsData: FAQDetail[] = [
     },
     {
         id: 7,
-        icon: '/src/assets/images/icons/chatbot-image.png',
+        icon: ChatBot,
         title: 'Chatbot hoạt động như thế nào?',
         paragraph: 'Hướng dẫn sử dụng chatbot phục vụ cho việc học tập và tìm kiếm...',
         content:
