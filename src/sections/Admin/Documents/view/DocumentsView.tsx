@@ -18,12 +18,15 @@ import AlertDialog from '../../Users/components/AlertDialog';
 import ApproveDialog from '../../Users/components/ApproveDialog';
 import Loader from '../../../../components/Loader/Loader';
 import { toast } from 'react-toastify';
+import { trainChatbotAction } from '../../../../redux/ChatBotSlice/ChatBotSlice';
+import { TrainChatbotRequest } from '../../../../services/ChatBotAPI/ChatBotAPI';
 
 export default function DocumentsView() {
     const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(1);
     const [data, setData] = useState<any>([]);
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
+    const [docSelected, setDocSelected] = useState<any[]>([]);
     const dispatch = useAppDispatch();
 
     const documents: any[] = useAppSelector((state: any) => state.adminDashboard.documents?.content);
@@ -55,6 +58,7 @@ export default function DocumentsView() {
     const handleOpenApproveDialog = () => {
         if (selectedIds.length !== 0) {
             setOpenApproveDialog(true);
+            dispatch(approveDocuments(selectedIds));
         } else {
             toast.error('Phải chọn ít nhất 1 tài liệu');
         }
@@ -100,12 +104,31 @@ export default function DocumentsView() {
             toast.error('Xảy ra lỗi, vui lòng thử lại sau');
         }
     };
+    const handleTrainDocument = () => {
+        try {
+            if (selectedIds.length !== 1 || docSelected.length!==1) {
+                toast.error('Chọn duy nhất 1 tài liệu để huấn luyện');
+                return;
+            }
+            const request : TrainChatbotRequest = {
+                fileName: docSelected[0].fileName,
+                filePath : docSelected[0].filePath,
+                docId : docSelected[0].docId
+            }
+            dispatch(trainChatbotAction(request));
+        } catch (error) {
+            console.log(error);
+            toast.error('Xảy ra lỗi, vui lòng thử lại sau');
+        }
+    };
 
-    const handleToggleSelectDocument = (id: number) => {
-        if (selectedIds.includes(id)) {
-            setSelectedIds(selectedIds.filter(item => item !== id));
+    const handleToggleSelectDocument = (value: any) => {
+        if (selectedIds.includes(value.docId)) {
+            setSelectedIds(selectedIds.filter(item => item !== value.docId));
+            setDocSelected(docSelected.filter(item => item !== value));
         } else {
-            setSelectedIds([...selectedIds, id]);
+            setSelectedIds([...selectedIds, value.docId]);
+            setDocSelected([...docSelected,value]);
         }
     };
 
@@ -182,11 +205,12 @@ export default function DocumentsView() {
                 <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={cx('action-btn', 'delete-btn')}
-                    onClick={handleOpenAlertDialog}
+                    className={cx('action-btn', 'train-btn')}
+                    onClick={handleTrainDocument}
                 >
-                    Xoá
+                    huấn luyện AI
                 </motion.button>
+                
                 <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -195,6 +219,14 @@ export default function DocumentsView() {
                 >
                     Duyệt tài liệu
                 </motion.button>
+                {/* <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={cx('action-btn', 'delete-btn')}
+                    onClick={handleOpenAlertDialog}
+                >
+                    Xoá
+                </motion.button> */}
             </div>
 
             {loading || statsLoading ? (
@@ -234,7 +266,7 @@ export default function DocumentsView() {
                                             <input 
                                                 type="checkbox" 
                                                 checked={selectedIds.includes(row.docId)}
-                                                onChange={() => handleToggleSelectDocument(row.docId)}
+                                                onChange={() => handleToggleSelectDocument(row)}
                                             />
                                         </td>
                                         <td>{row.docId}</td>

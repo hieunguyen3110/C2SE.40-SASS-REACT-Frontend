@@ -6,6 +6,7 @@ import { axiosInstance } from '../../utils/AxiosInterceptor';
 export interface TrainChatbotRequest {
     fileName: string;
     filePath: string;
+    docId : number
 }
 
 export const sendMessageService = async (message: string) => {
@@ -24,7 +25,7 @@ export const sendMessageService = async (message: string) => {
     }
 };
 
-export const trainChatbotService = async (data: TrainChatbotRequest[]) => {
+export const trainChatbotService = async (data: TrainChatbotRequest) => {
     try {
         const res = await axiosInstance.post(`/document/admin/dashboard/train-document`, data);
         return res as unknown as ApiResponse<any>;

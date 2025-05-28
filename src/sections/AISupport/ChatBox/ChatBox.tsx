@@ -216,29 +216,30 @@ export default function ChatBox() {
                     )}
                 </div>
             ) : (
-                <div className={cx('initial')}>
-                    <h2>CHÀO {username ? username : 'Tên người dùng'}!</h2>
-                    {isOpenSubbox && (
-                        <div className={cx('sub-box')}>
-                            <p>
-                                Những câu hỏi của bạn sẽ được chúng tôi phân tích để đề xuất các tài liệu phù hợp cho
-                                bạn, nếu bạn không muốn có thể tắt tính năng này.
-                            </p>
-                            <div className={cx('actions')}>
-                                <Button
-                                    text="Tắt tính năng"
-                                    fontSize={14}
-                                    paddingY={6}
-                                    paddingX={15}
-                                    onClick={() => setIsOpenSubbox(false)}
-                                />
-                                <button onClick={() => setIsOpenSubbox(false)} className={cx('skip-btn')}>
-                                    Bỏ qua
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
+                <></>
+                // <div className={cx('initial')}>
+                //     <h2>CHÀO {username ? username : 'Tên người dùng'}!</h2>
+                //     {isOpenSubbox && (
+                //         <div className={cx('sub-box')}>
+                //             <p>
+                //                 Những câu hỏi của bạn sẽ được chúng tôi phân tích để đề xuất các tài liệu phù hợp cho
+                //                 bạn, nếu bạn không muốn có thể tắt tính năng này.
+                //             </p>
+                //             <div className={cx('actions')}>
+                //                 <Button
+                //                     text="Tắt tính năng"
+                //                     fontSize={14}
+                //                     paddingY={6}
+                //                     paddingX={15}
+                //                     onClick={() => setIsOpenSubbox(false)}
+                //                 />
+                //                 <button onClick={() => setIsOpenSubbox(false)} className={cx('skip-btn')}>
+                //                     Bỏ qua
+                //                 </button>
+                //             </div>
+                //         </div>
+                //     )}
+                // </div>
             )}
             <div className={cx('input-message')}>
                 <input
