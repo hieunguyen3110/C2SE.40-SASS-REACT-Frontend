@@ -19,10 +19,13 @@ import {
     Divider,
     Typography,
 } from '@mui/material';
+import { RootState } from '../../../../redux/store';
+import { useAppSelector } from '../../../../redux/store';
 
 const cx = classNames.bind(styles);
 
 interface MemberItemProps {
+    id: number;
     avatar?: string;
     name: string;
     joinDate: string;
@@ -35,6 +38,7 @@ interface MemberItemProps {
 }
 
 const MemberItem: React.FC<MemberItemProps> = ({
+    id,
     avatar,
     name,
     joinDate,
@@ -45,6 +49,7 @@ const MemberItem: React.FC<MemberItemProps> = ({
     onRoleChange,
     canChangeRole = false,
 }) => {
+    const { accountId } = useAppSelector((state: RootState) => state.authentication);
     const [menuOpen, setMenuOpen] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [roleDialogOpen, setRoleDialogOpen] = useState(false);
@@ -208,83 +213,85 @@ const MemberItem: React.FC<MemberItemProps> = ({
                                 <MoreHorizIcon />
                             </motion.button>
 
-                            <AnimatePresence>
-                                {menuOpen && (
-                                    <>
-                                        <motion.div
-                                            className={cx('menu-backdrop')}
-                                            variants={backdropVariants}
-                                            initial="hidden"
-                                            animate="visible"
-                                            exit="exit"
-                                            onClick={() => setMenuOpen(false)}
-                                        />
+                            {id !== accountId && (
+                                <AnimatePresence>
+                                    {menuOpen && (
+                                        <>
+                                            <motion.div
+                                                className={cx('menu-backdrop')}
+                                                variants={backdropVariants}
+                                                initial="hidden"
+                                                animate="visible"
+                                                exit="exit"
+                                                onClick={() => setMenuOpen(false)}
+                                            />
 
-                                        <motion.div
-                                            ref={menuRef}
-                                            className={cx('custom-menu')}
-                                            variants={menuVariants}
-                                            initial="hidden"
-                                            animate="visible"
-                                            exit="exit"
-                                        >
-                                            {canChangeRole && (
-                                                <motion.button
-                                                    className={cx('menu-item', 'role-item')}
-                                                    onClick={handleRoleClick}
-                                                    whileHover={{
-                                                        backgroundColor: 'rgba(25, 118, 210, 0.15)',
-                                                        x: 3,
-                                                        transition: { type: 'spring', stiffness: 300 },
-                                                    }}
-                                                    whileTap={{
-                                                        scale: 0.95,
-                                                        backgroundColor: 'rgba(25, 118, 210, 0.25)',
-                                                    }}
-                                                >
-                                                    <motion.div
-                                                        className={cx('item-icon-wrapper')}
-                                                        style={{ backgroundColor: 'rgba(25, 118, 210, 0.08)' }}
-                                                        whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-                                                        transition={{ duration: 0.5 }}
+                                            <motion.div
+                                                ref={menuRef}
+                                                className={cx('custom-menu')}
+                                                variants={menuVariants}
+                                                initial="hidden"
+                                                animate="visible"
+                                                exit="exit"
+                                            >
+                                                {canChangeRole && (
+                                                    <motion.button
+                                                        className={cx('menu-item', 'role-item')}
+                                                        onClick={handleRoleClick}
+                                                        whileHover={{
+                                                            backgroundColor: 'rgba(25, 118, 210, 0.15)',
+                                                            x: 3,
+                                                            transition: { type: 'spring', stiffness: 300 },
+                                                        }}
+                                                        whileTap={{
+                                                            scale: 0.95,
+                                                            backgroundColor: 'rgba(25, 118, 210, 0.25)',
+                                                        }}
                                                     >
-                                                        <SettingsIcon
-                                                            className={cx('item-icon')}
-                                                            style={{ color: '#1976d2' }}
-                                                        />
-                                                    </motion.div>
-                                                    <span>Chức vụ</span>
-                                                </motion.button>
-                                            )}
+                                                        <motion.div
+                                                            className={cx('item-icon-wrapper')}
+                                                            style={{ backgroundColor: 'rgba(25, 118, 210, 0.08)' }}
+                                                            whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                                                            transition={{ duration: 0.5 }}
+                                                        >
+                                                            <SettingsIcon
+                                                                className={cx('item-icon')}
+                                                                style={{ color: '#1976d2' }}
+                                                            />
+                                                        </motion.div>
+                                                        <span>Chức vụ</span>
+                                                    </motion.button>
+                                                )}
 
-                                            {canDelete && (
-                                                <motion.button
-                                                    className={cx('menu-item', 'delete-item')}
-                                                    onClick={handleDeleteClick}
-                                                    whileHover={{
-                                                        backgroundColor: 'rgba(211, 47, 47, 0.15)',
-                                                        x: 3,
-                                                        transition: { type: 'spring', stiffness: 300 },
-                                                    }}
-                                                    whileTap={{
-                                                        scale: 0.95,
-                                                        backgroundColor: 'rgba(211, 47, 47, 0.25)',
-                                                    }}
-                                                >
-                                                    <motion.div
-                                                        className={cx('item-icon-wrapper')}
-                                                        whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-                                                        transition={{ duration: 0.5 }}
+                                                {canDelete && (
+                                                    <motion.button
+                                                        className={cx('menu-item', 'delete-item')}
+                                                        onClick={handleDeleteClick}
+                                                        whileHover={{
+                                                            backgroundColor: 'rgba(211, 47, 47, 0.15)',
+                                                            x: 3,
+                                                            transition: { type: 'spring', stiffness: 300 },
+                                                        }}
+                                                        whileTap={{
+                                                            scale: 0.95,
+                                                            backgroundColor: 'rgba(211, 47, 47, 0.25)',
+                                                        }}
                                                     >
-                                                        <DeleteIcon className={cx('item-icon')} />
-                                                    </motion.div>
-                                                    <span>Xóa thành viên</span>
-                                                </motion.button>
-                                            )}
-                                        </motion.div>
-                                    </>
-                                )}
-                            </AnimatePresence>
+                                                        <motion.div
+                                                            className={cx('item-icon-wrapper')}
+                                                            whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                                                            transition={{ duration: 0.5 }}
+                                                        >
+                                                            <DeleteIcon className={cx('item-icon')} />
+                                                        </motion.div>
+                                                        <span>Xóa thành viên</span>
+                                                    </motion.button>
+                                                )}
+                                            </motion.div>
+                                        </>
+                                    )}
+                                </AnimatePresence>
+                            )}
                         </div>
                     )}
                 </div>
@@ -371,6 +378,40 @@ const MemberItem: React.FC<MemberItemProps> = ({
                     </Typography>
                 </DialogTitle>
                 <DialogContent dividers sx={{ p: 2 }}>
+                    <ListItemButton
+                        onClick={() => handleRoleChange('OWNER')}
+                        disabled={role === 'OWNER'}
+                        sx={{
+                            borderRadius: '8px',
+                            mb: 1,
+                            bgcolor: selectedRole === 'OWNER' ? 'rgba(139, 92, 246, 0.1)' : 'transparent',
+                            '&:hover': {
+                                bgcolor: 'rgba(139, 92, 246, 0.1)',
+                            },
+                            transition: 'all 0.2s',
+                        }}
+                    >
+                        <Radio
+                            checked={selectedRole === 'OWNER'}
+                            sx={{
+                                color: '#8b5cf6',
+                                '&.Mui-checked': {
+                                    color: '#8b5cf6',
+                                },
+                            }}
+                        />
+                        <ListItemText
+                            primary="OWNER"
+                            secondary="Chủ sở hữu nhóm, chỉnh sửa và xoá nhóm"
+                            
+                            primaryTypographyProps={{
+                                fontWeight: selectedRole === 'OWNER' ? 600 : 500,
+                                color: '#8b5cf6',
+                            }}
+                        />
+                    </ListItemButton>
+
+                    <Divider variant="middle" sx={{ my: 1.5 }} />
                     <ListItemButton
                         onClick={() => handleRoleChange('ADMIN')}
                         disabled={role === 'ADMIN'}

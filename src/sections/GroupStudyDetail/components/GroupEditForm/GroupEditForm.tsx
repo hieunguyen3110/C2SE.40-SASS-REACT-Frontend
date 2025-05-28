@@ -43,10 +43,10 @@ const containerVariants = {
     visible: {
         opacity: 1,
         transition: {
-            when: "beforeChildren",
-            staggerChildren: 0.2
-        }
-    }
+            when: 'beforeChildren',
+            staggerChildren: 0.2,
+        },
+    },
 };
 
 const itemVariants = {
@@ -55,28 +55,28 @@ const itemVariants = {
         y: 0,
         opacity: 1,
         transition: {
-            type: "spring",
+            type: 'spring',
             stiffness: 300,
-            damping: 24
-        }
-    }
+            damping: 24,
+        },
+    },
 };
 
 const buttonVariants = {
     hover: {
         scale: 1.05,
-        boxShadow: "0px 5px 10px rgba(255, 60, 60, 0.3)",
-        transition: { duration: 0.3 }
+        boxShadow: '0px 5px 10px rgba(255, 60, 60, 0.3)',
+        transition: { duration: 0.3 },
     },
-    tap: { scale: 0.95 }
+    tap: { scale: 0.95 },
 };
 
 const chipVariants = {
     hover: {
         scale: 1.1,
-        transition: { duration: 0.2 }
+        transition: { duration: 0.2 },
     },
-    tap: { scale: 0.9 }
+    tap: { scale: 0.9 },
 };
 
 interface GroupEditFormProps {
@@ -96,22 +96,22 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
     const [memberLimited, setMemberLimited] = useState(10);
     const [isPrivate, setIsPrivate] = useState<boolean>(currentGroup?.isPrivate ?? true);
     const [selectedCategory, setSelectedCategory] = useState('');
-    
+
     // Group picture state
     const [groupPicture, setGroupPicture] = useState<File | null>(null);
     const [previewPicture, setPreviewPicture] = useState<string>('');
     const fileInputRef = useRef<HTMLInputElement>(null);
-    
+
     // Create a ref for the search input
     const searchInputRef = useRef<HTMLInputElement>(null);
-    
+
     // Subject search state
     const [subjectSelected, setSubjectSelected] = useState('');
-    const [subjectId, setSubjectId] = useState('');
-    
+    const [subjectId, setSubjectId] = useState<string>('');
+
     // Get group data and search results from Redux store
     const searchSubject = useAppSelector((state) => state.groupStudy.subjects) || [];
-    
+
     // Load current group data when the component mounts or currentGroup changes
     useEffect(() => {
         if (currentGroup) {
@@ -120,9 +120,8 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
             setMemberLimited(currentGroup.memberLimited || 10);
             setIsPrivate(currentGroup.isPrivate ?? true);
             // Check if subjectName exists and use it to set appropriate values
-            if (currentGroup.subjectName) {
-                setSubjectSelected(currentGroup.subjectName);
-            }
+            setSubjectId(String(currentGroup.subjectId));
+            setSubjectSelected(currentGroup.subjectName || '');
             // Set group picture preview if available
             if (currentGroup.picture) {
                 setPreviewPicture(currentGroup.picture);
@@ -131,23 +130,23 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
             }
         }
     }, [currentGroup]);
-    
+
     // Debounced search function
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const debounceSearchSubject = useCallback(
         debounce((value: string) => dispatch(searchSubjectsAction(value)).unwrap(), 1000),
         [dispatch, searchSubjectsAction],
     );
-    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const clearSubjects = useCallback(() => {
         dispatch({ type: 'groupStudy/searchSubjects/fulfilled', payload: [] });
     }, [dispatch]);
-    
+
     // Search subject handler
     const handleSearchSubject = async (value: string) => {
         setSubjectSelected(value);
-        
+
         if (!value.trim()) {
             clearSubjects();
             return;
@@ -162,17 +161,17 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        
+
         // Check if file is jpg or png
         const fileType = file.type;
         if (fileType !== 'image/jpeg' && fileType !== 'image/png') {
             alert('Chỉ chấp nhận file JPG hoặc PNG');
             return;
         }
-        
+
         // Set the file to state
         setGroupPicture(file);
-        
+
         // Create preview
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -180,14 +179,14 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
         };
         reader.readAsDataURL(file);
     };
-    
+
     const handleImageClick = () => {
         fileInputRef.current?.click();
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         try {
             // Create FormData instead of a regular object
             const formData = new FormData();
@@ -195,26 +194,19 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
             formData.append('description', description);
             formData.append('isPrivate', String(isPrivate));
             formData.append('memberLimited', String(memberLimited));
-            
-            // Add subjectId if it exists
-            if (subjectId) {
-                formData.append('subjectId', subjectId);
-            }
-            
-            // Add picture if selected
-            if (groupPicture) {
-                formData.append('file', groupPicture);
-            }
-            
-            // Empty memberIds array as before
-            formData.append('memberIds', JSON.stringify([]));
-            
-            await dispatch(editGroupAction({
-                groupId,
-                // Use type assertion to resolve type compatibility issue
-                data: formData as unknown as CreateGroupRequest
-            })).unwrap();
-            
+            formData.append('picture', currentGroup?.picture || '');
+            formData.append('subjectId', subjectId);
+            formData.append('file', groupPicture || '');
+            // formData.append('memberIds', JSON.stringify([]));
+
+            await dispatch(
+                editGroupAction({
+                    groupId,
+                    // Use type assertion to resolve type compatibility issue
+                    data: formData as unknown as CreateGroupRequest,
+                }),
+            ).unwrap();
+
             onClose();
         } catch (error) {
             console.error('Lỗi khi cập nhật nhóm:', error);
@@ -228,31 +220,33 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
             fullWidth
             maxWidth="md"
             PaperProps={{
-                style: { borderRadius: '12px' }
+                style: { borderRadius: '12px' },
             }}
         >
-            <DialogTitle sx={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center',
-                padding: '16px 24px',
-                borderBottom: '1px solid #f0f0f0'
-            }}>
+            <DialogTitle
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '16px 24px',
+                    borderBottom: '1px solid #f0f0f0',
+                }}
+            >
                 <span style={{ fontSize: '1.5rem', fontWeight: 500 }}>Chỉnh sửa nhóm học tập</span>
                 <IconButton onClick={onClose} size="small">
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
-            
+
             <DialogContent>
-                <motion.div 
+                <motion.div
                     className={cx('container')}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <motion.form 
-                        onSubmit={handleSubmit} 
+                    <motion.form
+                        onSubmit={handleSubmit}
                         className={cx('form')}
                         variants={containerVariants}
                         initial="hidden"
@@ -264,10 +258,10 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
                                 <PhotoCameraIcon style={{ color: '#ff3c3c' }} />
                                 <h3>Ảnh nhóm</h3>
                             </div>
-                            
+
                             <div className={cx('formField')}>
                                 <div className={cx('groupPictureContainer')}>
-                                    <motion.div 
+                                    <motion.div
                                         className={cx('picturePreview')}
                                         initial={{ scale: 0.9, opacity: 0 }}
                                         animate={{ scale: 1, opacity: 1 }}
@@ -275,18 +269,14 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
                                         whileHover={{ scale: 1.05 }}
                                         onClick={handleImageClick}
                                     >
-                                        <img 
-                                            src={previewPicture} 
-                                            alt="Group Preview" 
-                                            className={cx('previewImage')} 
-                                        />
+                                        <img src={previewPicture} alt="Group Preview" className={cx('previewImage')} />
                                         <div className={cx('imageOverlay')}>
                                             <AddPhotoAlternateIcon />
                                             <span>Cập nhật ảnh</span>
                                         </div>
                                     </motion.div>
-                                    <input 
-                                        type="file" 
+                                    <input
+                                        type="file"
                                         ref={fileInputRef}
                                         onChange={handleFileChange}
                                         accept=".jpg,.jpeg,.png"
@@ -319,7 +309,7 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
                                     className={cx('input')}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px rgba(255, 60, 60, 0.3)" }}
+                                    whileFocus={{ scale: 1.01, boxShadow: '0 0 0 2px rgba(255, 60, 60, 0.3)' }}
                                 />
                             </div>
 
@@ -336,12 +326,12 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
                                         className={cx('input')}
                                         value={subjectSelected}
                                         onChange={(e) => handleSearchSubject(e.target.value)}
-                                        whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px rgba(255, 60, 60, 0.3)" }}
+                                        whileFocus={{ scale: 1.01, boxShadow: '0 0 0 2px rgba(255, 60, 60, 0.3)' }}
                                     />
-                                    
+
                                     {/* Subject search results dropdown - Moved inside searchContainer */}
                                     {subjectSelected.trim() && searchSubject?.length > 0 && (
-                                        <motion.div 
+                                        <motion.div
                                             className={cx('searchResults')}
                                             initial={{ opacity: 0, y: -10 }}
                                             animate={{ opacity: 1, y: 0 }}
@@ -365,7 +355,7 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
                                         </motion.div>
                                     )}
                                 </div>
-                                
+
                                 <div className={cx('categoryChips')}>
                                     {categories.map((category) => (
                                         <motion.button
@@ -380,8 +370,8 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
                                                     searchInputRef.current.focus();
                                                 }
                                             }}
-                                            className={cx('categoryChip', { 
-                                                selected: selectedCategory === category.id 
+                                            className={cx('categoryChip', {
+                                                selected: selectedCategory === category.id,
                                             })}
                                             whileHover="hover"
                                             whileTap="tap"
@@ -402,7 +392,7 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
                             </div>
 
                             <label className={cx('switchControl')}>
-                                <motion.div 
+                                <motion.div
                                     className={cx('toggleContainer')}
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9 }}
@@ -413,10 +403,10 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
                                         onChange={() => setIsPrivate(!isPrivate)}
                                         className={cx('toggleInput')}
                                     />
-                                    <motion.span 
+                                    <motion.span
                                         className={cx('toggleSlider')}
-                                        animate={{ 
-                                            backgroundColor: !isPrivate ? '#ff3c3c' : '#ccc'
+                                        animate={{
+                                            backgroundColor: !isPrivate ? '#ff3c3c' : '#ccc',
                                         }}
                                         transition={{ duration: 0.3 }}
                                     />
@@ -448,7 +438,7 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
                                         }
                                     }}
                                     className={cx('textarea')}
-                                    whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px rgba(255, 60, 60, 0.3)" }}
+                                    whileFocus={{ scale: 1.01, boxShadow: '0 0 0 2px rgba(255, 60, 60, 0.3)' }}
                                     maxLength={500}
                                 />
                                 <small className={cx('charCount', { 'limit-reached': description.length === 500 })}>
@@ -482,8 +472,8 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
                         </motion.section>
 
                         {/* Submit Button */}
-                        <motion.button 
-                            type="submit" 
+                        <motion.button
+                            type="submit"
                             className={cx('submitButton')}
                             variants={buttonVariants}
                             whileHover="hover"
@@ -499,4 +489,4 @@ const GroupEditForm = ({ open, onClose }: GroupEditFormProps) => {
     );
 };
 
-export default GroupEditForm; 
+export default GroupEditForm;

@@ -8,15 +8,13 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import SlackICON from '../../../assets/images/icons/slack.png';
 import SendICON from '../../../assets/images/icons/SendICON.png';
-// import AttachICON from "../../../assets/images/icons/attach-square.png";
-// import MicroICON from "../../../assets/images/icons/microphone-2.png";
-import { Button } from '../../../components/Button';
+
 import Avatar from '../../../assets/images/icons/student-avatar.svg';
 import MicIcon from '@mui/icons-material/Mic';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import { resetMessages, sendMessageAction, setMessagesUser } from '../../../redux/ChatBotSlice/ChatBotSlice';
 import { useSpeechToText } from '../../../hooks/useSpeechToText';
-const options = ['Làm mới', 'Lưu tài liệu', 'Tải xuống', 'Chia sẻ'];
+const options = ['Làm mới'];
 const ITEM_HEIGHT = 48;
 
 type MessagesUser = {
@@ -33,7 +31,7 @@ export default function ChatBox() {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-    const [isOpenSubbox, setIsOpenSubbox] = useState<boolean>(true);
+
     // config cho message
     const { messages, loading } = useAppSelector((state) => state.chatbot);
     const { username } = useAppSelector((state) => state.authentication);
@@ -84,19 +82,9 @@ export default function ChatBox() {
     };
 
     const handleClickOptions = (key: string) => {
-        setIsOpenSubbox(false);
         handleClose();
         if (key === 'Làm mới') {
             dispatch(resetMessages());
-        }
-        if (key === 'Lưu tài liệu') {
-            // call API save file
-        }
-        if (key === 'Tải xuống') {
-            // call API download file
-        }
-        if (key === 'Chia s��') {
-            // call API share file
         }
     };
 
@@ -186,7 +174,12 @@ export default function ChatBox() {
                                                     {parts && parts.length > 0
                                                         ? parts.map((part, index) => {
                                                               if (part.startsWith('**') && part.endsWith('**')) {
-                                                                  return <b key={index}><br /> <br />{part.slice(2, -2)} <br /> <br /></b>;
+                                                                  return (
+                                                                      <b key={index}>
+                                                                          <br /> <br />
+                                                                          {part.slice(2, -2)} <br /> <br />
+                                                                      </b>
+                                                                  );
                                                               } else {
                                                                   return <span key={index}>{part}</span>;
                                                               }
@@ -216,30 +209,9 @@ export default function ChatBox() {
                     )}
                 </div>
             ) : (
-                <></>
-                // <div className={cx('initial')}>
-                //     <h2>CHÀO {username ? username : 'Tên người dùng'}!</h2>
-                //     {isOpenSubbox && (
-                //         <div className={cx('sub-box')}>
-                //             <p>
-                //                 Những câu hỏi của bạn sẽ được chúng tôi phân tích để đề xuất các tài liệu phù hợp cho
-                //                 bạn, nếu bạn không muốn có thể tắt tính năng này.
-                //             </p>
-                //             <div className={cx('actions')}>
-                //                 <Button
-                //                     text="Tắt tính năng"
-                //                     fontSize={14}
-                //                     paddingY={6}
-                //                     paddingX={15}
-                //                     onClick={() => setIsOpenSubbox(false)}
-                //                 />
-                //                 <button onClick={() => setIsOpenSubbox(false)} className={cx('skip-btn')}>
-                //                     Bỏ qua
-                //                 </button>
-                //             </div>
-                //         </div>
-                //     )}
-                // </div>
+                <div className={cx('initial')}>
+                    <h2>CHÀO {username ? username : 'Tên người dùng'}!</h2>
+                </div>
             )}
             <div className={cx('input-message')}>
                 <input

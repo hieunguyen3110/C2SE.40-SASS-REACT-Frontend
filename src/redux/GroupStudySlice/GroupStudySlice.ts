@@ -471,6 +471,7 @@ const GroupStudySlice = createSlice({
                 isPrivate: action.payload.private,
                 groupName: action.payload.groupName,
                 description: action.payload.description,
+                subjectId: action.payload.subjectId,
                 subjectName: action.payload.subjectName,
                 picture: action.payload.picture,
                 memberLimited: action.payload.memberLimited,
@@ -885,7 +886,16 @@ const GroupStudySlice = createSlice({
             })
             .addCase(setRoleAction.fulfilled, (state, action) => {
                 state.loading = false;
+                if (action.payload.role === 'OWNER' && state.currentGroup) {
+                    state.currentGroup = {
+                        ...state.currentGroup,
+                        role: 'MEMBER',
+                    };
+                }
                 state.memberList = state.memberList.map((member) => {
+                    if (member.role === 'OWNER' && member.memberId !== action.payload.userId) {
+                        return { ...member, role: 'MEMBER' };
+                    }
                     if (member.memberId === action.payload.userId) {
                         return { ...member, role: action.payload.role as 'OWNER' | 'ADMIN' | 'MEMBER' };
                     }

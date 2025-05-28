@@ -67,15 +67,9 @@ export default function GroupStudyDetail() {
     useEffect(() => {
         if (userGroups.length > 0) {
             if (id && userGroups.some((group) => group.groupId === parseInt(id))) {
-                if (!currentGroup) {
-                    dispatch(getGroupDetailsAction(parseInt(id)));
-                }
-                if (!memberList) {
-                    dispatch(listMembersAction({ groupId: parseInt(id), page: 0, size: 10 }));
-                }
-                if (!pinnedMessages) {
-                    dispatch(getPinnedMessagesAction({ groupId: parseInt(id), page: 0, size: 10 }));
-                }
+                dispatch(getGroupDetailsAction(parseInt(id)));
+                dispatch(listMembersAction({ groupId: parseInt(id), page: 0, size: 10 }));
+                dispatch(getPinnedMessagesAction({ groupId: parseInt(id), page: 0, size: 10 }));
             } else {
                 toast.error('Bạn không có quyền truy cập vào nhóm này');
                 navigate('/document/group-study/management');
@@ -96,7 +90,19 @@ export default function GroupStudyDetail() {
     }, [dispatch, id]);
 
     // Filter members based on search term
-    const filteredMembers = memberList.filter((member) => member.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filteredMembers = memberList
+        .filter((member) => member.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .sort((a, b) => {
+            // Định nghĩa thứ tự ưu tiên vai trò
+            const roleOrder = {
+                OWNER: 1,
+                ADMIN: 2,
+                MEMBER: 3,
+            };
+
+            // So sánh vai trò để sắp xếp
+            return roleOrder[a.role] - roleOrder[b.role];
+        });
 
     // Handle join request actions
     const handleAcceptRequest = (id: number, email: string, name: string, profilePicture: string, userId: number) => {
@@ -126,7 +132,7 @@ export default function GroupStudyDetail() {
         }
     };
 
-    const handleRoleChange = (memberId: number, newRole: string) => {
+    const handleRoleChange = (memberId: number, newRole: 'OWNER' | 'ADMIN' | 'MEMBER') => {
         dispatch(setRoleAction({ groupId: parseInt(id || ''), userId: memberId, role: newRole }));
     };
 
@@ -349,6 +355,7 @@ export default function GroupStudyDetail() {
                                     filteredMembers.map((member) => (
                                         <MemberItem
                                             key={member.memberId}
+                                            id={member.memberId}
                                             avatar={member.profilePicture}
                                             name={member.name}
                                             joinDate={member.email}
