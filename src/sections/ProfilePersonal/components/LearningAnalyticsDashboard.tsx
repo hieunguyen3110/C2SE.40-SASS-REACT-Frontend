@@ -21,6 +21,7 @@ import {
     TrendingDown,
     KeyboardArrowDown,
     KeyboardArrowUp,
+    List,
 } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store';
@@ -155,6 +156,13 @@ const LearningAnalyticsDashboard: React.FC = () => {
         }
     }, [error]);
 
+    // Get tracked subjects from user profile
+    const getTrackedSubjects = () => {
+        if (!getUserProfile?.coursePeriodDto) return {};
+        // Get the first course period's subjects
+        return getUserProfile.coursePeriodDto.subjects || {};
+    };
+
     // Collapsible section component
     const CollapsibleSection = ({
         title,
@@ -199,7 +207,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                 </div>
             ) : (
                 <>
-                    <motion.div className={cx('analytics-cards')} variants={staggerContainer}>
+                    <motion.div className={cx('analytics-cards-grid')} variants={staggerContainer}>
                         <motion.div className={cx('analytics-card')} variants={fadeIn}>
                             <div className={cx('card-icon')}>
                                 <Assignment className={cx('icon')} />
@@ -232,6 +240,32 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                 ) : (
                                     <div className={cx('card-info')}>Không có môn học nào cần cải thiện</div>
                                 )}
+                            </div>
+                        </motion.div>
+
+                        <motion.div className={cx('analytics-card')} variants={fadeIn}>
+                            <div className={cx('card-icon')}>
+                                <List className={cx('icon')} />
+                            </div>
+                            <div className={cx('card-content')}>
+                                <div className={cx('card-title')}>Môn học đang theo dõi</div>
+                                <div className={cx('card-value')}>{Object.keys(getTrackedSubjects()).length}</div>
+                                <div className={cx('subjects-list')}>
+                                    {Object.keys(getTrackedSubjects()).length > 0 ? (
+                                        Object.entries(getTrackedSubjects())
+                                            .slice(0, 3)
+                                            .map(([key, value]) => (
+                                                <div key={key} className={cx('card-info')}>
+                                                    {String(value)}
+                                                </div>
+                                            ))
+                                    ) : (
+                                        <div className={cx('card-info')}>Chưa có môn học nào</div>
+                                    )}
+                                    {Object.keys(getTrackedSubjects()).length > 3 && (
+                                        <div className={cx('card-info')}>...</div>
+                                    )}
+                                </div>
                             </div>
                         </motion.div>
 
@@ -598,7 +632,9 @@ const LearningAnalyticsDashboard: React.FC = () => {
                                         huy nhé!
                                     </p>
                                 </div>
-                            ): ""}
+                            ) : (
+                                ''
+                            )}
                         </>
                     )}
 

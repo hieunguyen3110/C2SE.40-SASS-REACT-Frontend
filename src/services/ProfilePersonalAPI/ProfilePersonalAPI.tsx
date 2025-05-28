@@ -39,7 +39,12 @@ export interface GetProfileRequest {
     totalPage: number;
     totalDocument: number;
     isEnableAnalyze: boolean;
-    coursePeriodDto: CoursePeriodDto[] | null;
+    coursePeriodDto: {
+        coursePeriodId: number;
+        subjects: {
+            [key: string]: string;
+        };
+    };
 
     //thêm
     facultyName: string;
