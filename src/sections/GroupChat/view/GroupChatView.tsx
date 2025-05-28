@@ -4,13 +4,7 @@ import styles from './GroupChatView.module.scss';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IconButton } from '@mui/material';
 import DocumentIMG from '../../../assets/images/library.document.png';
-import {
-    PeopleOutline,
-    InfoOutlined,
-    Close,
-    KeyboardArrowDown,
-    SentimentSatisfiedAlt,
-} from '@mui/icons-material';
+import { PeopleOutline, InfoOutlined, Close, KeyboardArrowDown, SentimentSatisfiedAlt } from '@mui/icons-material';
 import MembersDrawer from '../components/MembersDrawer/MembersDrawer';
 import PinIcon from '@/assets/images/icons/pin.red.svg';
 import PinIconDefault from '@/assets/images/icons/pin.default.svg';
@@ -68,7 +62,7 @@ export default function GroupChatView() {
     const groupId = getGroupIdFromPath();
 
     // Get group details and messages from Redux store
-    const { currentGroup, memberList, messages, pinnedMessages } = useAppSelector(
+    const { currentGroup, memberList, messages, pinnedMessages, userGroups } = useAppSelector(
         (state) => state.groupStudy,
     );
     const { accountId } = useAppSelector((state) => state.authentication);
@@ -174,23 +168,19 @@ export default function GroupChatView() {
 
     // Fetch group details, members, messages, and pinned messages when component mounts
     useEffect(() => {
-        dispatch(getGroupOfUserAction())
-            .unwrap()
-            .then((res) => {
-                if (groupId && res.some((group) => group.groupId === parseInt(groupId))) {
-                    fetchGroupDetails(Number(groupId));
-                    fetchMembers(Number(groupId));
-                    fetchMessages(Number(groupId), 0, 10); // Initial load with page 0
-                    fetchPinnedMessages(Number(groupId));
-                } else {
-                    toast.error('Bạn không có quyền truy cập vào nhóm này');
-                    navigate('/document/group-study/management');
-                }
-            })
-            .catch((error) => {
-                console.error('Failed to fetch group of user:', error);
-            });
-    }, [groupId]);
+        if (userGroups.length > 0) {
+            if (groupId && userGroups.some((group) => group.groupId === parseInt(groupId))) {
+                fetchGroupDetails(Number(groupId));
+                fetchMembers(Number(groupId));
+                fetchMessages(Number(groupId), 0, 10);
+            } else {
+                toast.error('Bạn không có quyền truy cập vào nhóm này');
+                navigate('/document/group-study/management');
+            }
+        } else {
+            dispatch(getGroupOfUserAction());
+        }
+    }, [groupId, userGroups]);
 
     // Format time for display from timestamp
     const formatTime = (timestamp: string | undefined) => {
@@ -625,22 +615,34 @@ export default function GroupChatView() {
                                         </span>
                                     </div>
                                     {/* <p className={cx('messageText')}>{message.content}</p> */}
-                                    {message.messageType==="DOCUMENT"?(
+                                    {message.messageType === 'DOCUMENT' ? (
                                         <div className={cx('card')}>
                                             <img
-                                                onClick={() => navigate(`/document/${message.documentId!==null? Number.parseInt(message.documentId): 0}`)}
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/document/${message.documentId !== null ? Number.parseInt(message.documentId) : 0}`,
+                                                    )
+                                                }
                                                 src={DocumentIMG}
                                                 alt="doc"
                                             />
-                                            <h3 onClick={() => navigate(`/document/${message.documentId!==null? Number.parseInt(message.documentId): 0}`)}>
-                                                {truncateTextWithLength(message.documentName!==null? message.documentName: "", 45)}
+                                            <h3
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/document/${message.documentId !== null ? Number.parseInt(message.documentId) : 0}`,
+                                                    )
+                                                }
+                                            >
+                                                {truncateTextWithLength(
+                                                    message.documentName !== null ? message.documentName : '',
+                                                    45,
+                                                )}
                                             </h3>
                                             <p className={cx('messageText')}>{message.content}</p>
                                         </div>
-                                    ): (
+                                    ) : (
                                         <p className={cx('messageText')}>{message.content}</p>
                                     )}
-                                    
                                 </div>
                                 <div className={cx('messageActions')}>
                                     <IconButton

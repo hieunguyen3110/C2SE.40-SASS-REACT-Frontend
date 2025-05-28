@@ -45,8 +45,7 @@ export default function GroupManagement() {
     const dispatch = useDispatch<AppDispatch>();
     
     // Get groups from Redux store
-    const { userGroups: groups, loading } = useSelector((state: RootState) => state.groupStudy);
-    const error = useSelector((state: RootState) => state.groupStudy.error);
+    const { userGroups: groups, loading, error } = useSelector((state: RootState) => state.groupStudy);
     // Move this selector to the top level
     const currentUserId = useSelector((state: RootState) => state.authentication.accountId);
 
@@ -161,7 +160,7 @@ export default function GroupManagement() {
                     <div className={cx('loading-state')}>
                         <p>Đang tải dữ liệu nhóm...</p>
                     </div>
-                ) : error ? (
+                ) : error && !groups ? (
                     <div className={cx('error-state')}>
                         <p>Đã xảy ra lỗi khi tải dữ liệu nhóm.</p>
                     </div>
