@@ -181,7 +181,7 @@ export const sendGroupChatMessage = (
     }
     try {
         // Get current date with correct local time
-        const now = new Date(Date.now() - 7 * 60 * 60 * 1000); // Subtract 7 hours from current time
+        const now = new Date(Date.now());
 
         // Format timestamp with local timezone consideration
         // Format: YYYY-MM-DDTHH:MM:SS
