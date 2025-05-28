@@ -51,9 +51,9 @@ export const sendMessageAction = createAsyncThunk<ChatbotResponse, MessagesUser>
     },
 );
 
-export const trainChatbotAction = createAsyncThunk<any, TrainChatbotRequest[]>(
+export const trainChatbotAction = createAsyncThunk<any, TrainChatbotRequest>(
     'trainChatbotAction',
-    async (data: TrainChatbotRequest[]) => {
+    async (data: TrainChatbotRequest) => {
         try {
             const res = await trainChatbotService(data);
             return res.data as any;

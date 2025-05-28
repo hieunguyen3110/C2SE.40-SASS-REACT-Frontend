@@ -287,7 +287,7 @@ function Content({ url, id , doc}: IDetailDoc) {
                                     max: 15,
                                     type: 'number',
                                 }}
-                                sx={{ width: 70 }}
+                                sx={{ width: 90 }}
                                 size="small"
                                 error={!!questionCountError}
                                 helperText={questionCountError}

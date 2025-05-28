@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import BoxIcon from "../../../assets/images/icons/BoxIcon.png";
 import DocumentUploadIcon from "../../../assets/images/icons/DocumentUploadIcon.png";
 import FolderAddIcon from "../../../assets/images/icons/FolderAddIcon.png";
-import UserSearchIcon from "../../../assets/images/icons/UserSearchIcon.png";
+import UserSearchIcon from "../../../assets/images/icons/UserSearchicon.png";
 import ChatBot from "../../../assets/images/icons/chatbot-image.png";
 const cx = classNames.bind(styles);
 

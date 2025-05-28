@@ -241,7 +241,7 @@ const LearningAnalyticsDashboard: React.FC = () => {
                             </div>
                             <div className={cx('card-content')}>
                                 <div className={cx('card-title')}>Trạng thái học tập</div>
-                                {(isAnalyticsEnabled && analyzeData && analyzeData.general_assessment!== null) ? (
+                                {isAnalyticsEnabled && analyzeData && analyzeData.general_assessment !== null ? (
                                     <div className={cx('card-alert-important')}>
                                         <p>
                                             {analyzeData.general_assessment !== null &&
@@ -586,11 +586,20 @@ const LearningAnalyticsDashboard: React.FC = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className={cx('analytics-detail')} style={{backgroundColor : "rgb(171 248 174)", fontWeight: "bold"}}>
-                            <p>
-                                Bạn đã có sự cải thiện rõ rệt trong việc học tập. Việc chăm chỉ làm bài tập và hoàn thành các bài quiz đều đặn đang giúp bạn tiến bộ từng ngày. Cố gắng phát huy nhé!
-                            </p>
-                        </div>
+                        <>
+                            {analyzeData ? (
+                                <div
+                                    className={cx('analytics-detail')}
+                                    style={{ backgroundColor: 'rgb(171 248 174)', fontWeight: 'bold' }}
+                                >
+                                    <p>
+                                        Bạn đã có sự cải thiện rõ rệt trong việc học tập. Việc chăm chỉ làm bài tập và
+                                        hoàn thành các bài quiz đều đặn đang giúp bạn tiến bộ từng ngày. Cố gắng phát
+                                        huy nhé!
+                                    </p>
+                                </div>
+                            ): ""}
+                        </>
                     )}
 
                     <div className={cx('warning-section')}>

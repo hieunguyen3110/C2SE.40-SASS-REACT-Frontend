@@ -94,6 +94,13 @@
                     background-color: #43a047;
                 }
             }
+            &.train-btn {
+                background-color: #cedc50;
+                
+                &:hover {
+                    background-color: #abb83b;
+                }
+            }
             
             &.delete-btn {
                 background-color: #ff3c3c;
