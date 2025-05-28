@@ -124,7 +124,9 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
     const pathName = useLocation().pathname;
     const [dropdownToggle, setDropdownToggle] = useState<boolean>(false);
     const [showToggle, setShowToggle] = useState<boolean>(false);
-    const { username, profilePicture, follower, following, upload, ilogins } = useAppSelector((state) => state.authentication);
+    const { username, profilePicture, follower, following, upload, ilogins } = useAppSelector(
+        (state) => state.authentication,
+    );
     const { numberOfNotificationsUnRead } = useAppSelector((state) => state.notication);
     const isOpenAndModal = isModal && isOpen;
     const shouldShowTooltip = !isOpen;
@@ -155,39 +157,53 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
                     exit="hidden"
                     className={cx('uploadfile-dropdown')}
                 >
-                    <motion.div
-                        className={cx('item')}
-                        onClick={handleClickUpFIle}
-                        whileHover={{
-                            backgroundColor: 'var(--primary-color)',
-                            color: 'white',
-                        }}
+                    <CustomTooltip
+                        title="Tải tài liệu"
+                        placement="right"
+                        arrow
+                        disableHoverListener={!shouldShowTooltip}
                     >
-                        <UploadFileIcon
-                            sx={{
-                                width: '22px',
-                                height: '22px',
+                        <motion.div
+                            className={cx('item')}
+                            onClick={handleClickUpFIle}
+                            whileHover={{
+                                backgroundColor: 'var(--primary-color)',
+                                color: 'white',
                             }}
-                        />
-                        {isOpen && <span>Tải tài liệu</span>}
-                    </motion.div>
+                        >
+                            <UploadFileIcon
+                                sx={{
+                                    width: '22px',
+                                    height: '22px',
+                                }}
+                            />
+                            {isOpen && <span>Tải tài liệu</span>}
+                        </motion.div>
+                    </CustomTooltip>
                     <hr />
-                    <motion.div
-                        className={cx('item')}
-                        onClick={() => navigate('/document/create-folder')}
-                        whileHover={{
-                            backgroundColor: 'var(--primary-color)',
-                            color: 'white',
-                        }}
+                    <CustomTooltip
+                        title="Tạo thư mục"
+                        placement="right"
+                        arrow
+                        disableHoverListener={!shouldShowTooltip}
                     >
-                        <CreateNewFolderOutlinedIcon
-                            sx={{
-                                width: '22px',
-                                height: '22px',
+                        <motion.div
+                            className={cx('item')}
+                            onClick={() => navigate('/document/create-folder')}
+                            whileHover={{
+                                backgroundColor: 'var(--primary-color)',
+                                color: 'white',
                             }}
-                        />
-                        {isOpen && <span>Tạo thư mục</span>}
-                    </motion.div>
+                        >
+                            <CreateNewFolderOutlinedIcon
+                                sx={{
+                                    width: '22px',
+                                    height: '22px',
+                                }}
+                            />
+                            {isOpen && <span>Tạo thư mục</span>}
+                        </motion.div>
+                    </CustomTooltip>
                 </motion.div>
             )}
         </AnimatePresence>
@@ -320,7 +336,9 @@ export default function Sidebar({ isModal, isOpen, setIsOpen }: ISidebar) {
                 whileHover={hoverVariants.hover}
                 whileTap={{ scale: 0.98 }}
             >
-                <Button text={`+ ${isOpen ? 'Thêm mới' : ''}`} paddingY={9.5} paddingX={0} fontSize={16} />
+                <CustomTooltip title="Thêm mới" placement="right" arrow disableHoverListener={!shouldShowTooltip}>
+                    <Button text={`+ ${isOpen ? 'Thêm mới' : ''}`} paddingY={9.5} paddingX={0} fontSize={16} />
+                </CustomTooltip>
             </motion.div>
 
             {uploadFileDropdown}

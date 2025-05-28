@@ -8,7 +8,6 @@ import {
     PeopleOutline,
     InfoOutlined,
     Close,
-    AttachFile,
     KeyboardArrowDown,
     SentimentSatisfiedAlt,
 } from '@mui/icons-material';
@@ -69,7 +68,7 @@ export default function GroupChatView() {
     const groupId = getGroupIdFromPath();
 
     // Get group details and messages from Redux store
-    const { currentGroup, memberList, messages, pinnedMessages, loading } = useAppSelector(
+    const { currentGroup, memberList, messages, pinnedMessages } = useAppSelector(
         (state) => state.groupStudy,
     );
     const { accountId } = useAppSelector((state) => state.authentication);

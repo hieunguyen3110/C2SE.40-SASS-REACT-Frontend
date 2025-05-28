@@ -47,11 +47,11 @@ const MenuProps = {
     },
 };
 
-export type DocumentAttached= {
-    documentId : string;
+export type DocumentAttached = {
+    documentId: string;
     documentName: string;
     docFilePath: string;
-}
+};
 
 export default function SharingModal() {
     const [email, setEmail] = useState<string>('');
@@ -126,28 +126,27 @@ export default function SharingModal() {
         );
     };
     const sendToGroup = () => {
-        if(groupRender.length>0){
-            const filterGroup = userGroups.filter(group =>{
-                if(group.groupName!==null){
+        if (groupRender.length > 0) {
+            const filterGroup = userGroups.filter((group) => {
+                if (group.groupName !== null) {
                     return groupRender.includes(group.groupName);
                 }
             });
             console.log(filterGroup);
-            filterGroup.forEach(group=>{
-                sendGroupChatMessage(group.groupId,"Đã chia sẽ tài liệu vào nhóm.","DOCUMENT", doc);
-            })
+            filterGroup.forEach((group) => {
+                sendGroupChatMessage(group.groupId, 'Đã chia sẽ tài liệu vào nhóm.', 'DOCUMENT', doc);
+            });
             setIsSendingGroup(true);
-            setTimeout(()=>{
+            setTimeout(() => {
                 setIsSendingGroup(false);
                 setGroupRender([]);
                 closeSharingModal();
-            },1500);
-            
+            }, 1500);
         }
-    }
+    };
 
     useEffect(() => {
-        if(open){
+        if (open) {
             dispatch(getGroupOfUserAction());
         }
     }, [dispatch, open]);
@@ -201,7 +200,7 @@ export default function SharingModal() {
                                 multiple
                                 value={groupRender}
                                 onChange={handleChange}
-                                input={<OutlinedInput label="Tag" />}
+                                input={<OutlinedInput label="Nhóm của bạn" />}
                                 renderValue={(selected) => selected.join(', ')}
                                 MenuProps={MenuProps}
                             >
@@ -209,7 +208,11 @@ export default function SharingModal() {
                                     ? userGroups.map((group, index) => {
                                           return (
                                               <MenuItem key={index} value={group.groupName ? group.groupName : ''}>
-                                                  <Checkbox checked={groupRender.includes(group.groupName ? group.groupName : '')} />
+                                                  <Checkbox
+                                                      checked={groupRender.includes(
+                                                          group.groupName ? group.groupName : '',
+                                                      )}
+                                                  />
                                                   <ListItemText primary={group.groupName} />
                                               </MenuItem>
                                           );

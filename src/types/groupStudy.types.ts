@@ -5,6 +5,7 @@ export interface IGroup {
     isPrivate: boolean | null;
     groupName: string | null;
     description: string | null;
+    subjectId: number | null;
     subjectName: string | null;
     picture: string | null;
     memberLimited: number | null;

@@ -40,7 +40,7 @@ const GroupSidebar = () => {
         if (userGroups.length === 0) {
             dispatch(getGroupOfUserAction());
         }
-    }, [dispatch, userGroups]);
+    }, []);
 
     useEffect(() => {
         if (userGroups && Array.isArray(userGroups)) {
@@ -53,7 +53,6 @@ const GroupSidebar = () => {
             setJoinedGroups(joined);
         }
     }, [userGroups, accountId]);
-
 
     const navigationItems = [
         {
@@ -107,12 +106,19 @@ const GroupSidebar = () => {
                     {profilePicture ? (
                         <img src={profilePicture} alt={username} />
                     ) : (
-                        <span>{username?username?.charAt(0)?.toUpperCase():"A"}</span>
+                        <span>{username ? username?.charAt(0)?.toUpperCase() : 'A'}</span>
                     )}
                 </div>
                 <div className={cx('userInfo')}>
                     <span className={cx('username')}>{username}</span>
-                    <span className={cx('userRole')}>{listRoles.map((role) => role).join(', ').toString()==="STUDENT"?"Sinh viên": "Giảng viên"}</span>
+                    <span className={cx('userRole')}>
+                        {listRoles
+                            .map((role) => role)
+                            .join(', ')
+                            .toString() === 'STUDENT'
+                            ? 'Sinh viên'
+                            : 'Giảng viên'}
+                    </span>
                 </div>
             </div>
 

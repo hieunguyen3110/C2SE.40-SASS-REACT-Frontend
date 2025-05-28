@@ -18,7 +18,6 @@ import { truncateTextWithLength } from '../../../utils/truncateText';
 // import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 // import Images from "../../../assets/images/library.document.png";
 
-const options = ['Gắn thẻ', 'Lưu tài liệu', 'Tải xuống', 'Chia sẻ', 'Báo cáo'];
 const ITEM_HEIGHT = 48;
 
 export default function ProposalDocs() {
@@ -103,39 +102,6 @@ export default function ProposalDocs() {
         <div className={cx('proposal-docs')}>
             <div className={cx('head')}>
                 <h2>Tài liệu đề xuất</h2>
-                <IconButton
-                    aria-label="more"
-                    id="long-button"
-                    aria-controls={open ? 'long-menu' : undefined}
-                    aria-expanded={open ? 'true' : undefined}
-                    aria-haspopup="true"
-                    onClick={handleClick}
-                >
-                    <MoreHorizIcon />
-                </IconButton>
-                <Menu
-                    id="long-menu"
-                    MenuListProps={{
-                        'aria-labelledby': 'long-button',
-                    }}
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    slotProps={{
-                        paper: {
-                            style: {
-                                maxHeight: ITEM_HEIGHT * 4.5,
-                                width: '13ch',
-                            },
-                        },
-                    }}
-                >
-                    {options.map((option) => (
-                        <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
-                            {option}
-                        </MenuItem>
-                    ))}
-                </Menu>
             </div>
             <Document />
             {/* {isAnalysing ? (

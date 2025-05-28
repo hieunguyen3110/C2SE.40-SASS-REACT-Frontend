@@ -45,7 +45,6 @@ export const WebsocketConnection: React.FC = () => {
     const { accountId, isLogined } = useAppSelector((state) => state.authentication);
     const { currentGroup, userGroups } = useAppSelector((state) => state.groupStudy);
     const { numberOfNotificationsUnRead, numberOfNotifications } = useAppSelector((state) => state.notication);
-    // const token = JsCookie.get('accessToken');
     useEffect(() => {
         const token = JsCookie.get('accessToken');
         if (!token || accountId === null || !isLogined) {
@@ -88,6 +87,7 @@ export const WebsocketConnection: React.FC = () => {
 
             // Kiểm tra và đăng ký lắng nghe tin nhắn nhóm nếu currentGroup có giá trị
             if (currentGroup?.groupId) {
+
                 stompClient?.subscribe(`/user/${currentGroup.groupId}/queue/messages`, (message) => {
                     try {
                         // Parse the message data
@@ -99,7 +99,7 @@ export const WebsocketConnection: React.FC = () => {
                             senderId: data.senderId || 0,
                             groupId: data.groupId,
                             content: data.content,
-                            timestamp: data.timestamp || new Date().toISOString(),
+                            timestamp: data.timestamp,
                             username: data.username,
                             profilePicture: data.profilePicture,
                             documentId: data.documentId,
@@ -146,7 +146,7 @@ export const WebsocketConnection: React.FC = () => {
         return () => {
             stompClient?.deactivate();
         };
-    }, [dispatch, accountId, numberOfNotificationsUnRead, numberOfNotifications]);
+    }, [dispatch, accountId, numberOfNotificationsUnRead, numberOfNotifications, currentGroup]);
     return null;
 };
 
@@ -181,7 +181,7 @@ export const sendGroupChatMessage = (
     }
     try {
         // Get current date with correct local time
-        const now = new Date();
+        const now = new Date(Date.now() - 7 * 60 * 60 * 1000); // Subtract 7 hours from current time
 
         // Format timestamp with local timezone consideration
         // Format: YYYY-MM-DDTHH:MM:SS
@@ -219,7 +219,6 @@ export const sendGroupChatMessage = (
                 messageType: type,
             };
         }
-
         stompClient.publish({
             destination: `/app/chat.private`,
             body: JSON.stringify(messageRequest),
