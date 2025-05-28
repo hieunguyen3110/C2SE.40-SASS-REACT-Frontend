@@ -89,7 +89,6 @@ export const getGroupDetailsAction = createAsyncThunk<IGroup, number>('groupStud
         return response.data;
     } catch (err: unknown) {
         const error = err as AxiosError<{ message?: string }>;
-        toast.error('Không thể lấy thông tin nhóm. Vui lòng thử lại sau.');
         throw Error(error.message);
     }
 });
@@ -893,7 +892,11 @@ const GroupStudySlice = createSlice({
                     };
                 }
                 state.memberList = state.memberList.map((member) => {
-                    if (member.role === 'OWNER' && member.memberId !== action.payload.userId) {
+                    if (
+                        member.role === 'OWNER' &&
+                        member.memberId !== action.payload.userId &&
+                        action.payload.role === 'OWNER'
+                    ) {
                         return { ...member, role: 'MEMBER' };
                     }
                     if (member.memberId === action.payload.userId) {
